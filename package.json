@@ -42,7 +42,7 @@
             "filenamePattern": "*.ico"
           }
         ],
-        "priority": "option"
+        "priority": "default"
       }
     ]
   },

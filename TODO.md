@@ -3,9 +3,9 @@
 ## 🔧 Melhorias Planejadas
 
 ### 1. Limpeza de Código
-- [ ] Remover logs de debug (`console.log`) dos arquivos de produção
+- [x] Remover logs de debug (`console.log`) dos arquivos de produção
 - [ ] Otimizar imports e dependências não utilizadas
-- [ ] Adicionar tratamento de erros mais robusto
+- [x] Adicionar tratamento de erros mais robusto
 
 ### 2. Metadados Expandidos
 - [ ] Adicionar suporte a EXIF data para fotos
@@ -24,13 +24,13 @@
 
 ### 3. Interface e UX
 - [ ] Adicionar tradução para múltiplos idiomas (i18n) pelo menos para inglês e português do Brasil
-- [ ] Ao clicar no arquivo de imagem abrir o visualizador da extensão por padrão
+- [x] Ao clicar no arquivo de imagem abrir o visualizador da extensão por padrão
 - [ ] Adicionar opção no menu de contexto "Open with Image Details Viewer"
-- [ ] Melhorar tema dark/light responsivo
-- [ ] Adicionar ícones para cada tipo de metadado
-- [ ] Implementar botões de copy mais visuais
-- [ ] Adicionar tooltip "Click to copy" nos valores
-- [ ] Implementar feedback visual ao copiar (animação/highlight)
+- [x] Melhorar tema dark/light responsivo
+- [x] Adicionar ícones para cada tipo de metadado
+- [x] Implementar botões de copy mais visuais
+- [x] Adicionar tooltip "Click to copy" nos valores
+- [x] Implementar feedback visual ao copiar (animação/highlight)
 - [ ] Adicionar preview de thumbnail na lista de metadados
 - [ ] Implementar zoom na imagem principal
 
