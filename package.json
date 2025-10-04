@@ -1,0 +1,229 @@
+{
+  "name": "image-details",
+  "icon": "icon.png",
+  "displayName": "Image Details",
+  "description": "View comprehensive image metadata with EXIF data, and clean metadata from images. Supports zoom, copy-to-clipboard, and multi-language interface.",
+  "version": "1.0.0",
+  "publisher": "NeuronioAzul",
+  "author": {
+    "name": "NeuronioAzul",
+    "url": "https://github.com/NeuronioAzul"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NeuronioAzul/vscode-ext_img-details"
+  },
+  "bugs": {
+    "url": "https://github.com/NeuronioAzul/vscode-ext_img-details/issues"
+  },
+  "homepage": "https://github.com/NeuronioAzul/vscode-ext_img-details#readme",
+  "qna": "https://github.com/NeuronioAzul/vscode-ext_img-details/discussions",
+  "sponsor": {
+    "url": "https://github.com/sponsors/NeuronioAzul"
+  },
+  "badges": [
+    {
+      "url": "https://img.shields.io/visual-studio-marketplace/v/NeuronioAzul.image-details",
+      "href": "https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details",
+      "description": "Visual Studio Marketplace Version"
+    },
+    {
+      "url": "https://img.shields.io/visual-studio-marketplace/i/NeuronioAzul.image-details",
+      "href": "https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details",
+      "description": "Visual Studio Marketplace Installs"
+    },
+    {
+      "url": "https://img.shields.io/visual-studio-marketplace/r/NeuronioAzul.image-details",
+      "href": "https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details",
+      "description": "Visual Studio Marketplace Rating"
+    }
+  ],
+  "keywords": [
+    "image",
+    "metadata",
+    "exif",
+    "photo",
+    "viewer",
+    "details",
+    "inspector",
+    "jpeg",
+    "png",
+    "gif",
+    "webp",
+    "image viewer",
+    "exif viewer",
+    "image metadata",
+    "photo metadata",
+    "exif data",
+    "image inspector",
+    "zoom",
+    "thumbnail",
+    "dpi",
+    "resolution"
+  ],
+  "tags": [
+    "image",
+    "Preview",
+    "Visualization",
+    "Formatters",
+    "metadata",
+    "exif",
+    "photo",
+    "viewer",
+    "details",
+    "inspector",
+    "jpeg",
+    "bmp",
+    "tiff",
+    "png",
+    "gif",
+    "webp",
+    "svg",
+    "ico",
+    "image-size"
+  ],
+  "engines": {
+    "vscode": "^1.94.0"
+  },
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "categories": [
+    "Visualization",
+    "Formatters"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "imageDetails.viewer",
+        "displayName": "Image Details Viewer",
+        "selector": [
+          {
+            "filenamePattern": "*.png"
+          },
+          {
+            "filenamePattern": "*.jpg"
+          },
+          {
+            "filenamePattern": "*.jpeg"
+          },
+          {
+            "filenamePattern": "*.gif"
+          },
+          {
+            "filenamePattern": "*.bmp"
+          },
+          {
+            "filenamePattern": "*.webp"
+          },
+          {
+            "filenamePattern": "*.svg"
+          },
+          {
+            "filenamePattern": "*.ico"
+          }
+        ],
+        "priority": "default"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "imageDetails.openWith",
+          "when": "resourceExtname =~ /\\.(png|jpg|jpeg|gif|bmp|webp|svg|ico)$/i",
+          "group": "navigation"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "imageDetails.openWith",
+        "title": "Open with Image Details Viewer"
+      }
+    ],
+    "configuration": {
+      "title": "Image Details",
+      "properties": {
+        "imageDetails.defaultDisplayMode": {
+          "type": "string",
+          "enum": [
+            "accordion",
+            "list"
+          ],
+          "enumDescriptions": [
+            "Collapsible sections (accordion mode)",
+            "Simple list with all sections always visible"
+          ],
+          "default": "accordion",
+          "description": "Default display mode for metadata sections"
+        },
+        "imageDetails.defaultSectionStates": {
+          "type": "object",
+          "properties": {
+            "basicInfo": {
+              "type": "boolean",
+              "default": true,
+              "description": "Basic Information section expanded by default"
+            },
+            "colorInfo": {
+              "type": "boolean",
+              "default": false,
+              "description": "Color Information section expanded by default"
+            },
+            "exifData": {
+              "type": "boolean",
+              "default": false,
+              "description": "EXIF Data section expanded by default"
+            }
+          },
+          "default": {
+            "basicInfo": true,
+            "colorInfo": false,
+            "exifData": false
+          },
+          "description": "Default state for each metadata section (expanded/collapsed)"
+        },
+        "imageDetails.rememberSectionStates": {
+          "type": "boolean",
+          "default": true,
+          "description": "Remember section states (expanded/collapsed) between sessions"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "npm run check-types && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "npm run check-types && node esbuild.js --production",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.94.0",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "@vscode/test-cli": "^0.0.4",
+    "@vscode/test-electron": "^2.3.8",
+    "esbuild": "^0.27.0",
+    "eslint": "^8.56.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "exifreader": "^4.32.0",
+    "image-size": "^1.1.1"
+  }
+}
