@@ -55,8 +55,11 @@
 - [ ] Adicionar demo GIF
 - [ ] Configurar CI/CD para builds automáticos
 - [ ] Preparar para publicação no VS Code Marketplace
-- [ ] Criar changelog estruturado
-- [ ] Adicionar licença apropriada MIT
+- [x] Criar changelog estruturado
+- [x] Adicionar licença apropriada MIT
+- [x] Melhorar README.md com badges e seções
+- [x] Adicionar keywords ao package.json
+- [x] Configurar repository e bugs URL
 
 ### 8. Testes
 - [ ] Testes unitários para metadados
@@ -66,7 +69,8 @@
 - [ ] Testes de acessibilidade
 
 ### 9. Documentação
-- [ ] Criar guia de contribuição
+- [x] Criar guia de contribuição (CONTRIBUTING.md)
+- [x] Documentar sistema de i18n (I18N.md)
 - [ ] Documentar API interna
 - [ ] Criar examples/samples
 - [ ] Adicionar troubleshooting guide
