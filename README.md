@@ -19,12 +19,21 @@ A VS Code extension that displays detailed image metadata in a side panel.
   - Date taken
   - GPS location data (latitude, longitude)
   - Orientation, color space, and software used
+- **Color Information**:
+  - Transparency support detection
+  - Color depth information
 - **Internationalization (i18n)**:
   - Full support for English and Brazilian Portuguese
   - Automatically detects VS Code language settings
 - **Enhanced UX**:
   - Resizable metadata panel (drag the left edge)
   - Sticky sidebar that stays visible while scrolling
+  - **Image Zoom Controls**:
+    - Zoom in/out with + and - buttons
+    - Mouse wheel zoom (Ctrl/Cmd + Scroll)
+    - Click image to toggle 2x zoom
+    - Keyboard shortcuts (+, -, 0)
+    - Fit to screen button
   - Click on any metadata value to copy it to clipboard
   - Visual feedback when copying values
 - Right-click context menu option to open images with the viewer

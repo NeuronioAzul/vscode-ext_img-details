@@ -15,10 +15,10 @@
   - [x] Configurações da foto (ISO, abertura, velocidade)
   - [x] Data/hora da captura
   - [x] Informações de GPS (se disponível)
-- [ ] Informações de cor
-  - [ ] Color depth (profundidade de cor)
-  - [ ] Color space (espaço de cores)
-  - [ ] Has transparency (tem transparência)
+- [x] Informações de cor
+  - [x] Color depth (profundidade de cor)
+  - [x] Has transparency (tem transparência)
+  - [ ] Color space (espaço de cores) - Disponível via EXIF
 - [ ] Informações técnicas
   - [ ] Compression type/quality
   - [ ] DPI/PPI information
@@ -35,7 +35,11 @@
 - [x] Adicionar tooltip "Click to copy" nos valores
 - [x] Implementar feedback visual ao copiar (animação/highlight)
 - [ ] Adicionar preview de thumbnail na lista de metadados
-- [ ] Implementar zoom in and out na imagem principal
+- [x] Implementar zoom in and out na imagem principal
+  - [x] Controles de zoom (+, -, reset, fit)
+  - [x] Zoom com mouse wheel (Ctrl+Scroll)
+  - [x] Click para alternar zoom
+  - [x] Atalhos de teclado (+, -, 0)
 
 ### 5. Configurações
 - [ ] Permitir usuário escolher quais metadados exibir

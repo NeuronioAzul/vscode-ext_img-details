@@ -35,6 +35,9 @@ interface Translations {
     software: string;
     clickToCopy: string;
     copied: string;
+    colorInformation: string;
+    supportsTransparency: string;
+    colorDepth: string;
 }
 
 const translations: { [key: string]: Translations } = {
@@ -68,7 +71,10 @@ const translations: { [key: string]: Translations } = {
         colorSpace: 'Color Space',
         software: 'Software',
         clickToCopy: 'Click to copy',
-        copied: 'Copied'
+        copied: 'Copied',
+        colorInformation: 'Color Information',
+        supportsTransparency: 'Transparency Support',
+        colorDepth: 'Color Depth'
     },
     'pt-br': {
         imageDetails: 'Detalhes da Imagem',
@@ -100,7 +106,10 @@ const translations: { [key: string]: Translations } = {
         colorSpace: 'Espaço de Cores',
         software: 'Software',
         clickToCopy: 'Clique para copiar',
-        copied: 'Copiado'
+        copied: 'Copiado',
+        colorInformation: 'Informações de Cor',
+        supportsTransparency: 'Suporte a Transparência',
+        colorDepth: 'Profundidade de Cor'
     }
 };
 
@@ -190,6 +199,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             const stats = await fs.promises.stat(filePath);
             
             let dimensions = { width: 'Unknown', height: 'Unknown', type: 'Unknown' };
+            let colorInfo: any = {};
             
             try {
                 const size = sizeOf(filePath);
@@ -198,6 +208,11 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                     height: size.height?.toString() || 'Unknown',
                     type: size.type || 'Unknown'
                 };
+                
+                // Get color information
+                if (size.type) {
+                    colorInfo = this.getColorInfo(size);
+                }
             } catch (error) {
                 // Silently handle error, return unknown dimensions
             }
@@ -223,6 +238,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 extension: path.extname(filePath),
                 created: stats.birthtime.toLocaleString(),
                 modified: stats.mtime.toLocaleString(),
+                colorInfo: colorInfo,
                 exif: exifData
             };
         } catch (error) {
@@ -238,6 +254,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 extension: path.extname(uri.fsPath),
                 created: 'Unknown',
                 modified: 'Unknown',
+                colorInfo: {},
                 exif: null
             };
         }
@@ -249,6 +266,35 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         const sizes = ['Bytes', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
         return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+    }
+
+    private getColorInfo(size: any): any {
+        const colorInfo: any = {};
+        
+        // Check for transparency support based on format
+        const transparentFormats = ['png', 'gif', 'webp', 'svg'];
+        if (size.type && transparentFormats.includes(size.type.toLowerCase())) {
+            colorInfo.supportsTransparency = 'Yes';
+        } else {
+            colorInfo.supportsTransparency = 'No';
+        }
+        
+        // Get bit depth if available
+        if (size.type) {
+            const format = size.type.toLowerCase();
+            if (format === 'png' || format === 'bmp') {
+                // PNG and BMP can have various bit depths
+                colorInfo.colorDepth = 'Variable (8-32 bit)';
+            } else if (format === 'jpg' || format === 'jpeg') {
+                colorInfo.colorDepth = '24 bit (8 bit per channel)';
+            } else if (format === 'gif') {
+                colorInfo.colorDepth = '8 bit (256 colors)';
+            } else if (format === 'webp') {
+                colorInfo.colorDepth = '24-32 bit';
+            }
+        }
+        
+        return colorInfo;
     }
 
     private extractRelevantExifData(tags: any): any {
@@ -369,6 +415,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             overflow: auto;
             background-color: var(--vscode-editor-background);
             padding: 20px;
+            position: relative;
         }
         .image-container img {
             max-width: 100%;
@@ -376,6 +423,56 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             object-fit: contain;
             border-radius: 4px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+            cursor: zoom-in;
+        }
+        .image-container img.zoomed {
+            cursor: zoom-out;
+            max-width: none;
+            max-height: none;
+        }
+        .zoom-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--vscode-editor-background);
+            border: 1px solid var(--vscode-panel-border);
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            gap: 4px;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .zoom-button {
+            background-color: var(--vscode-button-background);
+            color: var(--vscode-button-foreground);
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+        }
+        .zoom-button:hover {
+            background-color: var(--vscode-button-hoverBackground);
+        }
+        .zoom-button:active {
+            transform: scale(0.95);
+        }
+        .zoom-level {
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            font-size: 13px;
+            color: var(--vscode-foreground);
+            min-width: 60px;
+            justify-content: center;
         }
         .metadata-panel {
             width: 320px;
@@ -498,8 +595,15 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
 </head>
 <body>
     <div class="container">
-        <div class="image-container">
-            <img src="${imageWebviewUri}" alt="Image Preview" />
+        <div class="image-container" id="imageContainer">
+            <img src="${imageWebviewUri}" alt="Image Preview" id="imagePreview" />
+            <div class="zoom-controls">
+                <button class="zoom-button" onclick="zoomOut()" title="Zoom Out">−</button>
+                <div class="zoom-level" id="zoomLevel">100%</div>
+                <button class="zoom-button" onclick="zoomIn()" title="Zoom In">+</button>
+                <button class="zoom-button" onclick="resetZoom()" title="Reset Zoom">⟲</button>
+                <button class="zoom-button" onclick="fitToScreen()" title="Fit to Screen">⊡</button>
+            </div>
         </div>
         <div class="metadata-panel" id="metadataPanel">
             <div class="resize-handle" id="resizeHandle"></div>
@@ -550,6 +654,8 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.modified)}')">${this.escapeHtml(metadata.modified)}</div>
             </div>
             
+            ${this.generateColorInfoHtml(metadata.colorInfo, t)}
+            
             ${metadata.exif ? this.generateExifHtml(metadata.exif, t) : ''}
             <p><br><br></p>
         </div>
@@ -562,6 +668,82 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
     <script>
         const vscode = acquireVsCodeApi();
         const copiedText = '${t.copied}';
+        
+        // Zoom functionality
+        let currentZoom = 1;
+        const zoomStep = 0.25;
+        const minZoom = 0.1;
+        const maxZoom = 5;
+        
+        const imagePreview = document.getElementById('imagePreview');
+        const imageContainer = document.getElementById('imageContainer');
+        const zoomLevelDisplay = document.getElementById('zoomLevel');
+        
+        function updateZoom(newZoom) {
+            currentZoom = Math.max(minZoom, Math.min(maxZoom, newZoom));
+            imagePreview.style.transform = \`scale(\${currentZoom})\`;
+            zoomLevelDisplay.textContent = Math.round(currentZoom * 100) + '%';
+            
+            if (currentZoom !== 1) {
+                imagePreview.classList.add('zoomed');
+            } else {
+                imagePreview.classList.remove('zoomed');
+            }
+        }
+        
+        function zoomIn() {
+            updateZoom(currentZoom + zoomStep);
+        }
+        
+        function zoomOut() {
+            updateZoom(currentZoom - zoomStep);
+        }
+        
+        function resetZoom() {
+            updateZoom(1);
+        }
+        
+        function fitToScreen() {
+            const containerRect = imageContainer.getBoundingClientRect();
+            const imageRect = imagePreview.getBoundingClientRect();
+            
+            const scaleX = (containerRect.width - 40) / (imageRect.width / currentZoom);
+            const scaleY = (containerRect.height - 40) / (imageRect.height / currentZoom);
+            
+            updateZoom(Math.min(scaleX, scaleY));
+        }
+        
+        // Zoom with mouse wheel
+        imageContainer.addEventListener('wheel', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? -zoomStep : zoomStep;
+                updateZoom(currentZoom + delta);
+            }
+        });
+        
+        // Click to toggle zoom
+        imagePreview.addEventListener('click', function(e) {
+            if (currentZoom === 1) {
+                updateZoom(2);
+            } else {
+                resetZoom();
+            }
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === '+' || e.key === '=') {
+                e.preventDefault();
+                zoomIn();
+            } else if (e.key === '-' || e.key === '_') {
+                e.preventDefault();
+                zoomOut();
+            } else if (e.key === '0') {
+                e.preventDefault();
+                resetZoom();
+            }
+        });
         
         function copyToClipboard(text) {
             // Visual feedback
@@ -726,6 +908,33 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
     </div>
 </body>
 </html>`;
+    }
+
+    private generateColorInfoHtml(colorInfo: any, t: Translations): string {
+        if (!colorInfo || Object.keys(colorInfo).length === 0) {
+            return '';
+        }
+
+        let html = `<div style="margin-top: 24px; padding-top: 20px; border-top: 2px solid var(--vscode-panel-border);"><h2>🎨 ${t.colorInformation}</h2>`;
+
+        if (colorInfo.supportsTransparency) {
+            html += `
+            <div class="metadata-item">
+                <div class="metadata-label">✨ ${t.supportsTransparency}</div>
+                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(colorInfo.supportsTransparency)}')">${this.escapeHtml(colorInfo.supportsTransparency)}</div>
+            </div>`;
+        }
+
+        if (colorInfo.colorDepth) {
+            html += `
+            <div class="metadata-item">
+                <div class="metadata-label">🌈 ${t.colorDepth}</div>
+                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(colorInfo.colorDepth)}')">${this.escapeHtml(colorInfo.colorDepth)}</div>
+            </div>`;
+        }
+
+        html += '</div>';
+        return html;
     }
 
     private generateExifHtml(exif: any, t: Translations): string {

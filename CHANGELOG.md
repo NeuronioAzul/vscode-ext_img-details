@@ -14,6 +14,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Date taken
   - GPS location data (latitude, longitude)
   - Image orientation, color space, and software information
+- **Color Information Display**: 
+  - Transparency support detection for PNG, GIF, WebP, SVG
+  - Color depth information based on image format
+- **Image Zoom Functionality**: Complete zoom controls for viewing images
+  - Zoom in/out buttons with visual controls
+  - Mouse wheel zoom (Ctrl/Cmd + Scroll)
+  - Click to toggle 2x zoom
+  - Keyboard shortcuts: `+` (zoom in), `-` (zoom out), `0` (reset)
+  - Fit to screen button
+  - Smooth zoom transitions with scale transform
 - **Internationalization (i18n)**: Full support for multiple languages
   - English (en) - default
   - Brazilian Portuguese (pt-br)
@@ -31,11 +41,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added type validation in `escapeHtml` method
   - Improved EXIF data extraction with proper type conversion
   - Added fallback for undefined/null values
+- **Bug Fix**: Fixed copy feedback notification not displaying
+  - Added `.show` class CSS for proper animation
 
 ### Changed
 - Enhanced error handling in `resolveCustomEditor` method
 - Improved EXIF data extraction with helper function for safer value retrieval
 - Better support for various EXIF tag formats
+- Improved image container styling for zoom functionality
 
 ## [0.0.1] - Initial Development
 
