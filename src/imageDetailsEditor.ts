@@ -38,6 +38,7 @@ interface Translations {
     colorInformation: string;
     supportsTransparency: string;
     colorDepth: string;
+    dpi: string;
 }
 
 const translations: { [key: string]: Translations } = {
@@ -74,7 +75,8 @@ const translations: { [key: string]: Translations } = {
         copied: 'Copied',
         colorInformation: 'Color Information',
         supportsTransparency: 'Transparency Support',
-        colorDepth: 'Color Depth'
+        colorDepth: 'Color Depth',
+        dpi: 'DPI/PPI'
     },
     'pt-br': {
         imageDetails: 'Detalhes da Imagem',
@@ -109,7 +111,8 @@ const translations: { [key: string]: Translations } = {
         copied: 'Copiado',
         colorInformation: 'Informações de Cor',
         supportsTransparency: 'Suporte a Transparência',
-        colorDepth: 'Profundidade de Cor'
+        colorDepth: 'Profundidade de Cor',
+        dpi: 'DPI/PPI'
     }
 };
 
@@ -223,6 +226,11 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 const buffer = await fs.promises.readFile(filePath);
                 const tags = ExifReader.load(buffer);
                 exifData = this.extractRelevantExifData(tags);
+                
+                // Add DPI from EXIF to colorInfo if available
+                if (exifData && exifData.dpi) {
+                    colorInfo.dpi = exifData.dpi;
+                }
             } catch (error) {
                 // EXIF data not available or error reading it
             }
@@ -371,6 +379,20 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         const software = getDescription(tags.Software);
         if (software) {
             exif.software = software;
+        }
+
+        // DPI/PPI information
+        const xResolution = tags.XResolution?.value || tags.XResolution?.description;
+        const yResolution = tags.YResolution?.value || tags.YResolution?.description;
+        const resolutionUnit = tags.ResolutionUnit?.description || tags.ResolutionUnit?.value;
+        
+        if (xResolution && yResolution) {
+            const unit = resolutionUnit === '3' || resolutionUnit === 'cm' ? 'pixels/cm' : 'DPI';
+            if (xResolution === yResolution) {
+                exif.dpi = `${xResolution} ${unit}`;
+            } else {
+                exif.dpi = `${xResolution} x ${yResolution} ${unit}`;
+            }
         }
 
         return Object.keys(exif).length > 0 ? exif : null;
@@ -930,6 +952,14 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             <div class="metadata-item">
                 <div class="metadata-label">🌈 ${t.colorDepth}</div>
                 <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(colorInfo.colorDepth)}')">${this.escapeHtml(colorInfo.colorDepth)}</div>
+            </div>`;
+        }
+
+        if (colorInfo.dpi) {
+            html += `
+            <div class="metadata-item">
+                <div class="metadata-label">📐 ${t.dpi}</div>
+                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(colorInfo.dpi)}')">${this.escapeHtml(colorInfo.dpi)}</div>
             </div>`;
         }
 

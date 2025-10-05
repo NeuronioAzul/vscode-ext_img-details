@@ -21,7 +21,7 @@
   - [ ] Color space (espaço de cores) - Disponível via EXIF
 - [ ] Informações técnicas
   - [ ] Compression type/quality
-  - [ ] DPI/PPI information
+  - [x] DPI/PPI information
   - [ ] Bit depth
 
 ### 3. Interface e UX
