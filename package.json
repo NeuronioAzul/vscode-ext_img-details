@@ -1,13 +1,40 @@
 {
   "name": "image-details",
   "displayName": "Image Details",
-  "description": "Display image metadata in a side panel with click-to-copy functionality",
-  "version": "0.0.1",
+  "description": "View comprehensive image metadata with EXIF data, zoom controls, and multi-language support",
+  "version": "0.1.0",
+  "publisher": "NeuronioAzul",
+  "author": {
+    "name": "NeuronioAzul"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NeuronioAzul/vscode-ext_img-details"
+  },
+  "bugs": {
+    "url": "https://github.com/NeuronioAzul/vscode-ext_img-details/issues"
+  },
+  "homepage": "https://github.com/NeuronioAzul/vscode-ext_img-details#readme",
+  "keywords": [
+    "image",
+    "metadata",
+    "exif",
+    "photo",
+    "viewer",
+    "details",
+    "inspector",
+    "jpeg",
+    "png",
+    "gif",
+    "webp"
+  ],
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
-    "Other"
+    "Other",
+    "Visualization"
   ],
   "activationEvents": [],
   "main": "./out/extension.js",
