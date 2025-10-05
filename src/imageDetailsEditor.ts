@@ -485,6 +485,10 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             transform: translateX(100%);
             transition: all 0.3s ease;
         }
+        .copy-feedback.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
         @media (prefers-color-scheme: dark) {
             .image-container img {
                 box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
@@ -547,6 +551,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             </div>
             
             ${metadata.exif ? this.generateExifHtml(metadata.exif, t) : ''}
+            <p><br><br></p>
         </div>
     </div>
     
