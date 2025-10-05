@@ -4,10 +4,133 @@ import * as fs from 'fs';
 import sizeOf from 'image-size';
 import ExifReader from 'exifreader';
 
+interface Translations {
+    imageDetails: string;
+    fileName: string;
+    dimensions: string;
+    format: string;
+    fileSize: string;
+    sizeBytes: string;
+    extension: string;
+    fullPath: string;
+    created: string;
+    modified: string;
+    exifData: string;
+    camera: string;
+    make: string;
+    model: string;
+    photoSettings: string;
+    iso: string;
+    aperture: string;
+    shutterSpeed: string;
+    focalLength: string;
+    date: string;
+    dateTaken: string;
+    location: string;
+    latitude: string;
+    longitude: string;
+    additionalInfo: string;
+    orientation: string;
+    colorSpace: string;
+    software: string;
+    clickToCopy: string;
+    copied: string;
+}
+
+const translations: { [key: string]: Translations } = {
+    'en': {
+        imageDetails: 'Image Details',
+        fileName: 'File Name',
+        dimensions: 'Dimensions',
+        format: 'Format',
+        fileSize: 'File Size',
+        sizeBytes: 'Size (Bytes)',
+        extension: 'Extension',
+        fullPath: 'Full Path',
+        created: 'Created',
+        modified: 'Modified',
+        exifData: 'EXIF Data',
+        camera: 'Camera',
+        make: 'Make',
+        model: 'Model',
+        photoSettings: 'Photo Settings',
+        iso: 'ISO',
+        aperture: 'Aperture',
+        shutterSpeed: 'Shutter Speed',
+        focalLength: 'Focal Length',
+        date: 'Date',
+        dateTaken: 'Date Taken',
+        location: 'Location',
+        latitude: 'Latitude',
+        longitude: 'Longitude',
+        additionalInfo: 'Additional Info',
+        orientation: 'Orientation',
+        colorSpace: 'Color Space',
+        software: 'Software',
+        clickToCopy: 'Click to copy',
+        copied: 'Copied'
+    },
+    'pt-br': {
+        imageDetails: 'Detalhes da Imagem',
+        fileName: 'Nome do Arquivo',
+        dimensions: 'Dimensões',
+        format: 'Formato',
+        fileSize: 'Tamanho do Arquivo',
+        sizeBytes: 'Tamanho (Bytes)',
+        extension: 'Extensão',
+        fullPath: 'Caminho Completo',
+        created: 'Criado em',
+        modified: 'Modificado em',
+        exifData: 'Dados EXIF',
+        camera: 'Câmera',
+        make: 'Marca',
+        model: 'Modelo',
+        photoSettings: 'Configurações da Foto',
+        iso: 'ISO',
+        aperture: 'Abertura',
+        shutterSpeed: 'Velocidade do Obturador',
+        focalLength: 'Distância Focal',
+        date: 'Data',
+        dateTaken: 'Data da Captura',
+        location: 'Localização',
+        latitude: 'Latitude',
+        longitude: 'Longitude',
+        additionalInfo: 'Informações Adicionais',
+        orientation: 'Orientação',
+        colorSpace: 'Espaço de Cores',
+        software: 'Software',
+        clickToCopy: 'Clique para copiar',
+        copied: 'Copiado'
+    }
+};
+
 export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorProvider {
     private static readonly viewType = 'imageDetails.viewer';
 
     constructor(private readonly context: vscode.ExtensionContext) {}
+
+    private getTranslations(): Translations {
+        const locale = vscode.env.language.toLowerCase();
+        
+        // Check for exact match
+        if (translations[locale]) {
+            return translations[locale];
+        }
+        
+        // Check for language without region (e.g., 'pt' from 'pt-BR')
+        const lang = locale.split('-')[0];
+        if (translations[lang]) {
+            return translations[lang];
+        }
+        
+        // Check for 'pt-br' variations
+        if (locale.includes('pt')) {
+            return translations['pt-br'];
+        }
+        
+        // Default to English
+        return translations['en'];
+    }
 
     async openCustomDocument(
         uri: vscode.Uri,
@@ -179,6 +302,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
     ): string {
         // Convert the image URI to a webview URI
         const imageWebviewUri = webview.asWebviewUri(imageUri);
+        const t = this.getTranslations();
 
         return `<!DOCTYPE html>
 <html lang="en">
@@ -191,13 +315,16 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             font-family: var(--vscode-font-family);
             color: var(--vscode-foreground);
             background-color: var(--vscode-editor-background);
-            padding: 20px;
+            padding: 0;
             margin: 0;
+            overflow: hidden;
+            height: 100vh;
         }
         .container {
             display: flex;
-            gap: 20px;
+            gap: 0;
             height: 100vh;
+            position: relative;
         }
         .image-container {
             flex: 1;
@@ -206,6 +333,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             justify-content: center;
             overflow: auto;
             background-color: var(--vscode-editor-background);
+            padding: 20px;
         }
         .image-container img {
             max-width: 100%;
@@ -215,11 +343,31 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         .metadata-panel {
-            width: 300px;
+            width: 320px;
+            min-width: 250px;
+            max-width: 600px;
             border-left: 1px solid var(--vscode-panel-border);
-            padding-left: 20px;
+            padding: 20px;
             overflow-y: auto;
             background-color: var(--vscode-sideBar-background);
+            position: sticky;
+            top: 0;
+            right: 0;
+            height: 100vh;
+            resize: horizontal;
+        }
+        .resize-handle {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            cursor: ew-resize;
+            background-color: transparent;
+            transition: background-color 0.2s ease;
+        }
+        .resize-handle:hover {
+            background-color: var(--vscode-focusBorder);
         }
         h2 {
             margin-top: 0;
@@ -314,70 +462,72 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         <div class="image-container">
             <img src="${imageWebviewUri}" alt="Image Preview" />
         </div>
-        <div class="metadata-panel">
-            <h2>Image Details</h2>
+        <div class="metadata-panel" id="metadataPanel">
+            <div class="resize-handle" id="resizeHandle"></div>
+            <h2>${t.imageDetails}</h2>
             
             <div class="metadata-item">
-                <div class="metadata-label">📁 File Name</div>
-                <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(metadata.fileName)}')">${this.escapeHtml(metadata.fileName)}</div>
+                <div class="metadata-label">📁 ${t.fileName}</div>
+                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.fileName)}')">${this.escapeHtml(metadata.fileName)}</div>
             </div>
             
             <div class="metadata-item">
-                <div class="metadata-label">📐 Dimensions</div>
-                <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${metadata.width} x ${metadata.height}')">${metadata.width} x ${metadata.height}</div>
+                <div class="metadata-label">📐 ${t.dimensions}</div>
+                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${metadata.width} x ${metadata.height}')">${metadata.width} x ${metadata.height}</div>
             </div>
             
             <div class="metadata-item">
-                <div class="metadata-label">🎨 Format</div>
-                <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(metadata.format)}')">${this.escapeHtml(metadata.format)}</div>
+                <div class="metadata-label">🎨 ${t.format}</div>
+                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.format)}')">${this.escapeHtml(metadata.format)}</div>
             </div>
             
             <div class="metadata-item">
-                <div class="metadata-label">💾 File Size</div>
-                <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(metadata.fileSize)}')">${this.escapeHtml(metadata.fileSize)}</div>
+                <div class="metadata-label">💾 ${t.fileSize}</div>
+                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.fileSize)}')">${this.escapeHtml(metadata.fileSize)}</div>
             </div>
             
             <div class="metadata-item">
-                <div class="metadata-label">🔢 Size (Bytes)</div>
-                <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${metadata.fileSizeBytes}')">${metadata.fileSizeBytes}</div>
+                <div class="metadata-label">🔢 ${t.sizeBytes}</div>
+                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${metadata.fileSizeBytes}')">${metadata.fileSizeBytes}</div>
             </div>
             
             <div class="metadata-item">
-                <div class="metadata-label">🏷️ Extension</div>
-                <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(metadata.extension)}')">${this.escapeHtml(metadata.extension)}</div>
+                <div class="metadata-label">🏷️ ${t.extension}</div>
+                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.extension)}')">${this.escapeHtml(metadata.extension)}</div>
             </div>
             
             <div class="metadata-item">
-                <div class="metadata-label">📂 Full Path</div>
-                <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(metadata.path)}')">${this.escapeHtml(metadata.path)}</div>
+                <div class="metadata-label">📂 ${t.fullPath}</div>
+                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.path)}')">${this.escapeHtml(metadata.path)}</div>
             </div>
             
             <div class="metadata-item">
-                <div class="metadata-label">📅 Created</div>
-                <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(metadata.created)}')">${this.escapeHtml(metadata.created)}</div>
+                <div class="metadata-label">📅 ${t.created}</div>
+                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.created)}')">${this.escapeHtml(metadata.created)}</div>
             </div>
             
             <div class="metadata-item">
-                <div class="metadata-label">✏️ Modified</div>
-                <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(metadata.modified)}')">${this.escapeHtml(metadata.modified)}</div>
+                <div class="metadata-label">✏️ ${t.modified}</div>
+                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.modified)}')">${this.escapeHtml(metadata.modified)}</div>
             </div>
             
-            ${metadata.exif ? this.generateExifHtml(metadata.exif) : ''}
+            ${metadata.exif ? this.generateExifHtml(metadata.exif, t) : ''}
         </div>
     </div>
     
     <div class="copy-feedback" id="copyFeedback">
-        ✅ Copied to clipboard!
+        ✅ ${t.copied}!
     </div>
     
     <script>
         const vscode = acquireVsCodeApi();
+        const copiedText = '${t.copied}';
         
         function copyToClipboard(text) {
             // Visual feedback
             const feedback = document.getElementById('copyFeedback');
             const shortText = text.length > 30 ? text.substring(0, 30) + '...' : text;
-            feedback.textContent = '✅ Copied: ' + shortText;
+            feedback.textContent = '✅ ' + copiedText + ': ' + shortText;
             feedback.classList.add('show');
             
             // Send to extension
@@ -398,6 +548,36 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 clickedElement.classList.remove('copied');
             }, 300);
         }
+        
+        // Resize functionality
+        const resizeHandle = document.getElementById('resizeHandle');
+        const metadataPanel = document.getElementById('metadataPanel');
+        let isResizing = false;
+        
+        resizeHandle.addEventListener('mousedown', function(e) {
+            isResizing = true;
+            document.body.style.cursor = 'ew-resize';
+            document.body.style.userSelect = 'none';
+        });
+        
+        document.addEventListener('mousemove', function(e) {
+            if (!isResizing) return;
+            
+            const containerWidth = document.querySelector('.container').offsetWidth;
+            const newWidth = containerWidth - e.clientX;
+            
+            if (newWidth >= 250 && newWidth <= 600) {
+                metadataPanel.style.width = newWidth + 'px';
+            }
+        });
+        
+        document.addEventListener('mouseup', function() {
+            if (isResizing) {
+                isResizing = false;
+                document.body.style.cursor = 'default';
+                document.body.style.userSelect = 'auto';
+            }
+        });
     </script>
 </body>
 </html>`;
@@ -414,123 +594,123 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         return text.replace(/[&<>"']/g, m => map[m]);
     }
 
-    private generateExifHtml(exif: any): string {
-        let html = '<div style="margin-top: 24px; padding-top: 20px; border-top: 2px solid var(--vscode-panel-border);"><h2>📷 EXIF Data</h2>';
+    private generateExifHtml(exif: any, t: Translations): string {
+        let html = `<div style="margin-top: 24px; padding-top: 20px; border-top: 2px solid var(--vscode-panel-border);"><h2>📷 ${t.exifData}</h2>`;
 
         // Camera Information
         if (exif.cameraMake || exif.cameraModel) {
-            html += '<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">Camera</h3>';
+            html += `<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">${t.camera}</h3>`;
             
             if (exif.cameraMake) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📱 Make</div>
-                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.cameraMake)}')">${this.escapeHtml(exif.cameraMake)}</div>
+                    <div class="metadata-label">📱 ${t.make}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.cameraMake)}')">${this.escapeHtml(exif.cameraMake)}</div>
                 </div>`;
             }
             
             if (exif.cameraModel) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📸 Model</div>
-                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.cameraModel)}')">${this.escapeHtml(exif.cameraModel)}</div>
+                    <div class="metadata-label">📸 ${t.model}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.cameraModel)}')">${this.escapeHtml(exif.cameraModel)}</div>
                 </div>`;
             }
         }
 
         // Photo Settings
         if (exif.iso || exif.aperture || exif.shutterSpeed || exif.focalLength) {
-            html += '<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">Photo Settings</h3>';
+            html += `<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">${t.photoSettings}</h3>`;
             
             if (exif.iso) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🔆 ISO</div>
-                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.iso)}')">${this.escapeHtml(exif.iso)}</div>
+                    <div class="metadata-label">🔆 ${t.iso}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.iso)}')">${this.escapeHtml(exif.iso)}</div>
                 </div>`;
             }
             
             if (exif.aperture) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🔍 Aperture</div>
-                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.aperture)}')">${this.escapeHtml(exif.aperture)}</div>
+                    <div class="metadata-label">🔍 ${t.aperture}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.aperture)}')">${this.escapeHtml(exif.aperture)}</div>
                 </div>`;
             }
             
             if (exif.shutterSpeed) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">⚡ Shutter Speed</div>
-                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.shutterSpeed)}')">${this.escapeHtml(exif.shutterSpeed)}</div>
+                    <div class="metadata-label">⚡ ${t.shutterSpeed}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.shutterSpeed)}')">${this.escapeHtml(exif.shutterSpeed)}</div>
                 </div>`;
             }
             
             if (exif.focalLength) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🎯 Focal Length</div>
-                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.focalLength)}')">${this.escapeHtml(exif.focalLength)}</div>
+                    <div class="metadata-label">🎯 ${t.focalLength}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.focalLength)}')">${this.escapeHtml(exif.focalLength)}</div>
                 </div>`;
             }
         }
 
         // Date Information
         if (exif.dateTaken) {
-            html += '<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">Date</h3>';
+            html += `<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">${t.date}</h3>`;
             html += `
             <div class="metadata-item">
-                <div class="metadata-label">📅 Date Taken</div>
-                <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.dateTaken)}')">${this.escapeHtml(exif.dateTaken)}</div>
+                <div class="metadata-label">📅 ${t.dateTaken}</div>
+                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.dateTaken)}')">${this.escapeHtml(exif.dateTaken)}</div>
             </div>`;
         }
 
         // GPS Information
         if (exif.gpsLatitude || exif.gpsLongitude) {
-            html += '<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">Location</h3>';
+            html += `<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">${t.location}</h3>`;
             
             if (exif.gpsLatitude) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🌍 Latitude</div>
-                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.gpsLatitude)}')">${this.escapeHtml(exif.gpsLatitude)}</div>
+                    <div class="metadata-label">🌍 ${t.latitude}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsLatitude)}')">${this.escapeHtml(exif.gpsLatitude)}</div>
                 </div>`;
             }
             
             if (exif.gpsLongitude) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🌍 Longitude</div>
-                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.gpsLongitude)}')">${this.escapeHtml(exif.gpsLongitude)}</div>
+                    <div class="metadata-label">🌍 ${t.longitude}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsLongitude)}')">${this.escapeHtml(exif.gpsLongitude)}</div>
                 </div>`;
             }
         }
 
         // Additional Information
         if (exif.orientation || exif.colorSpace || exif.software) {
-            html += '<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">Additional Info</h3>';
+            html += `<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">${t.additionalInfo}</h3>`;
             
             if (exif.orientation) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🔄 Orientation</div>
-                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.orientation)}')">${this.escapeHtml(exif.orientation)}</div>
+                    <div class="metadata-label">🔄 ${t.orientation}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.orientation)}')">${this.escapeHtml(exif.orientation)}</div>
                 </div>`;
             }
             
             if (exif.colorSpace) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🎨 Color Space</div>
-                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.colorSpace)}')">${this.escapeHtml(exif.colorSpace)}</div>
+                    <div class="metadata-label">🎨 ${t.colorSpace}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.colorSpace)}')">${this.escapeHtml(exif.colorSpace)}</div>
                 </div>`;
             }
             
             if (exif.software) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">💻 Software</div>
-                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.software)}')">${this.escapeHtml(exif.software)}</div>
+                    <div class="metadata-label">💻 ${t.software}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.software)}')">${this.escapeHtml(exif.software)}</div>
                 </div>`;
             }
         }

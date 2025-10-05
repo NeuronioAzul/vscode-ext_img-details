@@ -4,15 +4,15 @@
 
 ### 1. Limpeza de Código
 - [x] Remover logs de debug (`console.log`) dos arquivos de produção
-- [ ] Otimizar imports e dependências não utilizadas
+- [x] Otimizar imports e dependências não utilizadas
 - [x] Adicionar tratamento de erros mais robusto
 
 ### 2. Metadados Expandidos
-- [ ] Adicionar suporte a EXIF data para fotos
-  - [ ] Dados da câmera (modelo, marca)
-  - [ ] Configurações da foto (ISO, abertura, velocidade)
-  - [ ] Data/hora da captura
-  - [ ] Informações de GPS (se disponível)
+- [x] Adicionar suporte a EXIF data para fotos
+  - [x] Dados da câmera (modelo, marca)
+  - [x] Configurações da foto (ISO, abertura, velocidade)
+  - [x] Data/hora da captura
+  - [x] Informações de GPS (se disponível)
 - [ ] Informações de cor
   - [ ] Color depth (profundidade de cor)
   - [ ] Color space (espaço de cores)
@@ -23,7 +23,8 @@
   - [ ] Bit depth
 
 ### 3. Interface e UX
-- [ ] Adicionar tradução para múltiplos idiomas (i18n) pelo menos para inglês e português do Brasil
+- [x] Adicionar tradução para múltiplos idiomas (i18n) pelo menos para inglês e português do Brasil
+- [x] a coluna de metadados deve ser "sticky" a direita ao rolar a página, mas pode redimensionar horizontalmente
 - [x] Ao clicar no arquivo de imagem abrir o visualizador da extensão por padrão
 - [x] Adicionar opção no menu de contexto "Open with Image Details Viewer"
 - [x] Melhorar tema dark/light responsivo
@@ -32,7 +33,7 @@
 - [x] Adicionar tooltip "Click to copy" nos valores
 - [x] Implementar feedback visual ao copiar (animação/highlight)
 - [ ] Adicionar preview de thumbnail na lista de metadados
-- [ ] Implementar zoom na imagem principal
+- [ ] Implementar zoom in and out na imagem principal
 
 ### 5. Configurações
 - [ ] Permitir usuário escolher quais metadados exibir

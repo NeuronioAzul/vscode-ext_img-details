@@ -13,7 +13,21 @@ A VS Code extension that displays detailed image metadata in a side panel.
   - File size
   - Full file path
   - Creation and modification dates
-- Click on any metadata value to copy it to clipboard
+- **EXIF Data Support** (when available):
+  - Camera information (make, model)
+  - Photo settings (ISO, aperture, shutter speed, focal length)
+  - Date taken
+  - GPS location data (latitude, longitude)
+  - Orientation, color space, and software used
+- **Internationalization (i18n)**:
+  - Full support for English and Brazilian Portuguese
+  - Automatically detects VS Code language settings
+- **Enhanced UX**:
+  - Resizable metadata panel (drag the left edge)
+  - Sticky sidebar that stays visible while scrolling
+  - Click on any metadata value to copy it to clipboard
+  - Visual feedback when copying values
+- Right-click context menu option to open images with the viewer
 - Works with common image formats: PNG, JPG, JPEG, GIF, BMP, WebP, SVG, ICO
 
 ## Usage
