@@ -1,5 +1,6 @@
 {
     "typescript.tsdk": "node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
-    "chat.tools.terminal.shellIntegrationTimeout": 10000
+    "chat.tools.terminal.shellIntegrationTimeout": 10000,
+    "terminal.integrated.suggest.enabled": true
 }

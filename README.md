@@ -1,6 +1,8 @@
 # Image Details Extension
 
-A VS Code extension that displays detailed image metadata in a side panel with click-to-copy functionality.
+A VS Code extension that displays detailed image metadata in a side panel.
+- Adds a side panel to show image details
+- Allows copying metadata values to clipboard with a click
 
 ## Features
 
@@ -17,10 +19,9 @@ A VS Code extension that displays detailed image metadata in a side panel with c
 ## Usage
 
 1. Open any supported image file in VS Code
-2. Right-click on the image file in the explorer
-3. Select "Reopen Editor With..." → "Image Details Viewer"
-4. View the image with metadata in the side panel
-5. Click on any metadata value to copy it to your clipboard
+2. Click on the image file to open it in the editor
+3. View the image with metadata in the side panel
+4. Click on any metadata value to copy it to your clipboard
 
 ## Development
 

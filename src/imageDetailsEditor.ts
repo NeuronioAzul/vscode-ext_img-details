@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import sizeOf from 'image-size';
+import ExifReader from 'exifreader';
 
 export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorProvider {
     private static readonly viewType = 'imageDetails.viewer';
@@ -72,6 +73,16 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 // Silently handle error, return unknown dimensions
             }
 
+            // Extract EXIF data
+            let exifData: any = null;
+            try {
+                const buffer = await fs.promises.readFile(filePath);
+                const tags = ExifReader.load(buffer);
+                exifData = this.extractRelevantExifData(tags);
+            } catch (error) {
+                // EXIF data not available or error reading it
+            }
+
             return {
                 path: filePath,
                 fileName: path.basename(filePath),
@@ -82,7 +93,8 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 format: dimensions.type,
                 extension: path.extname(filePath),
                 created: stats.birthtime.toLocaleString(),
-                modified: stats.mtime.toLocaleString()
+                modified: stats.mtime.toLocaleString(),
+                exif: exifData
             };
         } catch (error) {
             // Return minimal metadata if file cannot be read
@@ -96,7 +108,8 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 format: 'Unknown',
                 extension: path.extname(uri.fsPath),
                 created: 'Unknown',
-                modified: 'Unknown'
+                modified: 'Unknown',
+                exif: null
             };
         }
     }
@@ -107,6 +120,56 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         const sizes = ['Bytes', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
         return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+    }
+
+    private extractRelevantExifData(tags: any): any {
+        const exif: any = {};
+
+        // Camera info
+        if (tags.Make?.description) {
+            exif.cameraMake = tags.Make.description;
+        }
+        if (tags.Model?.description) {
+            exif.cameraModel = tags.Model.description;
+        }
+
+        // Photo settings
+        if (tags.ISO?.description) {
+            exif.iso = tags.ISO.description;
+        }
+        if (tags.FNumber?.description) {
+            exif.aperture = `f/${tags.FNumber.description}`;
+        }
+        if (tags.ExposureTime?.description) {
+            exif.shutterSpeed = tags.ExposureTime.description;
+        }
+        if (tags.FocalLength?.description) {
+            exif.focalLength = `${tags.FocalLength.description}mm`;
+        }
+
+        // Date info
+        if (tags.DateTimeOriginal?.description) {
+            exif.dateTaken = tags.DateTimeOriginal.description;
+        }
+
+        // GPS info
+        if (tags.GPSLatitude?.description && tags.GPSLongitude?.description) {
+            exif.gpsLatitude = tags.GPSLatitude.description;
+            exif.gpsLongitude = tags.GPSLongitude.description;
+        }
+
+        // Image info
+        if (tags.Orientation?.description) {
+            exif.orientation = tags.Orientation.description;
+        }
+        if (tags.ColorSpace?.description) {
+            exif.colorSpace = tags.ColorSpace.description;
+        }
+        if (tags.Software?.description) {
+            exif.software = tags.Software.description;
+        }
+
+        return Object.keys(exif).length > 0 ? exif : null;
     }
 
     private getHtmlForWebview(
@@ -164,6 +227,13 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             font-size: 18px;
             padding-bottom: 10px;
             border-bottom: 1px solid var(--vscode-panel-border);
+        }
+        h3 {
+            color: var(--vscode-sideBarTitle-foreground);
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 16px;
+            margin-bottom: 12px;
         }
         .metadata-item {
             margin-bottom: 16px;
@@ -291,6 +361,8 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 <div class="metadata-label">✏️ Modified</div>
                 <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(metadata.modified)}')">${this.escapeHtml(metadata.modified)}</div>
             </div>
+            
+            ${metadata.exif ? this.generateExifHtml(metadata.exif) : ''}
         </div>
     </div>
     
@@ -340,5 +412,130 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             "'": '&#039;'
         };
         return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    private generateExifHtml(exif: any): string {
+        let html = '<div style="margin-top: 24px; padding-top: 20px; border-top: 2px solid var(--vscode-panel-border);"><h2>📷 EXIF Data</h2>';
+
+        // Camera Information
+        if (exif.cameraMake || exif.cameraModel) {
+            html += '<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">Camera</h3>';
+            
+            if (exif.cameraMake) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📱 Make</div>
+                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.cameraMake)}')">${this.escapeHtml(exif.cameraMake)}</div>
+                </div>`;
+            }
+            
+            if (exif.cameraModel) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📸 Model</div>
+                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.cameraModel)}')">${this.escapeHtml(exif.cameraModel)}</div>
+                </div>`;
+            }
+        }
+
+        // Photo Settings
+        if (exif.iso || exif.aperture || exif.shutterSpeed || exif.focalLength) {
+            html += '<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">Photo Settings</h3>';
+            
+            if (exif.iso) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🔆 ISO</div>
+                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.iso)}')">${this.escapeHtml(exif.iso)}</div>
+                </div>`;
+            }
+            
+            if (exif.aperture) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🔍 Aperture</div>
+                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.aperture)}')">${this.escapeHtml(exif.aperture)}</div>
+                </div>`;
+            }
+            
+            if (exif.shutterSpeed) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">⚡ Shutter Speed</div>
+                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.shutterSpeed)}')">${this.escapeHtml(exif.shutterSpeed)}</div>
+                </div>`;
+            }
+            
+            if (exif.focalLength) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🎯 Focal Length</div>
+                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.focalLength)}')">${this.escapeHtml(exif.focalLength)}</div>
+                </div>`;
+            }
+        }
+
+        // Date Information
+        if (exif.dateTaken) {
+            html += '<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">Date</h3>';
+            html += `
+            <div class="metadata-item">
+                <div class="metadata-label">📅 Date Taken</div>
+                <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.dateTaken)}')">${this.escapeHtml(exif.dateTaken)}</div>
+            </div>`;
+        }
+
+        // GPS Information
+        if (exif.gpsLatitude || exif.gpsLongitude) {
+            html += '<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">Location</h3>';
+            
+            if (exif.gpsLatitude) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🌍 Latitude</div>
+                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.gpsLatitude)}')">${this.escapeHtml(exif.gpsLatitude)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsLongitude) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🌍 Longitude</div>
+                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.gpsLongitude)}')">${this.escapeHtml(exif.gpsLongitude)}</div>
+                </div>`;
+            }
+        }
+
+        // Additional Information
+        if (exif.orientation || exif.colorSpace || exif.software) {
+            html += '<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">Additional Info</h3>';
+            
+            if (exif.orientation) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🔄 Orientation</div>
+                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.orientation)}')">${this.escapeHtml(exif.orientation)}</div>
+                </div>`;
+            }
+            
+            if (exif.colorSpace) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🎨 Color Space</div>
+                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.colorSpace)}')">${this.escapeHtml(exif.colorSpace)}</div>
+                </div>`;
+            }
+            
+            if (exif.software) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">💻 Software</div>
+                    <div class="metadata-value" title="Click to copy" onclick="copyToClipboard('${this.escapeHtml(exif.software)}')">${this.escapeHtml(exif.software)}</div>
+                </div>`;
+            }
+        }
+
+        html += '</div>';
+        return html;
     }
 }
