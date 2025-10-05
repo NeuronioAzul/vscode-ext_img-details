@@ -6,6 +6,8 @@
 - [x] Remover logs de debug (`console.log`) dos arquivos de produção
 - [x] Otimizar imports e dependências não utilizadas
 - [x] Adicionar tratamento de erros mais robusto
+- [x] Validação de tipos para dados EXIF
+- [x] Página de erro amigável para falhas no carregamento
 
 ### 2. Metadados Expandidos
 - [x] Adicionar suporte a EXIF data para fotos

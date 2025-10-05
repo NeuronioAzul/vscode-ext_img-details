@@ -148,34 +148,40 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         webviewPanel: vscode.WebviewPanel,
         token: vscode.CancellationToken
     ): Promise<void> {
-        // Set up the webview
-        webviewPanel.webview.options = {
-            enableScripts: true
-        };
+        try {
+            // Set up the webview
+            webviewPanel.webview.options = {
+                enableScripts: true
+            };
 
-        // Get image metadata
-        const metadata = await this.getImageMetadata(document.uri);
+            // Get image metadata
+            const metadata = await this.getImageMetadata(document.uri);
 
-        // Set the webview HTML content
-        webviewPanel.webview.html = this.getHtmlForWebview(
-            webviewPanel.webview,
-            document.uri,
-            metadata
-        );
+            // Set the webview HTML content
+            webviewPanel.webview.html = this.getHtmlForWebview(
+                webviewPanel.webview,
+                document.uri,
+                metadata
+            );
 
-        // Handle messages from the webview
-        webviewPanel.webview.onDidReceiveMessage(
-            (message: any) => {
-                switch (message.command) {
-                    case 'copy':
-                        vscode.env.clipboard.writeText(message.text);
-                        // Visual feedback is handled in the webview
-                        break;
-                }
-            },
-            undefined,
-            this.context.subscriptions
-        );
+            // Handle messages from the webview
+            webviewPanel.webview.onDidReceiveMessage(
+                (message: any) => {
+                    switch (message.command) {
+                        case 'copy':
+                            vscode.env.clipboard.writeText(message.text);
+                            // Visual feedback is handled in the webview
+                            break;
+                    }
+                },
+                undefined,
+                this.context.subscriptions
+            );
+        } catch (error) {
+            // Log error and show error message in webview
+            console.error('Error loading image details:', error);
+            webviewPanel.webview.html = this.getErrorHtml(error);
+        }
     }
 
     private async getImageMetadata(uri: vscode.Uri): Promise<any> {
@@ -248,48 +254,77 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
     private extractRelevantExifData(tags: any): any {
         const exif: any = {};
 
+        // Helper function to safely get description
+        const getDescription = (tag: any): string | undefined => {
+            if (!tag) return undefined;
+            const desc = tag.description || tag.value;
+            return desc !== undefined && desc !== null ? String(desc) : undefined;
+        };
+
         // Camera info
-        if (tags.Make?.description) {
-            exif.cameraMake = tags.Make.description;
+        const cameraMake = getDescription(tags.Make);
+        if (cameraMake) {
+            exif.cameraMake = cameraMake;
         }
-        if (tags.Model?.description) {
-            exif.cameraModel = tags.Model.description;
+        
+        const cameraModel = getDescription(tags.Model);
+        if (cameraModel) {
+            exif.cameraModel = cameraModel;
         }
 
         // Photo settings
-        if (tags.ISO?.description) {
-            exif.iso = tags.ISO.description;
+        const iso = getDescription(tags.ISO || tags.ISOSpeedRatings);
+        if (iso) {
+            exif.iso = iso;
         }
-        if (tags.FNumber?.description) {
-            exif.aperture = `f/${tags.FNumber.description}`;
+        
+        if (tags.FNumber) {
+            const fnumber = getDescription(tags.FNumber);
+            if (fnumber) {
+                exif.aperture = fnumber.includes('f/') ? fnumber : `f/${fnumber}`;
+            }
         }
-        if (tags.ExposureTime?.description) {
-            exif.shutterSpeed = tags.ExposureTime.description;
+        
+        const exposureTime = getDescription(tags.ExposureTime);
+        if (exposureTime) {
+            exif.shutterSpeed = exposureTime;
         }
-        if (tags.FocalLength?.description) {
-            exif.focalLength = `${tags.FocalLength.description}mm`;
+        
+        if (tags.FocalLength) {
+            const focal = getDescription(tags.FocalLength);
+            if (focal) {
+                exif.focalLength = focal.includes('mm') ? focal : `${focal}mm`;
+            }
         }
 
         // Date info
-        if (tags.DateTimeOriginal?.description) {
-            exif.dateTaken = tags.DateTimeOriginal.description;
+        const dateTaken = getDescription(tags.DateTimeOriginal || tags.DateTime);
+        if (dateTaken) {
+            exif.dateTaken = dateTaken;
         }
 
         // GPS info
-        if (tags.GPSLatitude?.description && tags.GPSLongitude?.description) {
-            exif.gpsLatitude = tags.GPSLatitude.description;
-            exif.gpsLongitude = tags.GPSLongitude.description;
+        const gpsLat = getDescription(tags.GPSLatitude);
+        const gpsLon = getDescription(tags.GPSLongitude);
+        if (gpsLat && gpsLon) {
+            exif.gpsLatitude = gpsLat;
+            exif.gpsLongitude = gpsLon;
         }
 
         // Image info
-        if (tags.Orientation?.description) {
-            exif.orientation = tags.Orientation.description;
+        const orientation = getDescription(tags.Orientation);
+        if (orientation) {
+            exif.orientation = orientation;
         }
-        if (tags.ColorSpace?.description) {
-            exif.colorSpace = tags.ColorSpace.description;
+        
+        const colorSpace = getDescription(tags.ColorSpace);
+        if (colorSpace) {
+            exif.colorSpace = colorSpace;
         }
-        if (tags.Software?.description) {
-            exif.software = tags.Software.description;
+        
+        const software = getDescription(tags.Software);
+        if (software) {
+            exif.software = software;
         }
 
         return Object.keys(exif).length > 0 ? exif : null;
@@ -583,7 +618,14 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
 </html>`;
     }
 
-    private escapeHtml(text: string): string {
+    private escapeHtml(text: string | number | undefined | null): string {
+        if (text === undefined || text === null) {
+            return '';
+        }
+        
+        // Convert to string if it's a number or other type
+        const str = String(text);
+        
         const map: { [key: string]: string } = {
             '&': '&amp;',
             '<': '&lt;',
@@ -591,7 +633,94 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             '"': '&quot;',
             "'": '&#039;'
         };
-        return text.replace(/[&<>"']/g, m => map[m]);
+        return str.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    private getErrorHtml(error: any): string {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorStack = error instanceof Error ? error.stack : '';
+        
+        return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Loading Image</title>
+    <style>
+        body {
+            font-family: var(--vscode-font-family);
+            color: var(--vscode-foreground);
+            background-color: var(--vscode-editor-background);
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .error-container {
+            max-width: 600px;
+            padding: 30px;
+            background-color: var(--vscode-inputValidation-errorBackground);
+            border: 1px solid var(--vscode-inputValidation-errorBorder);
+            border-radius: 8px;
+        }
+        h1 {
+            color: var(--vscode-errorForeground);
+            margin-top: 0;
+            font-size: 24px;
+        }
+        .error-message {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: var(--vscode-editor-background);
+            border-radius: 4px;
+            font-family: var(--vscode-editor-font-family);
+            word-break: break-word;
+        }
+        .error-stack {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--vscode-editor-background);
+            border-radius: 4px;
+            font-family: var(--vscode-editor-font-family);
+            font-size: 12px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .suggestion {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--vscode-editor-background);
+            border-left: 3px solid var(--vscode-focusBorder);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <h1>⚠️ Error Loading Image Details</h1>
+        <div class="error-message">
+            <strong>Error:</strong> ${this.escapeHtml(errorMessage)}
+        </div>
+        ${errorStack ? `<details>
+            <summary style="cursor: pointer; margin-bottom: 10px;">View Stack Trace</summary>
+            <div class="error-stack">${this.escapeHtml(errorStack)}</div>
+        </details>` : ''}
+        <div class="suggestion">
+            <strong>Suggestions:</strong>
+            <ul>
+                <li>Make sure the image file is not corrupted</li>
+                <li>Try opening the image with the default VS Code image viewer</li>
+                <li>Check the Developer Console for more details (Help → Toggle Developer Tools)</li>
+                <li>Report this issue on GitHub if it persists</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>`;
     }
 
     private generateExifHtml(exif: any, t: Translations): string {
