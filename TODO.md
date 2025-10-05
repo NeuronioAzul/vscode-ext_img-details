@@ -25,7 +25,7 @@
 ### 3. Interface e UX
 - [ ] Adicionar tradução para múltiplos idiomas (i18n) pelo menos para inglês e português do Brasil
 - [x] Ao clicar no arquivo de imagem abrir o visualizador da extensão por padrão
-- [ ] Adicionar opção no menu de contexto "Open with Image Details Viewer"
+- [x] Adicionar opção no menu de contexto "Open with Image Details Viewer"
 - [x] Melhorar tema dark/light responsivo
 - [x] Adicionar ícones para cada tipo de metadado
 - [x] Implementar botões de copy mais visuais

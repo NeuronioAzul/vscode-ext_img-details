@@ -15,7 +15,14 @@ export function activate(context: vscode.ExtensionContext) {
         }
     );
     
-    context.subscriptions.push(registration);
+    // Register command to open with Image Details Viewer
+    const openWithCommand = vscode.commands.registerCommand('imageDetails.openWith', async (uri: vscode.Uri) => {
+        if (uri) {
+            await vscode.commands.executeCommand('vscode.openWith', uri, 'imageDetails.viewer');
+        }
+    });
+    
+    context.subscriptions.push(registration, openWithCommand);
 }
 
 export function deactivate() {}

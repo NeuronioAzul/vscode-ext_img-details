@@ -44,6 +44,21 @@
         ],
         "priority": "default"
       }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "imageDetails.openWith",
+          "when": "resourceExtname =~ /\\.(png|jpg|jpeg|gif|bmp|webp|svg|ico)$/i",
+          "group": "navigation"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "imageDetails.openWith",
+        "title": "Open with Image Details Viewer"
+      }
     ]
   },
   "scripts": {
