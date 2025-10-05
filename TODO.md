@@ -101,3 +101,31 @@
 - Manter foco na simplicidade e performance
 - Priorizar funcionalidades que agregam valor real ao desenvolvedor
 - Considerar feedback dos usuários antes de implementar funcionalidades complexas
+
+📋 Próximos Passos para Publicação:
+
+📦 Como Publicar (Quando pronto):
+
+1. Instalar vsce
+
+```bash
+npm install -g @vscode/vsce
+```
+
+2. Criar pacote
+
+```bash
+vsce package
+```
+
+3. Testar o pacote
+
+```bash
+code --install-extension image-details-0.1.0.vsix
+```
+
+4. Publicar (requer token do marketplace)
+
+```bash
+vsce publish
+```
