@@ -49,6 +49,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved EXIF data extraction with helper function for safer value retrieval
 - Better support for various EXIF tag formats
 - Improved image container styling for zoom functionality
+- Updated package.json with comprehensive metadata for marketplace
+- Enhanced README with badges, sections, and detailed information
+
+### Documentation
+- Added LICENSE file (MIT)
+- Created comprehensive CONTRIBUTING.md guide
+- Updated I18N.md with new translation keys
+- Improved documentation structure overall
+
+## [0.1.0] - 2025-10-05
+
+First beta release with complete feature set ready for testing.
+
+### Summary
+This release includes all core features: EXIF support, zoom controls, color information, internationalization, and a polished user experience.
 
 ## [0.0.1] - Initial Development
 
