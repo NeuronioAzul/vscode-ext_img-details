@@ -8,3 +8,11 @@ vsc-extension-quickstart.md
 **/.eslintrc.json
 **/*.map
 **/*.ts
+node_modules/**
+.git/**
+.github/**
+TODO.md
+tsconfig.json
+.eslintrc.json
+**/.DS_Store
+**/Thumbs.db
