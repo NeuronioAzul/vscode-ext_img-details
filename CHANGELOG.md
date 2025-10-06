@@ -74,6 +74,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Updated VS Code Compatibility**: Updated minimum VS Code version requirement to 1.94.0
+  - Updated `@types/vscode` dependency to match VS Code 1.94.0
+  - Ensures compatibility with latest VS Code features and APIs
+  - Maintains access to modern extension capabilities
 - Enhanced error handling in `resolveCustomEditor` method with try-catch blocks
 - Improved EXIF data extraction with `getDescription()` helper for safer value retrieval
 - Better support for various EXIF tag formats (handles both `description` and `value` properties)
