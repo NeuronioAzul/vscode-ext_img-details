@@ -67,6 +67,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Root cause: Missing CSS class for animation
   - Solution: Added `.show` class with `opacity: 1` and `transform: translateX(0)`
   - Notification now properly slides in from the right with fade effect
+- **Development Fix**: Suppressed Node.js experimental SQLite warnings in VS Code debug environment
+  - Added `NODE_NO_WARNINGS=1` environment variable to launch configurations
+  - Warnings were from VS Code internal processes, not the extension itself
+  - Provides cleaner debugging experience without affecting functionality
 
 ### Changed
 
