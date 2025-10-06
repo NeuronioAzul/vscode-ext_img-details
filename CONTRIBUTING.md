@@ -21,17 +21,20 @@ Thank you for your interest in contributing to the Image Details extension! This
 ### Setup Development Environment
 
 1. **Fork and Clone**
+
    ```bash
    git clone https://github.com/YOUR-USERNAME/vscode-ext_img-details.git
    cd vscode-ext_img-details
    ```
 
 2. **Install Dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Start Watch Mode**
+
    ```bash
    npm run watch
    ```
@@ -65,6 +68,7 @@ test: add unit tests for metadata extraction
 ```
 
 Prefixes:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -184,6 +188,7 @@ When suggesting a feature:
 ## 🔧 Pull Request Process
 
 1. **Create a Branch**
+
    ```bash
    git checkout -b feature/your-feature-name
    # or
@@ -201,12 +206,14 @@ When suggesting a feature:
    - Update I18N.md if adding translations
 
 4. **Commit Your Changes**
+
    ```bash
    git add .
    git commit -m "feat: add your feature description"
    ```
 
 5. **Push to Your Fork**
+
    ```bash
    git push origin feature/your-feature-name
    ```
@@ -265,7 +272,7 @@ If you have questions:
 
 Be respectful, inclusive, and constructive. We're all here to learn and improve together.
 
-## 🙏 Thank You!
+## 🙏 Thank You
 
 Your contributions help make this extension better for everyone. We appreciate your time and effort!
 

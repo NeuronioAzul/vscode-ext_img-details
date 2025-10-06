@@ -8,57 +8,116 @@ A powerful VS Code extension that displays comprehensive image metadata in a bea
 
 ## ✨ Features
 
-- Display image metadata including:
-  - File name
-  - Dimensions (width x height)
-  - Image format
-  - File size
-  - Full file path
-  - Creation and modification dates
-- **EXIF Data Support** (when available):
-  - Camera information (make, model)
-  - Photo settings (ISO, aperture, shutter speed, focal length)
-  - Date taken
-  - GPS location data (latitude, longitude)
-  - Orientation, color space, and software used
-- **Color Information**:
-  - Transparency support detection
-  - Color depth information
-- **Internationalization (i18n)**:
-  - Full support for English and Brazilian Portuguese
-  - Automatically detects VS Code language settings
-- **Enhanced UX**:
-  - Resizable metadata panel (drag the left edge)
-  - Sticky sidebar that stays visible while scrolling
-  - **Image Zoom Controls**:
-    - Zoom in/out with + and - buttons
-    - Mouse wheel zoom (Ctrl/Cmd + Scroll)
-    - Click image to toggle 2x zoom
-    - Keyboard shortcuts (+, -, 0)
-    - Fit to screen button
-  - Click on any metadata value to copy it to clipboard
-  - Visual feedback when copying values
-- Right-click context menu option to open images with the viewer
-- Works with common image formats: PNG, JPG, JPEG, GIF, BMP, WebP, SVG, ICO
+### 📊 Comprehensive Metadata Display
+
+- **Basic Information**:
+  - File name and full path
+  - Dimensions (width × height in pixels)
+  - Image format and file extension
+  - File size (auto-formatted: Bytes, KB, MB, GB)
+  - Creation and modification timestamps
+
+### 📷 EXIF Data Support
+
+Complete EXIF metadata extraction for photos (when available):
+
+- **Camera Information**:
+  - Camera make and model
+  - Lens information
+- **Photo Settings**:
+  - ISO sensitivity
+  - Aperture (f-stop)
+  - Shutter speed (exposure time)
+  - Focal length
+- **Additional Data**:
+  - Date and time taken
+  - GPS location (latitude, longitude)
+  - Image orientation
+  - Color space information
+  - Software/editor used
+
+### 🎨 Color & Technical Information
+
+- **Transparency Detection**: Automatically detects if the image format supports transparency
+- **Color Depth**: Shows bit depth and color information based on format
+- **DPI/PPI Information**: Displays resolution metadata (dots per inch / pixels per inch) when available in EXIF data
+
+### 🔍 Advanced Zoom Controls
+
+Multiple ways to zoom and inspect images:
+
+- **Zoom Buttons**: Visual controls for zoom in (+), zoom out (-), and reset
+- **Fit to Screen**: Automatically adjusts image to fit the viewport
+- **Mouse Wheel Zoom**: Hold `Ctrl/Cmd` and scroll to zoom smoothly
+- **Click to Zoom**: Click anywhere on the image to toggle 2× zoom
+- **Keyboard Shortcuts**:
+  - `+` or `=` → Zoom In
+  - `-` or `_` → Zoom Out
+  - `0` → Reset to 100%
+- **Smooth Transitions**: Animated zoom with centered focal point
+
+### 🌍 Internationalization (i18n)
+
+- **Multi-language Support**:
+  - 🇺🇸 English (default)
+  - 🇧🇷 Português (Brasil)
+- **Automatic Detection**: Uses your VS Code language settings
+- **Easy to Extend**: Add your own language (see [I18N.md](I18N.md))
+
+### 🎯 Enhanced User Experience
+
+- **Resizable Sidebar**: Drag the left edge to resize metadata panel (250-600px)
+- **Sticky Panel**: Metadata stays visible while scrolling through large images
+- **Copy to Clipboard**: Click any metadata value to copy it instantly
+- **Visual Feedback**: Animated notification when copying values
+- **Context Menu Integration**: Right-click images in Explorer → "Open with Image Details Viewer"
+- **Error Handling**: User-friendly error pages for loading failures
+- **Dark/Light Theme**: Fully responsive to VS Code theme settings
+- **Icons**: Visual icons for each metadata type for better scannability
+
+### 🖼️ Supported Image Formats
+
+Works with all common image formats:
+
+- PNG (`.png`)
+- JPEG (`.jpg`, `.jpeg`)
+- GIF (`.gif`)
+- WebP (`.webp`)
+- BMP (`.bmp`)
+- SVG (`.svg`)
+- ICO (`.ico`)
 
 ## 📸 Usage
 
-1. **Open an image file** in VS Code (PNG, JPG, GIF, WebP, BMP, SVG, ICO)
-2. The extension automatically opens with the **Image Details Viewer**
-3. View comprehensive metadata in the **sticky sidebar on the right**
-4. **Click any metadata value** to copy it to your clipboard
+### Quick Start
+
+1. **Open any image file** in VS Code (supports PNG, JPG, GIF, WebP, BMP, SVG, ICO)
+2. The extension **automatically activates** and displays the Image Details Viewer
+3. View comprehensive metadata in the **resizable sidebar** on the right
+4. **Click any metadata value** to instantly copy it to your clipboard
 5. **Use zoom controls** to inspect images in detail
 
-### Keyboard Shortcuts
+### Interacting with Images
 
-- `+` or `=` - Zoom In
-- `-` or `_` - Zoom Out
-- `0` - Reset Zoom to 100%
-- `Ctrl/Cmd + Scroll` - Zoom with mouse wheel
+#### Zoom Controls
 
-### Context Menu
+- **Buttons**: Use the visual `+`, `-`, `⟲`, and `⊡` buttons in the toolbar
+- **Keyboard**: Press `+` to zoom in, `-` to zoom out, `0` to reset
+- **Mouse Wheel**: Hold `Ctrl` (Windows/Linux) or `Cmd` (Mac) and scroll
+- **Click**: Click anywhere on the image to toggle 2× zoom
+- **Fit to Screen**: Click the fit button to auto-adjust image size
 
-Right-click any image file in the Explorer and select **"Open with Image Details Viewer"** to open it with this extension.
+#### Metadata Panel
+
+- **Resize**: Drag the left edge of the panel to adjust width (250-600px)
+- **Copy Values**: Click any metadata value to copy it to clipboard
+- **Scroll**: Panel stays sticky on the right while scrolling large images
+
+### Alternative Ways to Open
+
+1. **Context Menu**: Right-click any image file in Explorer → **"Open with Image Details Viewer"**
+2. **Command Palette**: Press `Ctrl+Shift+P` / `Cmd+Shift+P` → Type "Reopen with" → Select "Image Details Viewer"
+3. **Default Viewer**: The extension registers as the default viewer for supported image formats
 
 ## 🎨 Screenshots
 
@@ -87,23 +146,6 @@ Then press `F5` to run in development mode.
 ## ⚙️ Configuration
 
 Currently, the extension works out of the box with no configuration needed. Configuration options for customization are planned for future releases.
-
-## 🌍 Supported Languages
-
-- 🇺🇸 **English** - Default
-- 🇧🇷 **Português (Brasil)** - Brazilian Portuguese
-
-The extension automatically detects your VS Code language setting. Want to add your language? See [CONTRIBUTING.md](CONTRIBUTING.md)!
-
-## 📋 Supported Image Formats
-
-- PNG (`.png`)
-- JPEG (`.jpg`, `.jpeg`)
-- GIF (`.gif`)
-- WebP (`.webp`)
-- BMP (`.bmp`)
-- SVG (`.svg`)
-- ICO (`.ico`)
 
 ## 🤝 Contributing
 
