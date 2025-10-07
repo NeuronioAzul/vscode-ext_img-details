@@ -39,6 +39,7 @@ interface Translations {
     supportsTransparency: string;
     colorDepth: string;
     dpi: string;
+    thumbnail: string;
 }
 
 const translations: { [key: string]: Translations } = {
@@ -76,7 +77,8 @@ const translations: { [key: string]: Translations } = {
         colorInformation: 'Color Information',
         supportsTransparency: 'Transparency Support',
         colorDepth: 'Color Depth',
-        dpi: 'DPI/PPI'
+        dpi: 'DPI/PPI',
+        thumbnail: 'Thumbnail'
     },
     'pt-br': {
         imageDetails: 'Detalhes da Imagem',
@@ -112,7 +114,8 @@ const translations: { [key: string]: Translations } = {
         colorInformation: 'Informações de Cor',
         supportsTransparency: 'Suporte a Transparência',
         colorDepth: 'Profundidade de Cor',
-        dpi: 'DPI/PPI'
+        dpi: 'DPI/PPI',
+        thumbnail: 'Miniatura'
     }
 };
 
@@ -231,6 +234,11 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 if (exifData && exifData.dpi) {
                     colorInfo.dpi = exifData.dpi;
                 }
+                
+                // Enhance color depth with EXIF data
+                if (exifData && (exifData.bitsPerSample || exifData.samplesPerPixel)) {
+                    colorInfo.colorDepth = this.calculateBitDepth(exifData.bitsPerSample, exifData.samplesPerPixel, colorInfo.colorDepth);
+                }
             } catch (error) {
                 // EXIF data not available or error reading it
             }
@@ -303,6 +311,51 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         }
         
         return colorInfo;
+    }
+
+    private calculateBitDepth(bitsPerSample: string | undefined, samplesPerPixel: string | undefined, fallback: string | undefined): string {
+        if (!bitsPerSample && !samplesPerPixel) {
+            return fallback || 'Unknown';
+        }
+
+        try {
+            let bitDepthInfo = '';
+            
+            if (bitsPerSample) {
+                // BitsPerSample pode ser um array como "8 8 8" para RGB
+                const bits = bitsPerSample.toString().trim();
+                const bitsArray = bits.split(/\s+/).map(b => parseInt(b)).filter(b => !isNaN(b));
+                
+                if (bitsArray.length > 0) {
+                    const uniqueBits = [...new Set(bitsArray)];
+                    if (uniqueBits.length === 1) {
+                        // Todos os canais têm a mesma profundidade
+                        const bitsPerChannel = uniqueBits[0];
+                        const totalChannels = samplesPerPixel ? parseInt(samplesPerPixel.toString()) : bitsArray.length;
+                        const totalBits = bitsPerChannel * (totalChannels || bitsArray.length);
+                        
+                        if (totalChannels && totalChannels > 1) {
+                            bitDepthInfo = `${totalBits} bit (${bitsPerChannel} bit per channel, ${totalChannels} channels)`;
+                        } else {
+                            bitDepthInfo = `${bitsPerChannel} bit`;
+                        }
+                    } else {
+                        // Diferentes profundidades por canal
+                        const totalBits = bitsArray.reduce((sum, bits) => sum + bits, 0);
+                        bitDepthInfo = `${totalBits} bit (${bits} per channel)`;
+                    }
+                }
+            } else if (samplesPerPixel) {
+                const channels = parseInt(samplesPerPixel.toString());
+                if (!isNaN(channels)) {
+                    bitDepthInfo = `${channels} channel${channels > 1 ? 's' : ''}`;
+                }
+            }
+
+            return bitDepthInfo || fallback || 'Unknown';
+        } catch (error) {
+            return fallback || 'Unknown';
+        }
     }
 
     private extractRelevantExifData(tags: any): any {
@@ -379,6 +432,17 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         const software = getDescription(tags.Software);
         if (software) {
             exif.software = software;
+        }
+
+        // Bit depth information
+        const bitsPerSample = getDescription(tags.BitsPerSample);
+        if (bitsPerSample) {
+            exif.bitsPerSample = bitsPerSample;
+        }
+
+        const samplesPerPixel = getDescription(tags.SamplesPerPixel);
+        if (samplesPerPixel) {
+            exif.samplesPerPixel = samplesPerPixel;
         }
 
         // DPI/PPI information
@@ -613,6 +677,36 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
             }
         }
+        
+        /* Thumbnail styles */
+        .thumbnail-container {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--vscode-widget-border);
+        }
+        .thumbnail-container .metadata-label {
+            margin-bottom: 8px;
+        }
+        .thumbnail-preview {
+            display: flex;
+            justify-content: center;
+            padding: 8px;
+            background-color: var(--vscode-input-background);
+            border: 1px solid var(--vscode-input-border);
+            border-radius: 4px;
+        }
+        .thumbnail-image {
+            max-width: 120px;
+            max-height: 120px;
+            object-fit: contain;
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .thumbnail-image:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -630,6 +724,14 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         <div class="metadata-panel" id="metadataPanel">
             <div class="resize-handle" id="resizeHandle"></div>
             <h2>${t.imageDetails}</h2>
+            
+            <!-- Thumbnail Preview -->
+            <div class="thumbnail-container">
+                <div class="metadata-label">🖼️ ${t.thumbnail}</div>
+                <div class="thumbnail-preview">
+                    <img src="${imageWebviewUri}" alt="Thumbnail" class="thumbnail-image">
+                </div>
+            </div>
             
             <div class="metadata-item">
                 <div class="metadata-label">📁 ${t.fileName}</div>
@@ -822,6 +924,17 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 document.body.style.userSelect = 'auto';
             }
         });
+
+        // Thumbnail click to focus image
+        const thumbnailImage = document.querySelector('.thumbnail-image');
+        if (thumbnailImage) {
+            thumbnailImage.addEventListener('click', function() {
+                imageContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                if (currentZoom === 1) {
+                    zoomIn();
+                }
+            });
+        }
     </script>
 </body>
 </html>`;

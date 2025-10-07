@@ -54,6 +54,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `escapeHtml()` function now accepts `string | number | undefined | null`
   - `getDescription()` helper safely extracts EXIF values
   - Proper type conversion throughout metadata extraction
+- **Enhanced Bit Depth Detection**: Improved color depth analysis using EXIF data
+  - Extracts BitsPerSample and SamplesPerPixel from EXIF metadata
+  - Calculates precise bit depth per channel and total channels
+  - Falls back to format-based estimates when EXIF unavailable
+  - Displays detailed bit depth information (e.g., "24 bit (8 bit per channel, 3 channels)")
+- **Thumbnail Preview**: Added small image preview in metadata panel
+  - 120x120px thumbnail with hover zoom effect
+  - Click thumbnail to scroll to and zoom main image
+  - Responsive design with proper aspect ratio preservation
+  - Centered in metadata panel with subtle styling
 
 ### Fixed
 
