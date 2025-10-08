@@ -68,8 +68,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Basic Information section (file details, dates)
   - Color Information section (transparency, depth, DPI)  
   - EXIF Data section (camera, settings, GPS, etc.)
-  - Default state: all sections expanded for easy access
-  - Smooth animations and hover effects
+  - **Smart Default States**: First section (Basic Information) expanded by default, others collapsed
+  - **Smooth Animations**: Enhanced animations with cubic-bezier transitions and hover effects
+  - **Session Memory**: Remembers section states (expanded/collapsed) between VS Code sessions
+  - **Display Mode Options**: Choose between Accordion mode (collapsible) or List mode (always visible)
+  - **User Configuration**: Configurable via VS Code settings for default display mode and section states
   - Consistent section headers with toggle indicators
   - Click section headers to expand/collapse content
 

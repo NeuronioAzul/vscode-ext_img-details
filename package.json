@@ -86,7 +86,56 @@
         "command": "imageDetails.openWith",
         "title": "Open with Image Details Viewer"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Image Details",
+      "properties": {
+        "imageDetails.defaultDisplayMode": {
+          "type": "string",
+          "enum": [
+            "accordion",
+            "list"
+          ],
+          "enumDescriptions": [
+            "Collapsible sections (accordion mode)",
+            "Simple list with all sections always visible"
+          ],
+          "default": "accordion",
+          "description": "Default display mode for metadata sections"
+        },
+        "imageDetails.defaultSectionStates": {
+          "type": "object",
+          "properties": {
+            "basicInfo": {
+              "type": "boolean",
+              "default": true,
+              "description": "Basic Information section expanded by default"
+            },
+            "colorInfo": {
+              "type": "boolean",
+              "default": false,
+              "description": "Color Information section expanded by default"
+            },
+            "exifData": {
+              "type": "boolean",
+              "default": false,
+              "description": "EXIF Data section expanded by default"
+            }
+          },
+          "default": {
+            "basicInfo": true,
+            "colorInfo": false,
+            "exifData": false
+          },
+          "description": "Default state for each metadata section (expanded/collapsed)"
+        },
+        "imageDetails.rememberSectionStates": {
+          "type": "boolean",
+          "default": true,
+          "description": "Remember section states (expanded/collapsed) between sessions"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

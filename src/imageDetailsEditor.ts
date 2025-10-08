@@ -43,6 +43,9 @@ interface Translations {
     basicInfo: string;
     collapse: string;
     expand: string;
+    accordionMode: string;
+    listMode: string;
+    sectionSettings: string;
 }
 
 const translations: { [key: string]: Translations } = {
@@ -84,7 +87,10 @@ const translations: { [key: string]: Translations } = {
         thumbnail: 'Thumbnail',
         basicInfo: 'Basic Information',
         collapse: 'Collapse',
-        expand: 'Expand'
+        expand: 'Expand',
+        accordionMode: 'Accordion Mode',
+        listMode: 'List Mode',
+        sectionSettings: 'Section Display'
     },
     'pt-br': {
         imageDetails: 'Detalhes da Imagem',
@@ -124,12 +130,17 @@ const translations: { [key: string]: Translations } = {
         thumbnail: 'Miniatura',
         basicInfo: 'Informações Básicas',
         collapse: 'Recolher',
-        expand: 'Expandir'
+        expand: 'Expandir',
+        accordionMode: 'Modo Sanfona',
+        listMode: 'Modo Lista',
+        sectionSettings: 'Exibição de Seções'
     }
 };
 
 export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorProvider {
     private static readonly viewType = 'imageDetails.viewer';
+    private static readonly stateKey = 'imageDetails.sectionStates';
+    private static readonly displayModeKey = 'imageDetails.displayMode';
 
     constructor(private readonly context: vscode.ExtensionContext) {}
 
@@ -154,6 +165,56 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         
         // Default to English
         return translations['en'];
+    }
+
+    private getSectionStates(): { [key: string]: boolean } {
+        const rememberStates = vscode.workspace.getConfiguration('imageDetails').get<boolean>('rememberSectionStates', true);
+        
+        if (rememberStates) {
+            const saved = this.context.globalState.get<{ [key: string]: boolean }>(ImageDetailsEditorProvider.stateKey);
+            if (saved) {
+                return saved;
+            }
+        }
+        
+        // Use default configuration from VS Code settings
+        const defaultStates = vscode.workspace.getConfiguration('imageDetails').get<{ [key: string]: boolean }>('defaultSectionStates', {
+            'basic-info': true,
+            'color-info': false,
+            'exif-data': false
+        });
+        
+        // Convert camelCase to kebab-case for consistency
+        return {
+            'basic-info': defaultStates['basicInfo'] !== undefined ? defaultStates['basicInfo'] : true,
+            'color-info': defaultStates['colorInfo'] !== undefined ? defaultStates['colorInfo'] : false,
+            'exif-data': defaultStates['exifData'] !== undefined ? defaultStates['exifData'] : false
+        };
+    }
+
+    private saveSectionState(sectionId: string, isExpanded: boolean): void {
+        const rememberStates = vscode.workspace.getConfiguration('imageDetails').get<boolean>('rememberSectionStates', true);
+        
+        if (rememberStates) {
+            const currentStates = this.getSectionStates();
+            currentStates[sectionId] = isExpanded;
+            this.context.globalState.update(ImageDetailsEditorProvider.stateKey, currentStates);
+        }
+    }
+
+    private getDisplayMode(): 'accordion' | 'list' {
+        // First check user's saved preference
+        const saved = this.context.globalState.get<'accordion' | 'list'>(ImageDetailsEditorProvider.displayModeKey);
+        if (saved) {
+            return saved;
+        }
+        
+        // Fall back to configuration setting
+        return vscode.workspace.getConfiguration('imageDetails').get<'accordion' | 'list'>('defaultDisplayMode', 'accordion');
+    }
+
+    private setDisplayMode(mode: 'accordion' | 'list'): void {
+        this.context.globalState.update(ImageDetailsEditorProvider.displayModeKey, mode);
     }
 
     async openCustomDocument(
@@ -188,6 +249,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 metadata
             );
 
+            
             // Handle messages from the webview
             webviewPanel.webview.onDidReceiveMessage(
                 (message: any) => {
@@ -195,6 +257,18 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                         case 'copy':
                             vscode.env.clipboard.writeText(message.text);
                             // Visual feedback is handled in the webview
+                            break;
+                        case 'toggleSection':
+                            this.saveSectionState(message.sectionId, message.isExpanded);
+                            break;
+                        case 'setDisplayMode':
+                            this.setDisplayMode(message.mode);
+                            // Refresh the webview with new mode
+                            webviewPanel.webview.html = this.getHtmlForWebview(
+                                webviewPanel.webview,
+                                document.uri,
+                                metadata
+                            );
                             break;
                     }
                 },
@@ -208,7 +282,66 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         }
     }
 
-    private async getImageMetadata(uri: vscode.Uri): Promise<any> {
+    private generateBasicInfoSection(metadata: any, t: Translations, sectionStates: { [key: string]: boolean }, displayMode: string): string {
+        const isExpanded = sectionStates['basic-info'] !== false; // Default to true if not set
+        const expandedClass = isExpanded ? 'expanded' : 'collapsed';
+        const toggleClass = isExpanded ? '' : 'collapsed';
+        const toggleSymbol = isExpanded ? '▼' : '▶';
+
+        return `
+        <div class="collapsible-section">
+            <div class="section-header" onclick="toggleSection('basic-info')">
+                <span class="section-title">📋 ${t.basicInfo}</span>
+                <span class="section-toggle ${toggleClass}" id="basic-info-toggle">${toggleSymbol}</span>
+            </div>
+            <div class="section-content ${expandedClass}" id="basic-info-content">
+                <div class="metadata-item">
+                    <div class="metadata-label">📁 ${t.fileName}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.fileName)}')">${this.escapeHtml(metadata.fileName)}</div>
+                </div>
+                
+                <div class="metadata-item">
+                    <div class="metadata-label">📐 ${t.dimensions}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${metadata.width} x ${metadata.height}')">${metadata.width} x ${metadata.height}</div>
+                </div>
+                
+                <div class="metadata-item">
+                    <div class="metadata-label">🎨 ${t.format}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.format)}')">${this.escapeHtml(metadata.format)}</div>
+                </div>
+                
+                <div class="metadata-item">
+                    <div class="metadata-label">💾 ${t.fileSize}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.fileSize)}')">${this.escapeHtml(metadata.fileSize)}</div>
+                </div>
+                
+                <div class="metadata-item">
+                    <div class="metadata-label">🔢 ${t.sizeBytes}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${metadata.fileSizeBytes}')">${metadata.fileSizeBytes}</div>
+                </div>
+                
+                <div class="metadata-item">
+                    <div class="metadata-label">🏷️ ${t.extension}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.extension)}')">${this.escapeHtml(metadata.extension)}</div>
+                </div>
+                
+                <div class="metadata-item">
+                    <div class="metadata-label">📂 ${t.fullPath}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.path)}')">${this.escapeHtml(metadata.path)}</div>
+                </div>
+                
+                <div class="metadata-item">
+                    <div class="metadata-label">📅 ${t.created}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.created)}')">${this.escapeHtml(metadata.created)}</div>
+                </div>
+                
+                <div class="metadata-item">
+                    <div class="metadata-label">✏️ ${t.modified}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.modified)}')">${this.escapeHtml(metadata.modified)}</div>
+                </div>
+            </div>
+        </div>`;
+    }    private async getImageMetadata(uri: vscode.Uri): Promise<any> {
         try {
             const filePath = uri.fsPath;
             const stats = await fs.promises.stat(filePath);
@@ -479,6 +612,8 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         // Convert the image URI to a webview URI
         const imageWebviewUri = webview.asWebviewUri(imageUri);
         const t = this.getTranslations();
+        const sectionStates = this.getSectionStates();
+        const displayMode = this.getDisplayMode();
 
         return `<!DOCTYPE html>
 <html lang="en">
@@ -723,6 +858,10 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             border: 1px solid var(--vscode-widget-border);
             border-radius: 6px;
             overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .collapsible-section.collapsed {
+            border-bottom: 1px solid var(--vscode-widget-border);
         }
         .section-header {
             display: flex;
@@ -732,11 +871,13 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             background-color: var(--vscode-editor-background);
             border-bottom: 1px solid var(--vscode-widget-border);
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: all 0.2s ease;
             user-select: none;
         }
         .section-header:hover {
             background-color: var(--vscode-list-hoverBackground);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .section-title {
             font-weight: 600;
@@ -746,20 +887,23 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         .section-toggle {
             font-size: 12px;
             color: var(--vscode-descriptionForeground);
-            transition: transform 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
         }
         .section-toggle.collapsed {
-            transform: rotate(-90deg);
+            transform: rotate(-90deg) scale(0.9);
         }
         .section-content {
-            padding: 8px 0;
+            padding: 0;
             background-color: var(--vscode-editor-background);
-            transition: max-height 0.3s ease, opacity 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
+            opacity: 1;
         }
         .section-content.expanded {
             max-height: 1000px;
             opacity: 1;
+            padding: 8px 0;
         }
         .section-content.collapsed {
             max-height: 0;
@@ -768,9 +912,74 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         }
         .section-content .metadata-item {
             margin: 0 16px 12px 16px;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+        .section-content.collapsed .metadata-item {
+            transform: translateY(-10px);
+            opacity: 0;
         }
         .section-content h3 {
             margin: 16px 16px 12px 16px;
+        }
+        
+        /* List mode styles */
+        .list-mode .collapsible-section {
+            border: none;
+            margin: 0;
+            border-radius: 0;
+        }
+        .list-mode .section-header {
+            display: none;
+        }
+        .list-mode .section-content {
+            max-height: none !important;
+            opacity: 1 !important;
+            padding: 0 !important;
+            background-color: transparent;
+        }
+        .list-mode .section-content .metadata-item {
+            transform: none !important;
+            opacity: 1 !important;
+            margin: 0 0 16px 0;
+        }
+        .list-mode .section-content h3 {
+            margin: 20px 0 12px 0;
+        }
+        
+        /* Display mode toggle */
+        .display-mode-toggle {
+            margin-bottom: 20px;
+            padding: 12px;
+            background-color: var(--vscode-editor-background);
+            border: 1px solid var(--vscode-widget-border);
+            border-radius: 6px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .display-mode-toggle label {
+            font-size: 12px;
+            color: var(--vscode-descriptionForeground);
+            margin-right: 8px;
+        }
+        .mode-button {
+            background-color: var(--vscode-button-secondaryBackground);
+            color: var(--vscode-button-secondaryForeground);
+            border: 1px solid var(--vscode-button-border);
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.2s ease;
+        }
+        .mode-button.active {
+            background-color: var(--vscode-button-background);
+            color: var(--vscode-button-foreground);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .mode-button:hover:not(.active) {
+            background-color: var(--vscode-button-hoverBackground);
         }
     </style>
 </head>
@@ -790,6 +999,13 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             <div class="resize-handle" id="resizeHandle"></div>
             <h2>${t.imageDetails}</h2>
             
+            <!-- Display Mode Toggle -->
+            <div class="display-mode-toggle">
+                <label>⚙️ ${t.sectionSettings}:</label>
+                <button class="mode-button ${displayMode === 'accordion' ? 'active' : ''}" onclick="setDisplayMode('accordion')">${t.accordionMode}</button>
+                <button class="mode-button ${displayMode === 'list' ? 'active' : ''}" onclick="setDisplayMode('list')">${t.listMode}</button>
+            </div>
+            
             <!-- Thumbnail Preview -->
             <div class="thumbnail-container">
                 <div class="metadata-label">🖼️ ${t.thumbnail}</div>
@@ -798,63 +1014,14 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 </div>
             </div>
             
-            <!-- Basic Information Section -->
-            <div class="collapsible-section">
-                <div class="section-header" onclick="toggleSection('basic-info')">
-                    <span class="section-title">📋 ${t.basicInfo}</span>
-                    <span class="section-toggle" id="basic-info-toggle">▼</span>
-                </div>
-                <div class="section-content expanded" id="basic-info-content">
-                    <div class="metadata-item">
-                        <div class="metadata-label">📁 ${t.fileName}</div>
-                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.fileName)}')">${this.escapeHtml(metadata.fileName)}</div>
-                    </div>
-                    
-                    <div class="metadata-item">
-                        <div class="metadata-label">📐 ${t.dimensions}</div>
-                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${metadata.width} x ${metadata.height}')">${metadata.width} x ${metadata.height}</div>
-                    </div>
-                    
-                    <div class="metadata-item">
-                        <div class="metadata-label">🎨 ${t.format}</div>
-                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.format)}')">${this.escapeHtml(metadata.format)}</div>
-                    </div>
-                    
-                    <div class="metadata-item">
-                        <div class="metadata-label">💾 ${t.fileSize}</div>
-                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.fileSize)}')">${this.escapeHtml(metadata.fileSize)}</div>
-                    </div>
-                    
-                    <div class="metadata-item">
-                        <div class="metadata-label">🔢 ${t.sizeBytes}</div>
-                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${metadata.fileSizeBytes}')">${metadata.fileSizeBytes}</div>
-                    </div>
-                    
-                    <div class="metadata-item">
-                        <div class="metadata-label">🏷️ ${t.extension}</div>
-                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.extension)}')">${this.escapeHtml(metadata.extension)}</div>
-                    </div>
-                    
-                    <div class="metadata-item">
-                        <div class="metadata-label">📂 ${t.fullPath}</div>
-                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.path)}')">${this.escapeHtml(metadata.path)}</div>
-                    </div>
-                    
-                    <div class="metadata-item">
-                        <div class="metadata-label">📅 ${t.created}</div>
-                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.created)}')">${this.escapeHtml(metadata.created)}</div>
-                    </div>
-                    
-                    <div class="metadata-item">
-                        <div class="metadata-label">✏️ ${t.modified}</div>
-                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.modified)}')">${this.escapeHtml(metadata.modified)}</div>
-                    </div>
-                </div>
+            <div class="${displayMode === 'list' ? 'list-mode' : ''}">
+                <!-- Basic Information Section -->
+                ${this.generateBasicInfoSection(metadata, t, sectionStates, displayMode)}
+                
+                ${this.generateColorInfoHtml(metadata.colorInfo, t, sectionStates, displayMode)}
+                
+                ${metadata.exif ? this.generateExifHtml(metadata.exif, t, sectionStates, displayMode) : ''}
             </div>
-            
-            ${this.generateColorInfoHtml(metadata.colorInfo, t)}
-            
-            ${metadata.exif ? this.generateExifHtml(metadata.exif, t) : ''}
             <p><br><br></p>
         </div>
     </div>
@@ -1016,7 +1183,9 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             const toggle = document.getElementById(sectionId + '-toggle');
             
             if (content && toggle) {
-                if (content.classList.contains('expanded')) {
+                const isExpanded = content.classList.contains('expanded');
+                
+                if (isExpanded) {
                     content.classList.remove('expanded');
                     content.classList.add('collapsed');
                     toggle.classList.add('collapsed');
@@ -1027,11 +1196,32 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                     toggle.classList.remove('collapsed');
                     toggle.textContent = '▼';
                 }
+                
+                // Save state to extension
+                vscode.postMessage({
+                    command: 'toggleSection',
+                    sectionId: sectionId,
+                    isExpanded: !isExpanded
+                });
             }
         }
 
-        // Make toggleSection available globally
+        // Display mode functionality
+        function setDisplayMode(mode) {
+            vscode.postMessage({
+                command: 'setDisplayMode',
+                mode: mode
+            });
+        }
+
+        // Make functions available globally
         window.toggleSection = toggleSection;
+        window.setDisplayMode = setDisplayMode;
+        
+        // Initialize section states based on saved preferences
+        document.addEventListener('DOMContentLoaded', function() {
+            // Section states are already set server-side, no need to re-initialize
+        });
     </script>
 </body>
 </html>`;
@@ -1142,18 +1332,23 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
 </html>`;
     }
 
-    private generateColorInfoHtml(colorInfo: any, t: Translations): string {
+    private generateColorInfoHtml(colorInfo: any, t: Translations, sectionStates: { [key: string]: boolean } = {}, displayMode: string = 'accordion'): string {
         if (!colorInfo || Object.keys(colorInfo).length === 0) {
             return '';
         }
+
+        const isExpanded = sectionStates['color-info'] !== undefined ? sectionStates['color-info'] : false;
+        const expandedClass = isExpanded ? 'expanded' : 'collapsed';
+        const toggleClass = isExpanded ? '' : 'collapsed';
+        const toggleSymbol = isExpanded ? '▼' : '▶';
 
         let html = `
         <div class="collapsible-section">
             <div class="section-header" onclick="toggleSection('color-info')">
                 <span class="section-title">🎨 ${t.colorInformation}</span>
-                <span class="section-toggle" id="color-info-toggle">▼</span>
+                <span class="section-toggle ${toggleClass}" id="color-info-toggle">${toggleSymbol}</span>
             </div>
-            <div class="section-content expanded" id="color-info-content">`;
+            <div class="section-content ${expandedClass}" id="color-info-content">`;
 
         if (colorInfo.supportsTransparency) {
             html += `
@@ -1185,14 +1380,19 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         return html;
     }
 
-    private generateExifHtml(exif: any, t: Translations): string {
+    private generateExifHtml(exif: any, t: Translations, sectionStates: { [key: string]: boolean } = {}, displayMode: string = 'accordion'): string {
+        const isExpanded = sectionStates['exif-data'] !== undefined ? sectionStates['exif-data'] : false;
+        const expandedClass = isExpanded ? 'expanded' : 'collapsed';
+        const toggleClass = isExpanded ? '' : 'collapsed';
+        const toggleSymbol = isExpanded ? '▼' : '▶';
+
         let html = `
         <div class="collapsible-section">
             <div class="section-header" onclick="toggleSection('exif-data')">
                 <span class="section-title">📷 ${t.exifData}</span>
-                <span class="section-toggle" id="exif-data-toggle">▼</span>
+                <span class="section-toggle ${toggleClass}" id="exif-data-toggle">${toggleSymbol}</span>
             </div>
-            <div class="section-content expanded" id="exif-data-content">`;
+            <div class="section-content ${expandedClass}" id="exif-data-content">`;
 
         // Camera Information
         if (exif.cameraMake || exif.cameraModel) {
