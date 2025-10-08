@@ -2,7 +2,7 @@
   "name": "image-details",
   "displayName": "Image Details",
   "description": "View comprehensive image metadata with EXIF data, zoom controls, and multi-language support",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "NeuronioAzul",
   "author": {
     "name": "NeuronioAzul"

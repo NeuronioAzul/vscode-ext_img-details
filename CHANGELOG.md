@@ -7,7 +7,66 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2025-10-07
+
 ### Added
+
+- **Enhanced Collapsible Sections with Smart Defaults**: Improved accordion functionality with intelligent default states
+  - **Smart Default States**: First section (Basic Information) expanded by default, others collapsed for optimal initial view
+  - **Advanced Animations**: Smooth CSS animations with cubic-bezier transitions (0.4s for expand/collapse)
+    - Icon rotation animation (-90° for collapsed state)
+    - Hover effects on section headers with transform and box-shadow
+    - Cascading animations for internal items (translateY + opacity)
+    - Optimized durations: 0.4s for expand/collapse, 0.2s for hovers
+  - **Session Persistence**: Automatically remembers section states (expanded/collapsed) between VS Code sessions
+    - State saved in VS Code globalState
+    - Intelligent restoration when reopening images
+    - Can be disabled via `imageDetails.rememberSectionStates` setting
+    - Falls back to default configuration when persistence is disabled
+  - **Display Mode Toggle**: Choose between Accordion mode (collapsible sections) or List mode (all sections always visible)
+    - Visual toggle buttons at the top of metadata panel
+    - Accordion Mode: Collapsible sections (default)
+    - List Mode: Simple list with all sections always visible
+    - Display mode preference saved between sessions
+    - Responsive CSS styles for each mode
+
+### Changed
+
+- **VS Code Settings Integration**: Added comprehensive configuration options
+  - `imageDetails.defaultDisplayMode`: Choose default display mode ("accordion" or "list")
+  - `imageDetails.defaultSectionStates`: Configure which sections are expanded by default
+    - `basicInfo`: true (default)
+    - `colorInfo`: false (default)
+    - `exifData`: false (default)
+  - `imageDetails.rememberSectionStates`: Enable/disable session persistence (default: true)
+- **Enhanced User Experience**: Improved visual feedback and animations
+  - Smoother transitions with cubic-bezier easing functions
+  - Enhanced hover effects on interactive elements
+  - Better visual hierarchy with improved section headers
+- **Bidirectional Communication**: Implemented postMessage communication between webview and extension
+  - Saves user preferences automatically
+  - Syncs display mode changes in real-time
+  - Persists section states seamlessly
+
+### Documentation
+
+- Updated I18N.md with new translation keys:
+  - `accordionMode`: "Accordion Mode" / "Modo Sanfona"
+  - `listMode`: "List Mode" / "Modo Lista"
+  - `sectionSettings`: "Section Display" / "Exibição de Seções"
+- Created TESTING.md with comprehensive testing guide for new features
+- Updated TODO.md marking completed items (3.1.1 through 3.1.4)
+
+### Technical Improvements
+
+- Refactored section generation methods to support dynamic state management
+- Added `generateBasicInfoSection()` method for consistent section rendering
+- Updated `generateColorInfoHtml()` and `generateExifHtml()` to accept state parameters
+- Implemented state management methods: `getSectionStates()`, `saveSectionState()`
+- Enhanced `getDisplayMode()` with configuration fallback support
+- Added CSS classes for list mode styling
+
+## [0.1.0] - 2025-10-05
 
 - **EXIF Data Support**: Complete support for reading and displaying EXIF metadata from photos
   - Camera information (make, model)
