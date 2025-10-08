@@ -64,6 +64,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Click thumbnail to scroll to and zoom main image
   - Responsive design with proper aspect ratio preservation
   - Centered in metadata panel with subtle styling
+- **Collapsible Metadata Sections**: Organized metadata into expandable/collapsible sections
+  - Basic Information section (file details, dates)
+  - Color Information section (transparency, depth, DPI)  
+  - EXIF Data section (camera, settings, GPS, etc.)
+  - Default state: all sections expanded for easy access
+  - Smooth animations and hover effects
+  - Consistent section headers with toggle indicators
+  - Click section headers to expand/collapse content
 
 ### Fixed
 

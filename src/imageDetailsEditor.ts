@@ -40,6 +40,9 @@ interface Translations {
     colorDepth: string;
     dpi: string;
     thumbnail: string;
+    basicInfo: string;
+    collapse: string;
+    expand: string;
 }
 
 const translations: { [key: string]: Translations } = {
@@ -78,7 +81,10 @@ const translations: { [key: string]: Translations } = {
         supportsTransparency: 'Transparency Support',
         colorDepth: 'Color Depth',
         dpi: 'DPI/PPI',
-        thumbnail: 'Thumbnail'
+        thumbnail: 'Thumbnail',
+        basicInfo: 'Basic Information',
+        collapse: 'Collapse',
+        expand: 'Expand'
     },
     'pt-br': {
         imageDetails: 'Detalhes da Imagem',
@@ -115,7 +121,10 @@ const translations: { [key: string]: Translations } = {
         supportsTransparency: 'Suporte a Transparência',
         colorDepth: 'Profundidade de Cor',
         dpi: 'DPI/PPI',
-        thumbnail: 'Miniatura'
+        thumbnail: 'Miniatura',
+        basicInfo: 'Informações Básicas',
+        collapse: 'Recolher',
+        expand: 'Expandir'
     }
 };
 
@@ -707,6 +716,62 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         .thumbnail-image:hover {
             transform: scale(1.05);
         }
+        
+        /* Collapsible sections styles */
+        .collapsible-section {
+            margin: 20px 0;
+            border: 1px solid var(--vscode-widget-border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background-color: var(--vscode-editor-background);
+            border-bottom: 1px solid var(--vscode-widget-border);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            user-select: none;
+        }
+        .section-header:hover {
+            background-color: var(--vscode-list-hoverBackground);
+        }
+        .section-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--vscode-foreground);
+        }
+        .section-toggle {
+            font-size: 12px;
+            color: var(--vscode-descriptionForeground);
+            transition: transform 0.2s ease;
+        }
+        .section-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+        .section-content {
+            padding: 8px 0;
+            background-color: var(--vscode-editor-background);
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            overflow: hidden;
+        }
+        .section-content.expanded {
+            max-height: 1000px;
+            opacity: 1;
+        }
+        .section-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+            padding: 0;
+        }
+        .section-content .metadata-item {
+            margin: 0 16px 12px 16px;
+        }
+        .section-content h3 {
+            margin: 16px 16px 12px 16px;
+        }
     </style>
 </head>
 <body>
@@ -733,49 +798,58 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 </div>
             </div>
             
-            <div class="metadata-item">
-                <div class="metadata-label">📁 ${t.fileName}</div>
-                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.fileName)}')">${this.escapeHtml(metadata.fileName)}</div>
-            </div>
-            
-            <div class="metadata-item">
-                <div class="metadata-label">📐 ${t.dimensions}</div>
-                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${metadata.width} x ${metadata.height}')">${metadata.width} x ${metadata.height}</div>
-            </div>
-            
-            <div class="metadata-item">
-                <div class="metadata-label">🎨 ${t.format}</div>
-                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.format)}')">${this.escapeHtml(metadata.format)}</div>
-            </div>
-            
-            <div class="metadata-item">
-                <div class="metadata-label">💾 ${t.fileSize}</div>
-                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.fileSize)}')">${this.escapeHtml(metadata.fileSize)}</div>
-            </div>
-            
-            <div class="metadata-item">
-                <div class="metadata-label">🔢 ${t.sizeBytes}</div>
-                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${metadata.fileSizeBytes}')">${metadata.fileSizeBytes}</div>
-            </div>
-            
-            <div class="metadata-item">
-                <div class="metadata-label">🏷️ ${t.extension}</div>
-                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.extension)}')">${this.escapeHtml(metadata.extension)}</div>
-            </div>
-            
-            <div class="metadata-item">
-                <div class="metadata-label">📂 ${t.fullPath}</div>
-                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.path)}')">${this.escapeHtml(metadata.path)}</div>
-            </div>
-            
-            <div class="metadata-item">
-                <div class="metadata-label">📅 ${t.created}</div>
-                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.created)}')">${this.escapeHtml(metadata.created)}</div>
-            </div>
-            
-            <div class="metadata-item">
-                <div class="metadata-label">✏️ ${t.modified}</div>
-                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.modified)}')">${this.escapeHtml(metadata.modified)}</div>
+            <!-- Basic Information Section -->
+            <div class="collapsible-section">
+                <div class="section-header" onclick="toggleSection('basic-info')">
+                    <span class="section-title">📋 ${t.basicInfo}</span>
+                    <span class="section-toggle" id="basic-info-toggle">▼</span>
+                </div>
+                <div class="section-content expanded" id="basic-info-content">
+                    <div class="metadata-item">
+                        <div class="metadata-label">📁 ${t.fileName}</div>
+                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.fileName)}')">${this.escapeHtml(metadata.fileName)}</div>
+                    </div>
+                    
+                    <div class="metadata-item">
+                        <div class="metadata-label">📐 ${t.dimensions}</div>
+                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${metadata.width} x ${metadata.height}')">${metadata.width} x ${metadata.height}</div>
+                    </div>
+                    
+                    <div class="metadata-item">
+                        <div class="metadata-label">🎨 ${t.format}</div>
+                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.format)}')">${this.escapeHtml(metadata.format)}</div>
+                    </div>
+                    
+                    <div class="metadata-item">
+                        <div class="metadata-label">💾 ${t.fileSize}</div>
+                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.fileSize)}')">${this.escapeHtml(metadata.fileSize)}</div>
+                    </div>
+                    
+                    <div class="metadata-item">
+                        <div class="metadata-label">🔢 ${t.sizeBytes}</div>
+                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${metadata.fileSizeBytes}')">${metadata.fileSizeBytes}</div>
+                    </div>
+                    
+                    <div class="metadata-item">
+                        <div class="metadata-label">🏷️ ${t.extension}</div>
+                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.extension)}')">${this.escapeHtml(metadata.extension)}</div>
+                    </div>
+                    
+                    <div class="metadata-item">
+                        <div class="metadata-label">📂 ${t.fullPath}</div>
+                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.path)}')">${this.escapeHtml(metadata.path)}</div>
+                    </div>
+                    
+                    <div class="metadata-item">
+                        <div class="metadata-label">📅 ${t.created}</div>
+                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.created)}')">${this.escapeHtml(metadata.created)}</div>
+                    </div>
+                    
+                    <div class="metadata-item">
+                        <div class="metadata-label">✏️ ${t.modified}</div>
+                        <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(metadata.modified)}')">${this.escapeHtml(metadata.modified)}</div>
+                    </div>
+                </div>
             </div>
             
             ${this.generateColorInfoHtml(metadata.colorInfo, t)}
@@ -935,6 +1009,29 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 }
             });
         }
+
+        // Collapsible sections functionality
+        function toggleSection(sectionId) {
+            const content = document.getElementById(sectionId + '-content');
+            const toggle = document.getElementById(sectionId + '-toggle');
+            
+            if (content && toggle) {
+                if (content.classList.contains('expanded')) {
+                    content.classList.remove('expanded');
+                    content.classList.add('collapsed');
+                    toggle.classList.add('collapsed');
+                    toggle.textContent = '▶';
+                } else {
+                    content.classList.remove('collapsed');
+                    content.classList.add('expanded');
+                    toggle.classList.remove('collapsed');
+                    toggle.textContent = '▼';
+                }
+            }
+        }
+
+        // Make toggleSection available globally
+        window.toggleSection = toggleSection;
     </script>
 </body>
 </html>`;
@@ -1050,14 +1147,20 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             return '';
         }
 
-        let html = `<div style="margin-top: 24px; padding-top: 20px; border-top: 2px solid var(--vscode-panel-border);"><h2>🎨 ${t.colorInformation}</h2>`;
+        let html = `
+        <div class="collapsible-section">
+            <div class="section-header" onclick="toggleSection('color-info')">
+                <span class="section-title">🎨 ${t.colorInformation}</span>
+                <span class="section-toggle" id="color-info-toggle">▼</span>
+            </div>
+            <div class="section-content expanded" id="color-info-content">`;
 
         if (colorInfo.supportsTransparency) {
             html += `
-            <div class="metadata-item">
-                <div class="metadata-label">✨ ${t.supportsTransparency}</div>
-                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(colorInfo.supportsTransparency)}')">${this.escapeHtml(colorInfo.supportsTransparency)}</div>
-            </div>`;
+                <div class="metadata-item">
+                    <div class="metadata-label">✨ ${t.supportsTransparency}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(colorInfo.supportsTransparency)}')">${this.escapeHtml(colorInfo.supportsTransparency)}</div>
+                </div>`;
         }
 
         if (colorInfo.colorDepth) {
@@ -1070,18 +1173,26 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
 
         if (colorInfo.dpi) {
             html += `
-            <div class="metadata-item">
-                <div class="metadata-label">📐 ${t.dpi}</div>
-                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(colorInfo.dpi)}')">${this.escapeHtml(colorInfo.dpi)}</div>
-            </div>`;
+                <div class="metadata-item">
+                    <div class="metadata-label">📐 ${t.dpi}</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(colorInfo.dpi)}')">${this.escapeHtml(colorInfo.dpi)}</div>
+                </div>`;
         }
 
-        html += '</div>';
+        html += `
+            </div>
+        </div>`;
         return html;
     }
 
     private generateExifHtml(exif: any, t: Translations): string {
-        let html = `<div style="margin-top: 24px; padding-top: 20px; border-top: 2px solid var(--vscode-panel-border);"><h2>📷 ${t.exifData}</h2>`;
+        let html = `
+        <div class="collapsible-section">
+            <div class="section-header" onclick="toggleSection('exif-data')">
+                <span class="section-title">📷 ${t.exifData}</span>
+                <span class="section-toggle" id="exif-data-toggle">▼</span>
+            </div>
+            <div class="section-content expanded" id="exif-data-content">`;
 
         // Camera Information
         if (exif.cameraMake || exif.cameraModel) {
@@ -1201,7 +1312,9 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             }
         }
 
-        html += '</div>';
+        html += `
+            </div>
+        </div>`;
         return html;
     }
 }

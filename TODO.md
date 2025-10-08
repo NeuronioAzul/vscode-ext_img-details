@@ -28,7 +28,7 @@
 
 ### 3. Interface e UX
 
-- [ ] 3.1 Adicionar samfona na seção de metadados para melhor organização (colapsável) padrão: sempre expandido
+- [x] 3.1 Adicionar samfona na seção de metadados para melhor organização (colapsável) padrão: sempre expandido
 - [x] 3.2 Adicionar tradução para múltiplos idiomas (i18n) pelo menos para inglês e português do Brasil
 - [x] 3.3 a coluna de metadados deve ser "sticky" a direita ao rolar a página, mas pode redimensionar horizontalmente
 - [x] 3.4 Ao clicar no arquivo de imagem abrir o visualizador da extensão por padrão
