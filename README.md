@@ -62,7 +62,7 @@ Multiple ways to zoom and inspect images:
   - 🇺🇸 English (default)
   - 🇧🇷 Português (Brasil)
 - **Automatic Detection**: Uses your VS Code language settings
-- **Easy to Extend**: Add your own language (see [I18N.md](I18N.md))
+- **Easy to Extend**: Add your own language (see [I18N.md](docs/contributing/I18N.md))
 
 ### 🎯 Enhanced User Experience
 
@@ -145,16 +145,35 @@ Then press `F5` to run in development mode.
 
 ## ⚙️ Configuration
 
-Currently, the extension works out of the box with no configuration needed. Configuration options for customization are planned for future releases.
+The extension provides comprehensive configuration options. See the [full documentation](docs/README.md) for details.
+
+### Available Settings
+
+- `imageDetails.defaultDisplayMode`: Choose between accordion or list mode for metadata sections
+- `imageDetails.defaultSectionStates`: Configure which sections are expanded by default
+- `imageDetails.rememberSectionStates`: Enable/disable session persistence
+
+For more details, see the [Configuration Guide](docs/README.md).
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on:
+Contributions are welcome! Please read our [Contributing Guide](docs/contributing/CONTRIBUTING.md) for details on:
 
 - Reporting bugs
 - Suggesting features
 - Adding translations
 - Submitting pull requests
+
+## 📚 Documentation
+
+Complete documentation is available in the [`docs/`](docs/) folder:
+
+- [📖 Documentation Index](docs/README.md) - Main documentation hub
+- [📝 Changelog](docs/CHANGELOG.md) - Version history
+- [🤝 Contributing Guide](docs/contributing/CONTRIBUTING.md) - How to contribute
+- [🌐 I18N Guide](docs/contributing/I18N.md) - Adding translations
+- [🔧 TODO & Roadmap](docs/development/TODO.md) - Planned features
+- [🧪 Testing Guide](docs/development/TESTING.md) - How to test
 
 ## 📄 License
 
@@ -166,11 +185,11 @@ None at the moment. If you find a bug, please [report it](../../issues/new)!
 
 ## 🗺️ Roadmap
 
-See [TODO.md](TODO.md) for planned features and improvements.
+See [TODO.md](docs/development/TODO.md) for planned features and improvements.
 
 ## 📝 Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for a detailed version history.
+See [CHANGELOG.md](docs/CHANGELOG.md) for a detailed version history.
 
 ## 💬 Feedback
 
