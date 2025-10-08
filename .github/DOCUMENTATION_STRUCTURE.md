@@ -8,14 +8,14 @@ A partir de **outubro de 2025**, toda a documentação do projeto está organiza
 
 **REGRA FUNDAMENTAL:**
 > ✅ **APENAS o `README.md` fica na raiz do projeto**
-> 
+>
 > ❌ **TODOS os outros arquivos Markdown vão em `docs/`**
 
 ---
 
 ## 📁 Estrutura Atual
 
-```
+``` text
 projeto-raiz/
 ├── README.md                          # ✅ ÚNICO arquivo MD na raiz
 │
@@ -68,8 +68,9 @@ Quando criar qualquer novo arquivo Markdown:
 
 ## 🚫 O Que NÃO Fazer
 
-### ❌ NUNCA faça isso:
-```
+### ❌ NUNCA faça isso
+
+```text
 projeto-raiz/
 ├── README.md
 ├── SOME_NEW_DOC.md          # ❌ ERRADO! Não criar MD na raiz
@@ -78,8 +79,9 @@ projeto-raiz/
     └── ...
 ```
 
-### ✅ SEMPRE faça assim:
-```
+### ✅ SEMPRE faça assim
+
+```text
 projeto-raiz/
 ├── README.md                 # ✅ Único MD na raiz
 └── docs/
@@ -139,4 +141,4 @@ Se tiver dúvidas sobre onde criar documentação:
 
 ---
 
-**LEMBRE-SE: Documentação organizada = Projeto profissional! 🚀**
+## **LEMBRE-SE: Documentação organizada = Projeto profissional! 🚀**
