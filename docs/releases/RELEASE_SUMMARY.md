@@ -56,21 +56,13 @@
 ### Para Criar o Release no GitHub
 
 1. **Acesse**: <https://github.com/NeuronioAzul/vscode-ext_img-details/releases/new>
-
 2. **Escolha a tag**: `v0.2.0`
-
 3. **Título do Release**:
-
-```
-🎉 v0.2.0 - Enhanced Collapsible Sections with Smart Defaults
-```
-
+   - `🎉 v0.2.0 - Enhanced Collapsible Sections with Smart Defaults`
 4. **Descrição**
    - Copie o conteúdo de `GITHUB_RELEASE_v0.2.0.md`
    - Ou use a descrição abaixo (resumida)
-
 5. **Marque como**: ☐ Set as a pre-release (deixe desmarcado para release oficial)
-
 6. **Publique**: Clique em "Publish release"
 
 ---

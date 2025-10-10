@@ -58,7 +58,7 @@ Thank you for your interest in contributing to the Image Details extension! This
 
 Use clear, descriptive commit messages:
 
-```
+```text
 feat: add zoom controls to image viewer
 fix: resolve EXIF data parsing error
 docs: update README with new features
@@ -107,13 +107,13 @@ To add support for a new language:
 2. **Find** the `translations` object
 3. **Add** your language following the existing pattern:
 
-```typescript
-'your-lang-code': {
-    imageDetails: 'Your Translation',
-    fileName: 'Your Translation',
-    // ... all other keys
-}
-```
+   ```typescript
+   'your-lang-code': {
+      imageDetails: 'Your Translation',
+      fileName: 'Your Translation',
+      // ... all other keys
+   }
+   ```
 
 4. **Update** `I18N.md` with the new language
 5. **Test** by changing VS Code language setting
@@ -238,7 +238,7 @@ When suggesting a feature:
 
 ## 📚 Project Structure
 
-```
+```text
 vscode-ext_img-details/
 ├── src/
 │   ├── extension.ts          # Extension entry point
@@ -278,4 +278,4 @@ Your contributions help make this extension better for everyone. We appreciate y
 
 ---
 
-**Happy Coding! 🚀**
+## **Happy Coding! 🚀**

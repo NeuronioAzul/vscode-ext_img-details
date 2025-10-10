@@ -12,6 +12,7 @@ Bem-vindo à documentação completa da extensão Image Details para VS Code.
 ### 🤝 Para Contribuidores
 
 #### Guias de Contribuição
+
 - [**Como Contribuir**](contributing/CONTRIBUTING.md) - Guia completo para contribuir com o projeto
 - [**Internacionalização (i18n)**](contributing/I18N.md) - Como adicionar traduções e idiomas
 
@@ -30,7 +31,7 @@ Bem-vindo à documentação completa da extensão Image Details para VS Code.
 
 ## 📁 Estrutura de Documentação
 
-```
+```text
 docs/
 ├── README.md                           # Este arquivo - índice principal
 ├── CHANGELOG.md                        # Histórico de versões
@@ -54,21 +55,27 @@ docs/
 ## 🎯 Navegação Rápida
 
 ### Quero começar a usar
+
 👉 Leia o [README Principal](../README.md)
 
 ### Quero reportar um bug
+
 👉 Veja [Como Contribuir](contributing/CONTRIBUTING.md#-reporting-bugs)
 
 ### Quero sugerir uma feature
+
 👉 Veja [Como Contribuir](contributing/CONTRIBUTING.md#-suggesting-features)
 
 ### Quero adicionar uma tradução
+
 👉 Leia o [Guia i18n](contributing/I18N.md)
 
 ### Quero desenvolver uma feature
+
 👉 Confira o [TODO](development/TODO.md) e [Como Contribuir](contributing/CONTRIBUTING.md)
 
 ### Quero testar a extensão
+
 👉 Siga o [Guia de Testes](development/TESTING.md)
 
 ---
@@ -76,16 +83,19 @@ docs/
 ## 📝 Convenções de Documentação
 
 ### Idiomas
+
 - **Inglês**: Idioma principal para código e documentação técnica
 - **Português**: Documentação adicional e comentários em português quando apropriado
 
 ### Estrutura dos Documentos
+
 - Use emojis para melhor visualização (mas não exagere)
 - Mantenha TOC (Table of Contents) em documentos longos
 - Use links relativos entre documentos
 - Inclua exemplos práticos sempre que possível
 
 ### Versionamento
+
 - Siga [Semantic Versioning](https://semver.org/)
 - Mantenha o CHANGELOG atualizado seguindo [Keep a Changelog](https://keepachangelog.com/)
 - Documente breaking changes claramente
@@ -95,10 +105,11 @@ docs/
 ## 🔄 Mantendo a Documentação Atualizada
 
 > **⚠️ IMPORTANTE - Nota para Desenvolvimento Futuro:**
-> 
+>
 > **TODOS OS NOVOS ARQUIVOS MARKDOWN DEVEM SER CRIADOS NA PASTA `docs/`**
-> 
+>
 > Ao criar nova documentação, siga esta estrutura:
+>
 > - Guias de usuário → `docs/`
 > - Guias de contribuição → `docs/contributing/`
 > - Documentação de desenvolvimento → `docs/development/`

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.0] - 2025-10-07
 
-### Added
+### Added 2
 
 - **Enhanced Collapsible Sections with Smart Defaults**: Improved accordion functionality with intelligent default states
   - **Smart Default States**: First section (Basic Information) expanded by default, others collapsed for optimal initial view
@@ -48,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Syncs display mode changes in real-time
   - Persists section states seamlessly
 
-### Documentation
+### Documentation 2
 
 - Updated I18N.md with new translation keys:
   - `accordionMode`: "Accordion Mode" / "Modo Sanfona"
@@ -152,7 +152,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Warnings were from VS Code internal processes, not the extension itself
   - Provides cleaner debugging experience without affecting functionality
 
-### Changed
+### Changed 2
 
 - **Updated VS Code Compatibility**: Updated minimum VS Code version requirement to 1.94.0
   - Updated `@types/vscode` dependency to match VS Code 1.94.0
@@ -176,7 +176,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added detailed usage instructions with examples
   - Improved documentation structure
 
-### Documentation
+### Documentation 1
 
 - Added LICENSE file (MIT License)
 - Created comprehensive CONTRIBUTING.md guide
@@ -197,7 +197,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Installation instructions
   - Contributing guidelines reference
 
-## [0.1.0] - 2025-10-05
+## [0.1.0] - 2025-10-04
 
 First beta release with complete feature set ready for testing.
 
@@ -207,7 +207,7 @@ This release includes all core features: comprehensive EXIF support (including D
 
 ## [0.0.1] - Initial Development
 
-### Added
+### Added 1
 
 - Basic image metadata display
 - File name, dimensions, format, file size

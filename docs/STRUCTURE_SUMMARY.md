@@ -1,6 +1,6 @@
 # 📁 Estrutura de Documentação - Resumo Visual
 
-## ✅ Organização Concluída!
+## ✅ Organização Concluída
 
 A documentação do projeto Image Details foi reorganizada em uma estrutura hierárquica profissional.
 
@@ -8,7 +8,7 @@ A documentação do projeto Image Details foi reorganizada em uma estrutura hier
 
 ## 🎯 Estrutura Atual
 
-```
+```text
 vscode-ext_img-details/
 │
 ├── 📄 README.md                           ← ÚNICO arquivo MD na raiz
@@ -53,6 +53,7 @@ vscode-ext_img-details/
 ## 📊 Estatísticas da Reorganização
 
 ### Arquivos Movidos
+
 - ✅ CHANGELOG.md → `docs/CHANGELOG.md`
 - ✅ CONTRIBUTING.md → `docs/contributing/CONTRIBUTING.md`
 - ✅ I18N.md → `docs/contributing/I18N.md`
@@ -60,6 +61,7 @@ vscode-ext_img-details/
 - ✅ TESTING.md → `docs/development/TESTING.md`
 
 ### Arquivos Criados
+
 - ✅ `docs/README.md` - Índice principal da documentação
 - ✅ `docs/releases/RELEASE_NOTES_v0.2.0.md`
 - ✅ `docs/releases/GITHUB_RELEASE_v0.2.0.md`
@@ -67,6 +69,7 @@ vscode-ext_img-details/
 - ✅ `.github/DOCUMENTATION_STRUCTURE.md` - Regras de organização
 
 ### Arquivos Atualizados
+
 - ✅ `README.md` - Links atualizados para nova estrutura
 
 ---
@@ -74,22 +77,27 @@ vscode-ext_img-details/
 ## 🗺️ Navegação Rápida
 
 ### 📚 Documentação Principal
+
 - [Índice de Documentação](docs/README.md)
 - [Changelog](docs/CHANGELOG.md)
 
 ### 🤝 Contribuindo
+
 - [Guia de Contribuição](docs/contributing/CONTRIBUTING.md)
 - [Guia de Internacionalização](docs/contributing/I18N.md)
 
 ### 🔧 Desenvolvimento
+
 - [TODO & Roadmap](docs/development/TODO.md)
 - [Guia de Testes](docs/development/TESTING.md)
 
 ### 📦 Releases
+
 - [Release Notes v0.2.0](docs/releases/RELEASE_NOTES_v0.2.0.md)
 - [GitHub Release Template](docs/releases/GITHUB_RELEASE_v0.2.0.md)
 
 ### ⚙️ Regras
+
 - [Estrutura de Documentação](.github/DOCUMENTATION_STRUCTURE.md)
 
 ---
@@ -97,7 +105,7 @@ vscode-ext_img-details/
 ## ⚠️ Regra de Ouro
 
 > **APENAS `README.md` fica na raiz do projeto**
-> 
+>
 > **Toda nova documentação vai em `docs/`**
 
 ---
