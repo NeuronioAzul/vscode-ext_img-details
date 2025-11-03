@@ -293,12 +293,10 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                                 );
                                 
                                 if (confirmed !== 'Yes') {
-                                    // User cancelled - reload webview to reset button
-                                    webviewPanel.webview.html = this.getHtmlForWebview(
-                                        webviewPanel.webview,
-                                        document.uri,
-                                        metadata
-                                    );
+                                    // User cancelled - send message to reset button
+                                    webviewPanel.webview.postMessage({
+                                        command: 'resetRemoveExifButton'
+                                    });
                                     return;
                                 }
                                 
@@ -314,12 +312,10 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                             } catch (error) {
                                 const errorMsg = error instanceof Error ? error.message : String(error);
                                 vscode.window.showErrorMessage(`${this.getTranslations().removeExifError}: ${errorMsg}`);
-                                // Reload webview to reset button state
-                                webviewPanel.webview.html = this.getHtmlForWebview(
-                                    webviewPanel.webview,
-                                    document.uri,
-                                    metadata
-                                );
+                                // Send message to reset button state
+                                webviewPanel.webview.postMessage({
+                                    command: 'resetRemoveExifButton'
+                                });
                             }
                             break;
                     }
@@ -1468,6 +1464,20 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         window.toggleSection = toggleSection;
         window.setDisplayMode = setDisplayMode;
         window.removeExifData = removeExifData;
+        
+        // Listen for messages from the extension
+        window.addEventListener('message', event => {
+            const message = event.data;
+            switch (message.command) {
+                case 'resetRemoveExifButton':
+                    const btn = document.getElementById('removeExifBtn');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.textContent = '🗑️ ${t.removeExif}';
+                    }
+                    break;
+            }
+        });
         
         // Initialize section states based on saved preferences
         document.addEventListener('DOMContentLoaded', function() {
