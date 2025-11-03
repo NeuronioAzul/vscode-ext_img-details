@@ -42,6 +42,16 @@ Complete EXIF metadata extraction for photos (when available):
 - **Color Depth**: Shows bit depth and color information based on format
 - **DPI/PPI Information**: Displays resolution metadata (dots per inch / pixels per inch) when available in EXIF data
 
+### 🗑️ EXIF Data Management
+
+- **Remove EXIF Metadata**: One-click button to strip all EXIF data from images
+- **Automatic Backup**: Creates a backup file (`_backup`) before removing metadata
+- **Format Support**: Works with JPEG/JPG and PNG images
+- **Smart Detection**: Button only appears when image contains EXIF data
+- **Safe Operation**: Confirmation dialog prevents accidental removal
+- **Error Recovery**: Automatically restores from backup if operation fails
+- **Real-time Update**: Interface refreshes automatically after metadata removal
+
 ### 🔍 Advanced Zoom Controls
 
 Multiple ways to zoom and inspect images:
