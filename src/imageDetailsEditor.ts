@@ -1073,13 +1073,24 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         }
         
         function fitToScreen() {
-            const containerRect = imageContainer.getBoundingClientRect();
+            const imageWrapper = document.querySelector('.image-wrapper');
+            const wrapperRect = imageWrapper.getBoundingClientRect();
             const imageRect = imagePreview.getBoundingClientRect();
             
-            const scaleX = (containerRect.width - 40) / (imageRect.width / currentZoom);
-            const scaleY = (containerRect.height - 40) / (imageRect.height / currentZoom);
+            // Get original image dimensions (without current zoom)
+            const originalWidth = imageRect.width / currentZoom;
+            const originalHeight = imageRect.height / currentZoom;
             
-            updateZoom(Math.min(scaleX, scaleY));
+            // Calculate available space (considering padding)
+            const availableWidth = wrapperRect.width - 40;
+            const availableHeight = wrapperRect.height - 40;
+            
+            // Calculate scale to fit
+            const scaleX = availableWidth / originalWidth;
+            const scaleY = availableHeight / originalHeight;
+            
+            // Use the smaller scale to ensure image fits completely
+            updateZoom(Math.min(scaleX, scaleY, 1));
         }
         
         // Zoom with mouse wheel
