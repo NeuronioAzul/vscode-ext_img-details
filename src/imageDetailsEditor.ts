@@ -640,12 +640,18 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         .image-container {
             flex: 1;
             display: flex;
+            flex-direction: column;
+            background-color: var(--vscode-editor-background);
+            overflow: hidden;
+        }
+        .image-wrapper {
+            flex: 1;
+            display: flex;
             align-items: center;
             justify-content: center;
             overflow: auto;
-            background-color: var(--vscode-editor-background);
             padding: 20px;
-            position: relative;
+            min-height: 0;
         }
         .image-container img {
             max-width: 100%;
@@ -662,18 +668,14 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             max-height: none;
         }
         .zoom-controls {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
+            flex-shrink: 0;
             background-color: var(--vscode-editor-background);
-            border: 1px solid var(--vscode-panel-border);
-            border-radius: 8px;
-            padding: 8px;
+            border-top: 1px solid var(--vscode-panel-border);
+            padding: 12px 20px;
             display: flex;
             gap: 4px;
-            z-index: 100;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            justify-content: center;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
         }
         .zoom-button {
             background-color: var(--vscode-button-background);
@@ -986,7 +988,9 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
 <body>
     <div class="container">
         <div class="image-container" id="imageContainer">
-            <img src="${imageWebviewUri}" alt="Image Preview" id="imagePreview" />
+            <div class="image-wrapper">
+                <img src="${imageWebviewUri}" alt="Image Preview" id="imagePreview" />
+            </div>
             <div class="zoom-controls">
                 <button class="zoom-button" onclick="zoomOut()" title="Zoom Out">−</button>
                 <div class="zoom-level" id="zoomLevel">100%</div>
