@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **EXIF Data Removal Tool**: Remove all EXIF metadata from images with automatic backup
+  - **One-Click Removal**: Button below thumbnail preview to strip EXIF data
+  - **Automatic Backup**: Creates `_backup` file before removing metadata
+  - **Format Support**: Works with JPEG/JPG and PNG images
+  - **Smart Detection**: Button only appears when image contains EXIF data
+  - **JPEG Processing**: Strips APP1 (EXIF) markers while preserving image quality
+  - **PNG Processing**: Removes metadata chunks (tEXt, zTXt, iTXt, eXIf, tIME)
+  - **Confirmation Dialog**: Prevents accidental metadata removal
+  - **Real-time Update**: Automatically refreshes interface after removal
+  - **Error Handling**: Automatic restore from backup if operation fails
+  - **Full Translation**: Available in English and Portuguese
+  - **Visual Feedback**: Button shows "Processing..." state during operation
+  - **Backup Notification**: Shows path to backup file after successful removal
+
+### Changed
+
+- **Enhanced UI Layout**: Improved positioning of zoom controls and metadata panel
+  - **Fixed Zoom Bar**: Zoom controls now fixed at bottom of image area (not overlapping image)
+  - **Proper Flexbox Layout**: Image wrapper and zoom controls use flex layout for better space distribution
+  - **VS Code Integration**: Metadata panel properly respects VS Code breadcrumbs and tabs
+  - **Dynamic Breadcrumb Sizing**: Breadcrumbs adjust width to accommodate resizable metadata panel
+  - **CSS Variable System**: Uses `--metadata-panel-width` for synchronized layout updates
+
+### Documentation
+
+- Updated I18N.md with new translation keys:
+  - `removeExif`: "Remove EXIF Data" / "Remover Dados EXIF"
+  - `removeExifConfirm`: Confirmation message for EXIF removal
+  - `removeExifSuccess`: Success notification message
+  - `removeExifError`: Error notification message
+
 ## [0.2.0] - 2025-10-07
 
 ### Added 2

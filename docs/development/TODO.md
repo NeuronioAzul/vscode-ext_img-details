@@ -25,6 +25,11 @@
   - [ ] 2.3.1 Compression type/quality
   - [x] 2.3.2 DPI/PPI information
   - [x] 2.3.3 Bit depth melhorado com dados EXIF (BitsPerSample, SamplesPerPixel)
+- [x] 2.4 Ferramentas de edição de metadados
+  - [x] 2.4.1 Remover dados EXIF com backup automático
+  - [x] 2.4.2 Suporte para JPEG/JPG e PNG
+  - [x] 2.4.3 Confirmação antes de remover
+  - [x] 2.4.4 Restauração automática em caso de erro
 
 ### 3. Interface e UX
 
