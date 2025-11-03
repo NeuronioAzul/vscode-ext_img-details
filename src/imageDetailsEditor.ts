@@ -46,6 +46,10 @@ interface Translations {
     accordionMode: string;
     listMode: string;
     sectionSettings: string;
+    removeExif: string;
+    removeExifConfirm: string;
+    removeExifSuccess: string;
+    removeExifError: string;
 }
 
 const translations: { [key: string]: Translations } = {
@@ -90,7 +94,11 @@ const translations: { [key: string]: Translations } = {
         expand: 'Expand',
         accordionMode: 'Accordion Mode',
         listMode: 'List Mode',
-        sectionSettings: 'Section Display'
+        sectionSettings: 'Section Display',
+        removeExif: 'Remove EXIF Data',
+        removeExifConfirm: 'Remove all EXIF metadata from this image? A new file will be saved without metadata.',
+        removeExifSuccess: 'EXIF data removed successfully!',
+        removeExifError: 'Error removing EXIF data'
     },
     'pt-br': {
         imageDetails: 'Detalhes da Imagem',
@@ -133,7 +141,11 @@ const translations: { [key: string]: Translations } = {
         expand: 'Expandir',
         accordionMode: 'Modo Sanfona',
         listMode: 'Modo Lista',
-        sectionSettings: 'Exibição de Seções'
+        sectionSettings: 'Exibição de Seções',
+        removeExif: 'Remover Dados EXIF',
+        removeExifConfirm: 'Remover todos os metadados EXIF desta imagem? Um novo arquivo será salvo sem os metadados.',
+        removeExifSuccess: 'Dados EXIF removidos com sucesso!',
+        removeExifError: 'Erro ao remover dados EXIF'
     }
 };
 
@@ -252,7 +264,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             
             // Handle messages from the webview
             webviewPanel.webview.onDidReceiveMessage(
-                (message: any) => {
+                async (message: any) => {
                     switch (message.command) {
                         case 'copy':
                             vscode.env.clipboard.writeText(message.text);
@@ -269,6 +281,46 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                                 document.uri,
                                 metadata
                             );
+                            break;
+                        case 'removeExif':
+                            try {
+                                // Show confirmation dialog
+                                const confirmed = await vscode.window.showWarningMessage(
+                                    this.getTranslations().removeExifConfirm,
+                                    { modal: true },
+                                    'Yes',
+                                    'No'
+                                );
+                                
+                                if (confirmed !== 'Yes') {
+                                    // User cancelled - reload webview to reset button
+                                    webviewPanel.webview.html = this.getHtmlForWebview(
+                                        webviewPanel.webview,
+                                        document.uri,
+                                        metadata
+                                    );
+                                    return;
+                                }
+                                
+                                await this.removeExifData(document.uri);
+                                vscode.window.showInformationMessage(this.getTranslations().removeExifSuccess);
+                                // Reload metadata and refresh webview
+                                const newMetadata = await this.getImageMetadata(document.uri);
+                                webviewPanel.webview.html = this.getHtmlForWebview(
+                                    webviewPanel.webview,
+                                    document.uri,
+                                    newMetadata
+                                );
+                            } catch (error) {
+                                const errorMsg = error instanceof Error ? error.message : String(error);
+                                vscode.window.showErrorMessage(`${this.getTranslations().removeExifError}: ${errorMsg}`);
+                                // Reload webview to reset button state
+                                webviewPanel.webview.html = this.getHtmlForWebview(
+                                    webviewPanel.webview,
+                                    document.uri,
+                                    metadata
+                                );
+                            }
                             break;
                     }
                 },
@@ -604,6 +656,146 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         return Object.keys(exif).length > 0 ? exif : null;
     }
 
+    private async removeExifData(uri: vscode.Uri): Promise<void> {
+        const filePath = uri.fsPath;
+        const ext = path.extname(filePath).toLowerCase();
+        
+        // Read the original file
+        const originalBuffer = await fs.promises.readFile(filePath);
+        
+        // For JPEG/JPG files, we can strip EXIF by removing metadata segments
+        if (ext === '.jpg' || ext === '.jpeg') {
+            // Create a backup
+            const backupPath = filePath.replace(/(\.[^.]+)$/, '_backup$1');
+            await fs.promises.writeFile(backupPath, originalBuffer);
+            
+            try {
+                // Strip EXIF data from JPEG
+                const cleanBuffer = this.stripJpegExif(originalBuffer);
+                await fs.promises.writeFile(filePath, cleanBuffer);
+                
+                vscode.window.showInformationMessage(`Backup saved as: ${path.basename(backupPath)}`);
+            } catch (error) {
+                // Restore from backup if stripping fails
+                await fs.promises.writeFile(filePath, originalBuffer);
+                throw error;
+            }
+        } else if (ext === '.png') {
+            // For PNG, strip metadata chunks
+            const backupPath = filePath.replace(/(\.[^.]+)$/, '_backup$1');
+            await fs.promises.writeFile(backupPath, originalBuffer);
+            
+            try {
+                const cleanBuffer = this.stripPngMetadata(originalBuffer);
+                await fs.promises.writeFile(filePath, cleanBuffer);
+                
+                vscode.window.showInformationMessage(`Backup saved as: ${path.basename(backupPath)}`);
+            } catch (error) {
+                await fs.promises.writeFile(filePath, originalBuffer);
+                throw error;
+            }
+        } else {
+            throw new Error(`Unsupported format: ${ext}. Only JPEG and PNG are supported.`);
+        }
+    }
+
+    private stripJpegExif(buffer: Buffer): Buffer {
+        const SOI = 0xFFD8; // Start of Image
+        const APP1 = 0xFFE1; // APP1 marker (EXIF)
+        const SOS = 0xFFDA; // Start of Scan
+        
+        const result: number[] = [];
+        let i = 0;
+        
+        // Copy SOI marker
+        if (buffer.readUInt16BE(i) !== SOI) {
+            throw new Error('Not a valid JPEG file');
+        }
+        result.push(0xFF, 0xD8);
+        i += 2;
+        
+        // Process markers
+        while (i < buffer.length) {
+            if (buffer[i] !== 0xFF) {
+                break;
+            }
+            
+            const marker = buffer.readUInt16BE(i);
+            
+            // If we hit Start of Scan, copy rest of file
+            if (marker === SOS) {
+                while (i < buffer.length) {
+                    result.push(buffer[i++]);
+                }
+                break;
+            }
+            
+            // Skip EXIF/metadata markers (APP0-APP15)
+            if (marker >= 0xFFE0 && marker <= 0xFFEF) {
+                const length = buffer.readUInt16BE(i + 2);
+                // Skip this marker only if it contains EXIF data
+                const markerData = buffer.slice(i + 4, i + 4 + Math.min(4, length - 2));
+                if (markerData.toString() === 'Exif' || marker === APP1) {
+                    i += 2 + length;
+                    continue;
+                }
+            }
+            
+            // Copy other markers
+            const length = buffer.readUInt16BE(i + 2);
+            for (let j = 0; j < length + 2; j++) {
+                result.push(buffer[i++]);
+            }
+        }
+        
+        return Buffer.from(result);
+    }
+
+    private stripPngMetadata(buffer: Buffer): Buffer {
+        const PNG_SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+        const result: number[] = [];
+        
+        // Verify PNG signature
+        if (!buffer.slice(0, 8).equals(PNG_SIGNATURE)) {
+            throw new Error('Not a valid PNG file');
+        }
+        
+        // Copy signature
+        for (let i = 0; i < 8; i++) {
+            result.push(buffer[i]);
+        }
+        
+        let i = 8;
+        while (i < buffer.length) {
+            const length = buffer.readUInt32BE(i);
+            const type = buffer.slice(i + 4, i + 8).toString();
+            
+            // Skip metadata chunks but keep critical chunks
+            const skipChunks = ['tEXt', 'zTXt', 'iTXt', 'eXIf', 'tIME'];
+            
+            if (skipChunks.includes(type)) {
+                // Skip this chunk
+                i += 12 + length; // length + type + data + CRC
+                continue;
+            }
+            
+            // Copy this chunk (length + type + data + CRC)
+            const chunkSize = 12 + length;
+            for (let j = 0; j < chunkSize && i + j < buffer.length; j++) {
+                result.push(buffer[i + j]);
+            }
+            
+            i += chunkSize;
+            
+            // Stop at IEND
+            if (type === 'IEND') {
+                break;
+            }
+        }
+        
+        return Buffer.from(result);
+    }
+
     private getHtmlForWebview(
         webview: vscode.Webview,
         imageUri: vscode.Uri,
@@ -853,6 +1045,33 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         .thumbnail-image:hover {
             transform: scale(1.05);
         }
+        .remove-exif-button {
+            width: 100%;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background-color: var(--vscode-button-secondaryBackground);
+            color: var(--vscode-button-secondaryForeground);
+            border: 1px solid var(--vscode-button-border);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .remove-exif-button:hover {
+            background-color: var(--vscode-button-hoverBackground);
+            color: var(--vscode-button-foreground);
+        }
+        .remove-exif-button:active {
+            transform: scale(0.98);
+        }
+        .remove-exif-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
         
         /* Collapsible sections styles */
         .collapsible-section {
@@ -1016,6 +1235,9 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 <div class="thumbnail-preview">
                     <img src="${imageWebviewUri}" alt="Thumbnail" class="thumbnail-image">
                 </div>
+                ${metadata.exif ? `<button class="remove-exif-button" onclick="removeExifData()" id="removeExifBtn">
+                    🗑️ ${t.removeExif}
+                </button>` : ''}
             </div>
             
             <div class="${displayMode === 'list' ? 'list-mode' : ''}">
@@ -1229,9 +1451,23 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             });
         }
 
+        // Remove EXIF data functionality
+        function removeExifData() {
+            const btn = document.getElementById('removeExifBtn');
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = '⏳ Processing...';
+            }
+            
+            vscode.postMessage({
+                command: 'removeExif'
+            });
+        }
+
         // Make functions available globally
         window.toggleSection = toggleSection;
         window.setDisplayMode = setDisplayMode;
+        window.removeExifData = removeExifData;
         
         // Initialize section states based on saved preferences
         document.addEventListener('DOMContentLoaded', function() {
