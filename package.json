@@ -1,7 +1,8 @@
 {
   "name": "image-details",
+  "icon": "icon.png",
   "displayName": "Image Details",
-  "description": "View comprehensive image metadata with EXIF data, zoom controls, and multi-language support",
+  "description": "View image metadata with EXIF data, and clean Metadata from images",
   "version": "0.2.0",
   "publisher": "NeuronioAzul",
   "author": {
