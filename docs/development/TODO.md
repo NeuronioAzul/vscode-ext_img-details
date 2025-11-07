@@ -59,7 +59,7 @@
 ### 5. Configurações
 
 - [ ] 5.1 Permitir usuário escolher quais metadados exibir
-- [ ] 5.2 (Sanfona, sempre expandido ou sempre colapsado)
+- [ ] 5.2 Permitir usuário escolher qual quer usar: (Sanfona, sempre expandido ou sempre colapsado)
 - [ ] 5.3 Configurar formato de data/hora (padrão: detectar local automaticamente e define) mas permite selecionar outro formato
 - [ ] 5.4 Opções de unidades (bytes vs KB/MB) (padrão KB/MB/GB/etc)
 
@@ -69,7 +69,7 @@
 
 ### 7. Publicação
 
-- [ ] 7.1 Criar ícone oficial da extensão
+- [x] 7.1 Criar ícone oficial da extensão (icon.png 128x128px)
 - [ ] 7.2 Otimizar README.md com screenshots
 - [ ] 7.3 Adicionar demo GIF
 - [ ] 7.4 Configurar CI/CD para builds automáticos

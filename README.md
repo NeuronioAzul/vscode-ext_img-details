@@ -2,7 +2,7 @@
 
 A powerful VS Code extension that displays comprehensive image metadata in a beautiful, interactive side panel.
 
-![VS Code Version](https://img.shields.io/badge/VS%20Code-1.85.0%2B-blue)
+![VS Code Version](https://img.shields.io/badge/VS%20Code-1.94.0%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)
 
@@ -217,6 +217,6 @@ Have feedback or suggestions? We'd love to hear from you!
 
 ---
 
-**Made with ❤️ by [NeuronioAzul](https://github.com/NeuronioAzul)**
+**Made with 🧠 neurons by [NeuronioAzul](https://github.com/NeuronioAzul/vscode-ext_img-details)**
 
 **Enjoy the extension? Give it a ⭐ on GitHub!**

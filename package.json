@@ -30,12 +30,33 @@
     "gif",
     "webp"
   ],
+  "tags": [
+    "image",
+    "Preview",
+    "Visualization",
+    "Formatters",
+    "metadata",
+    "exif",
+    "photo",
+    "viewer",
+    "details",
+    "inspector",
+    "jpeg",
+    "bmp",
+    "tiff",
+    "png",
+    "gif",
+    "webp",
+    "svg",
+    "ico",
+    "image-size"
+  ],
   "engines": {
     "vscode": "^1.94.0"
   },
   "categories": [
-    "Other",
-    "Visualization"
+    "Visualization",
+    "Formatters"
   ],
   "activationEvents": [],
   "main": "./out/extension.js",
