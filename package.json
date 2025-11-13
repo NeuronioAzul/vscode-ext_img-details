@@ -2,11 +2,12 @@
   "name": "image-details",
   "icon": "icon.png",
   "displayName": "Image Details",
-  "description": "View image metadata with EXIF data, and clean Metadata from images",
+  "description": "View comprehensive image metadata with EXIF data, and clean metadata from images. Supports zoom, copy-to-clipboard, and multi-language interface.",
   "version": "0.2.0",
   "publisher": "NeuronioAzul",
   "author": {
-    "name": "NeuronioAzul"
+    "name": "NeuronioAzul",
+    "url": "https://github.com/NeuronioAzul"
   },
   "license": "MIT",
   "repository": {
@@ -17,6 +18,24 @@
     "url": "https://github.com/NeuronioAzul/vscode-ext_img-details/issues"
   },
   "homepage": "https://github.com/NeuronioAzul/vscode-ext_img-details#readme",
+  "qna": "https://github.com/NeuronioAzul/vscode-ext_img-details/discussions",
+  "badges": [
+    {
+      "url": "https://img.shields.io/visual-studio-marketplace/v/NeuronioAzul.image-details",
+      "href": "https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details",
+      "description": "Visual Studio Marketplace Version"
+    },
+    {
+      "url": "https://img.shields.io/visual-studio-marketplace/i/NeuronioAzul.image-details",
+      "href": "https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details",
+      "description": "Visual Studio Marketplace Installs"
+    },
+    {
+      "url": "https://img.shields.io/visual-studio-marketplace/r/NeuronioAzul.image-details",
+      "href": "https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details",
+      "description": "Visual Studio Marketplace Rating"
+    }
+  ],
   "keywords": [
     "image",
     "metadata",
@@ -28,7 +47,17 @@
     "jpeg",
     "png",
     "gif",
-    "webp"
+    "webp",
+    "image viewer",
+    "exif viewer",
+    "image metadata",
+    "photo metadata",
+    "exif data",
+    "image inspector",
+    "zoom",
+    "thumbnail",
+    "dpi",
+    "resolution"
   ],
   "tags": [
     "image",
@@ -53,6 +82,10 @@
   ],
   "engines": {
     "vscode": "^1.94.0"
+  },
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
   },
   "categories": [
     "Visualization",

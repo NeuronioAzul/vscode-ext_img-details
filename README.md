@@ -1,10 +1,17 @@
-# Image Details Extension
+# Image Details
 
-A powerful VS Code extension that displays comprehensive image metadata in a beautiful, interactive side panel.
+A powerful VS Code extension that displays comprehensive image metadata, EXIF data, and provides tools to clean metadata from images.
 
-![VS Code Version](https://img.shields.io/badge/VS%20Code-1.94.0%2B-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)
+[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/NeuronioAzul.image-details?color=blue&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
+[![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/NeuronioAzul.image-details?color=success)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
+[![Visual Studio Marketplace Rating](https://img.shields.io/visual-studio-marketplace/r/NeuronioAzul.image-details)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
+[![GitHub](https://img.shields.io/github/license/NeuronioAzul/vscode-ext_img-details)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?logo=typescript)](https://www.typescriptlang.org/)
+
+## 🎨 Screenshots
+
+<!-- TODO: Add screenshots here -->
+![alt text](media/screenshots/screenshot-main-v0-2-0.png)
 
 ## ✨ Features
 
@@ -129,10 +136,6 @@ Works with all common image formats:
 2. **Command Palette**: Press `Ctrl+Shift+P` / `Cmd+Shift+P` → Type "Reopen with" → Select "Image Details Viewer"
 3. **Default Viewer**: The extension registers as the default viewer for supported image formats
 
-## 🎨 Screenshots
-
-<!-- TODO: Add screenshots here -->
-
 ## 🚀 Installation
 
 ### From VS Code Marketplace
@@ -201,13 +204,22 @@ See [TODO.md](docs/development/TODO.md) for planned features and improvements.
 
 See [CHANGELOG.md](docs/CHANGELOG.md) for a detailed version history.
 
-## 💬 Feedback
+## 💬 Feedback & Support
 
 Have feedback or suggestions? We'd love to hear from you!
 
-- [Open an issue](../../issues/new)
-- [Start a discussion](../../discussions) (if available)
-- Contribute directly via pull request
+- 🐛 [Report a Bug](https://github.com/NeuronioAzul/vscode-ext_img-details/issues/new)
+- 💡 [Request a Feature](https://github.com/NeuronioAzul/vscode-ext_img-details/issues/new)
+- 💬 [Discussions](https://github.com/NeuronioAzul/vscode-ext_img-details/discussions)
+- 📦 [Marketplace](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
+
+## 🔗 Resources
+
+- **[Repository](https://github.com/NeuronioAzul/vscode-ext_img-details)** - Source code on GitHub
+- **[Issues](https://github.com/NeuronioAzul/vscode-ext_img-details/issues)** - Report bugs and request features
+- **[License](LICENSE)** - MIT License details
+- **[Neuronio Azul](https://github.com/NeuronioAzul)** - More projects from the author
+- **[Marketplace](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)** - VS Code Marketplace page
 
 ## 🙏 Acknowledgments
 
