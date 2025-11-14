@@ -8,91 +8,52 @@ A powerful VS Code extension that displays comprehensive image metadata, EXIF da
 [![GitHub](https://img.shields.io/github/license/NeuronioAzul/vscode-ext_img-details)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?logo=typescript)](https://www.typescriptlang.org/)
 
-## 🎨 Screenshots
+## Screenshots
 
 <!-- TODO: Add screenshots here -->
 ![alt text](media/screenshots/screenshot-main-v0-2-0.png)
 
+Demonstration of copying metadata values to clipboard:
+![screen-record-01-v0-2-0.gif](media/demo/screen-record-01-v0-2-0.gif)
+
 ## ✨ Features
 
-### 📊 Comprehensive Metadata Display
+### Comprehensive Metadata Display
 
-- **Basic Information**:
+You can click any metadata value to copy it to clipboard.
+
+- **Basic Informations about the Image**:
   - File name and full path
   - Dimensions (width × height in pixels)
   - Image format and file extension
   - File size (auto-formatted: Bytes, KB, MB, GB)
   - Creation and modification timestamps
+  - And more...
 
-### 📷 EXIF Data Support
+- **Color & Technical Information**
+  - Transparency support detection
+  - Color depth and bit information
+  - DPI/PPI resolution data (when available)
+  - And more...
 
-Complete EXIF metadata extraction for photos (when available):
+- **📷 EXIF Data Support**
+  - EXIF metadata for photos (when available):
+  - **Camera Information**:
+    - Camera make and model
+    - Lens information
+  - **Photo Settings**:
+    - ISO sensitivity
+    - Aperture (f-stop)
+    - Shutter speed (exposure time)
+    - Focal length
+  - **Additional Data**:
+    - Date and time taken
+    - GPS location (latitude, longitude)
+    - Image orientation
+    - Color space information
+    - Software/editor used
 
-- **Camera Information**:
-  - Camera make and model
-  - Lens information
-- **Photo Settings**:
-  - ISO sensitivity
-  - Aperture (f-stop)
-  - Shutter speed (exposure time)
-  - Focal length
-- **Additional Data**:
-  - Date and time taken
-  - GPS location (latitude, longitude)
-  - Image orientation
-  - Color space information
-  - Software/editor used
-
-### 🎨 Color & Technical Information
-
-- **Transparency Detection**: Automatically detects if the image format supports transparency
-- **Color Depth**: Shows bit depth and color information based on format
-- **DPI/PPI Information**: Displays resolution metadata (dots per inch / pixels per inch) when available in EXIF data
-
-### 🗑️ EXIF Data Management
-
-- **Remove EXIF Metadata**: One-click button to strip all EXIF data from images
-- **Automatic Backup**: Creates a backup file (`_backup`) before removing metadata
-- **Format Support**: Works with JPEG/JPG and PNG images
-- **Smart Detection**: Button only appears when image contains EXIF data
-- **Safe Operation**: Confirmation dialog prevents accidental removal
-- **Error Recovery**: Automatically restores from backup if operation fails
-- **Real-time Update**: Interface refreshes automatically after metadata removal
-
-### 🔍 Advanced Zoom Controls
-
-Multiple ways to zoom and inspect images:
-
-- **Zoom Buttons**: Visual controls for zoom in (+), zoom out (-), and reset
-- **Fit to Screen**: Automatically adjusts image to fit the viewport
-- **Mouse Wheel Zoom**: Hold `Ctrl/Cmd` and scroll to zoom smoothly
-- **Click to Zoom**: Click anywhere on the image to toggle 2× zoom
-- **Keyboard Shortcuts**:
-  - `+` or `=` → Zoom In
-  - `-` or `_` → Zoom Out
-  - `0` → Reset to 100%
-- **Smooth Transitions**: Animated zoom with centered focal point
-
-### 🌍 Internationalization (i18n)
-
-- **Multi-language Support**:
-  - 🇺🇸 English (default)
-  - 🇧🇷 Português (Brasil)
-- **Automatic Detection**: Uses your VS Code language settings
-- **Easy to Extend**: Add your own language (see [I18N.md](docs/contributing/I18N.md))
-
-### 🎯 Enhanced User Experience
-
-- **Resizable Sidebar**: Drag the left edge to resize metadata panel (250-600px)
-- **Sticky Panel**: Metadata stays visible while scrolling through large images
-- **Copy to Clipboard**: Click any metadata value to copy it instantly
-- **Visual Feedback**: Animated notification when copying values
-- **Context Menu Integration**: Right-click images in Explorer → "Open with Image Details Viewer"
-- **Error Handling**: User-friendly error pages for loading failures
-- **Dark/Light Theme**: Fully responsive to VS Code theme settings
-- **Icons**: Visual icons for each metadata type for better scannability
-
-### 🖼️ Supported Image Formats
+### Supported Image Formats
 
 Works with all common image formats:
 
@@ -104,7 +65,7 @@ Works with all common image formats:
 - SVG (`.svg`)
 - ICO (`.ico`)
 
-## 📸 Usage
+## Usage
 
 ### Quick Start
 
@@ -116,13 +77,31 @@ Works with all common image formats:
 
 ### Interacting with Images
 
-#### Zoom Controls
+#### Advanced Zoom Controls
 
 - **Buttons**: Use the visual `+`, `-`, `⟲`, and `⊡` buttons in the toolbar
 - **Keyboard**: Press `+` to zoom in, `-` to zoom out, `0` to reset
 - **Mouse Wheel**: Hold `Ctrl` (Windows/Linux) or `Cmd` (Mac) and scroll
 - **Click**: Click anywhere on the image to toggle 2× zoom
 - **Fit to Screen**: Click the fit button to auto-adjust image size
+
+### EXIF Data Management
+
+- **Remove EXIF Metadata**: One-click button to strip all EXIF data from images
+- **Automatic Backup**: Creates a backup file (`_backup`) before removing metadata
+- **Format Support**: Works with JPEG/JPG and PNG images
+- **Smart Detection**: Button only appears when image contains EXIF data
+- **Safe Operation**: Confirmation dialog prevents accidental removal
+- **Error Recovery**: Automatically restores from backup if operation fails
+- **Real-time Update**: Interface refreshes automatically after metadata removal
+
+### Internationalization (i18n)
+
+- **Multi-language Support**:
+  - 🇺🇸 English (default)
+  - 🇧🇷 Português (Brasil)
+- **Automatic Detection**: Uses your VS Code language settings
+- **Easy to Extend**: Add your own language (see [I18N.md](docs/contributing/I18N.md))
 
 #### Metadata Panel
 
@@ -136,7 +115,7 @@ Works with all common image formats:
 2. **Command Palette**: Press `Ctrl+Shift+P` / `Cmd+Shift+P` → Type "Reopen with" → Select "Image Details Viewer"
 3. **Default Viewer**: The extension registers as the default viewer for supported image formats
 
-## 🚀 Installation
+## Installation
 
 ### From VS Code Marketplace
 

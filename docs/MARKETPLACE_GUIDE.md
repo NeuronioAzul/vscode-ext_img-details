@@ -157,8 +157,8 @@ Before publishing to the marketplace, ensure:
 - [x] Dependencies are listed in `package.json`
 - [x] Extension compiles without errors
 - [x] Extension works when installed from VSIX
-- [ ] Screenshots added to README.md (TODO: 7.2)
-- [ ] Demo GIF created (TODO: 7.3)
+- [x] Screenshots added to README.md (TODO: 7.2)
+- [x] Demo GIF created (TODO: 7.3)
 
 ## 🚀 Publishing Command
 
@@ -178,17 +178,6 @@ vsce publish major
 ```
 
 ## 📸 Next Steps
-
-1. **TODO 7.2**: Capture screenshots
-   - See `docs/development/SCREENSHOTS_GUIDE.md`
-   - Add to `media/screenshots/` folder
-   - Embed in README.md
-
-2. **TODO 7.3**: Create demo GIF
-   - 15-30 seconds showing key features
-   - Keep under 5MB
-   - Add to `media/demo.gif`
-   - Embed in README.md
 
 3. **Publish to Marketplace**
    - Create publisher account on marketplace
