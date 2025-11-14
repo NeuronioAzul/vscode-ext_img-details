@@ -79,7 +79,7 @@
    - Isso abre Extension Development Host
 
 2. **Abrir imagem**:
-   - Navegar até test-images/happyboy.png
+   - Navegar até test-images/boy.png
    - Ou qualquer imagem suportada
 
 3. **Testar funcionalidades**:

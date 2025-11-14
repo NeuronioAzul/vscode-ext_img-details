@@ -159,13 +159,13 @@ ffmpeg -i input.mp4 -vf "fps=15,scale=1280:-1:flags=lanczos" -c:v gif output.gif
 
 Digite na barra de endereço:
 
-```
+```text
 \\wsl$\Ubuntu\home\mauro\projects\vscode-ext_img-details\media\screenshots
 ```
 
 Ou simplesmente:
 
-```
+```text
 \\wsl$\Ubuntu
 ```
 

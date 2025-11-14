@@ -24,7 +24,7 @@ A extensão já está instalada no seu VS Code. Agora vamos capturar os materiai
   - Painel de metadados à direita
   - Seção "Basic Information" expandida
 - **Como tirar:**
-  - Abra uma imagem com EXIF (ex: `test-images/happyboy.png`)
+  - Abra uma imagem com EXIF (ex: `test-images/boy.png`)
   - Ajuste o VS Code para tela cheia ou boa resolução
   - Use ferramenta de screenshot do sistema
   - **Linux:** `Shift + PrtSc` ou `gnome-screenshot -a`
