@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Support/Donation Features**: Multiple ways to support the extension
+  - Buy Me A Coffee button in extension metadata panel
+  - PayPal donation button in README
+  - GitHub Sponsors integration
+  - Dedicated "Support the Project" section with all donation options
 - Screenshots in README.md showcasing the extension's main interface
 - Demo GIF demonstrating copy-to-clipboard functionality
 - Complete marketplace documentation and resources
@@ -18,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved README.md structure with better organization of features
 - Enhanced marketplace presentation with visual assets
 - Updated license badge to use standard MIT badge format
+- Added `sponsor` field in package.json
 
 ### Fixed
 

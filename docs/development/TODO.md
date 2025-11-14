@@ -272,10 +272,16 @@
 - [x] 7.9 Adicionar keywords ao package.json
 - [x] 7.10 Configurar repository e bugs URL
 - [ ] 7.11 Adicionar funding links (GitHub Sponsors)
-- [ ] 7.12 Botão para doação
-  - [ ] 7.12.1 no README.md
-    - [ ] Adicionar seção "Apoie o projeto"
-    - [ ] PayPal link and button
+- [x] 7.12 Botão para doação
+  - [x] 7.12.1 no README.md
+    - [x] Adicionar seção "Apoie o projeto"
+    - [x] PayPal link and button
+    - [x] Buy me a coffee link and button
+    - [x] GitHub Sponsors badge
+  - [x] 7.12.2 no painel da extensão
+    - [x] Botão "Buy Me A Coffee" no final do painel de metadados
+    - [x] Estilo responsivo com hover effect
+  - [ ] 7.12.3 na página da extensão no marketplace
 ```html
 <form action="https://www.paypal.com/donate" method="post" target="_top">
 <input type="hidden" name="hosted_button_id" value="QNEHQ5LAF64G2" />

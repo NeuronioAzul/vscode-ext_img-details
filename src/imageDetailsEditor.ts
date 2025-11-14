@@ -1069,6 +1069,47 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             cursor: not-allowed;
         }
         
+        /* Support section styles */
+        .support-section {
+            margin: 24px 0;
+            padding: 16px;
+            background-color: var(--vscode-editor-background);
+            border: 1px solid var(--vscode-widget-border);
+            border-radius: 8px;
+            text-align: center;
+        }
+        .support-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--vscode-foreground);
+            margin-bottom: 12px;
+        }
+        .support-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .support-link {
+            display: inline-block;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+        .support-link:hover {
+            transform: scale(1.05);
+        }
+        .support-button-img {
+            height: 45px;
+            width: auto;
+            border-radius: 4px;
+        }
+        .support-text {
+            font-size: 11px;
+            color: var(--vscode-descriptionForeground);
+            font-style: italic;
+        }
+        
         /* Collapsible sections styles */
         .collapsible-section {
             margin: 20px 0;
@@ -1244,6 +1285,18 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 
                 ${metadata.exif ? this.generateExifHtml(metadata.exif, t, sectionStates, displayMode) : ''}
             </div>
+            
+            <!-- Support Section -->
+            <div class="support-section">
+                <div class="support-title">💖 Support this Extension</div>
+                <div class="support-buttons">
+                    <a href="https://www.buymeacoffee.com/neuronioazul" target="_blank" class="support-link">
+                        <img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" class="support-button-img" />
+                    </a>
+                </div>
+                <div class="support-text">If you find this extension helpful, consider supporting its development!</div>
+            </div>
+            
             <p><br><br></p>
         </div>
     </div>

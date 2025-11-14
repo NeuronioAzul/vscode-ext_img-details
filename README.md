@@ -206,6 +206,30 @@ Have feedback or suggestions? We'd love to hear from you!
 - Image size detection using [image-size](https://www.npmjs.com/package/image-size)
 - EXIF data extraction using [exifreader](https://www.npmjs.com/package/exifreader)
 
+## 💖 Support the Project
+
+If you find this extension useful, consider supporting its development:
+
+<p align="center">
+  <a href="https://www.buymeacoffee.com/neuronioazul" target="_blank">
+    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://www.paypal.com/donate/?hosted_button_id=QNEHQ5LAF64G2" target="_blank">
+    <img src="https://www.paypalobjects.com/pt_BR/BR/i/btn/btn_donateCC_LG.gif" alt="Donate with PayPal" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/sponsors/NeuronioAzul" target="_blank">
+    <img src="https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-EA4AAA?logo=github" alt="GitHub Sponsors" />
+  </a>
+</p>
+
+Your support helps maintain and improve this extension. Thank you! 🙏
+
 ---
 
 **Made with 🧠 neurons by [NeuronioAzul](https://github.com/NeuronioAzul/vscode-ext_img-details)**

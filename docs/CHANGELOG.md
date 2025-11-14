@@ -11,17 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Support/Donation Section**: Added support buttons for project sustainability
+  - Buy Me A Coffee button in metadata panel with responsive design
+  - PayPal donation button in README
+  - GitHub Sponsors integration in package.json
+  - Centralized "Support the Project" section in README
+  - Multiple donation options with visual buttons
+  - Hover effects and smooth transitions on support buttons
 - Screenshots in README.md showcasing the extension's main interface
 - Demo GIF demonstrating copy-to-clipboard functionality
-- Complete marketplace documentation (MARKETPLACE_GUIDE.md)
 - Enhanced Resources section in README with all project links
 
 ### Changed
 
 - Improved README.md structure with better organization of features
-- Enhanced marketplace presentation with visual assets
+- Enhanced marketplace presentation with visual assets (screenshots, demo GIF)
 - Updated license badge to use standard MIT badge format
-- Reorganized feature descriptions for better clarity
+- Reorganized feature descriptions for better clarity and readability
+- Added `sponsor` field in package.json for GitHub Sponsors integration
+- Improved support section styling with centered layout
 
 ### Fixed
 
