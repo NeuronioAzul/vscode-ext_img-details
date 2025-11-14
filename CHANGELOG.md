@@ -5,6 +5,26 @@ All notable changes to the "Image Details" extension will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2025-11-14
+
+### Added
+
+- Screenshots in README.md showcasing the extension's main interface
+- Demo GIF demonstrating copy-to-clipboard functionality
+- Complete marketplace documentation and resources
+
+### Changed
+
+- Improved README.md structure with better organization of features
+- Enhanced marketplace presentation with visual assets
+- Updated license badge to use standard MIT badge format
+
+### Fixed
+
+- Extension packaging now includes all dependencies (image-size, exifreader)
+- Fixed .vscodeignore to properly include node_modules in VSIX
+- Resolved extension activation issues in WSL environment
+
 ## [0.2.0] - 2025-11-13
 
 ### Added

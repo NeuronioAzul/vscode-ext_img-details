@@ -262,29 +262,37 @@
 ### 7. Publicação
 
 - [x] 7.1 Criar ícone oficial da extensão (icon.png 128x128px)
-- [ ] 7.2 Otimizar README.md com screenshots
-- [ ] 7.3 Adicionar demo GIF
+- [x] 7.2 Otimizar README.md com screenshots
+- [x] 7.3 Adicionar demo GIF
 - [ ] 7.4 Configurar CI/CD para builds automáticos
-- [ ] 7.5 Preparar para publicação no VS Code Marketplace
+- [x] 7.5 Preparar para publicação no VS Code Marketplace
 - [x] 7.6 Criar changelog estruturado
 - [x] 7.7 Adicionar licença apropriada MIT
 - [x] 7.8 Melhorar README.md com badges e seções
 - [x] 7.9 Adicionar keywords ao package.json
 - [x] 7.10 Configurar repository e bugs URL
-- [ ] 7.11 Adicionar funding links (GitHub Sponsors, Patreon, etc.)
+- [ ] 7.11 Adicionar funding links (GitHub Sponsors)
 - [ ] 7.12 Botão para doação
   - [ ] 7.12.1 no README.md
     - [ ] Adicionar seção "Apoie o projeto"
+    - [ ] PayPal link and button
+```html
+<form action="https://www.paypal.com/donate" method="post" target="_top">
+<input type="hidden" name="hosted_button_id" value="QNEHQ5LAF64G2" />
+<input type="image" src="https://www.paypalobjects.com/pt_BR/BR/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Faça doações com o botão do PayPal" />
+<img alt="" border="0" src="https://www.paypal.com/pt_BR/i/scr/pixel.gif" width="1" height="1" />
+</form>
+```
     - [ ] buyme a coffee link and button
 
 ```html
 <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="neuronioazul" data-color="#5F7FFF" data-emoji=""  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
 ```
 
-  - [ ] 7.12.2 no painel da extensão
+- [ ] 7.12.2 no painel da extensão
 <a href="https://www.buymeacoffee.com/neuronioazul" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
-  - [ ] 7.12.2 na página da extensão no marketplace
+- [ ] 7.12.2 na página da extensão no marketplace
 
 ### 8. Testes
 

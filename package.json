@@ -3,7 +3,7 @@
   "icon": "icon.png",
   "displayName": "Image Details",
   "description": "View comprehensive image metadata with EXIF data, and clean metadata from images. Supports zoom, copy-to-clipboard, and multi-language interface.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "publisher": "NeuronioAzul",
   "author": {
     "name": "NeuronioAzul",

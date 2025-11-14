@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2025-11-14
+
+### Added
+
+- Screenshots in README.md showcasing the extension's main interface
+- Demo GIF demonstrating copy-to-clipboard functionality
+- Complete marketplace documentation (MARKETPLACE_GUIDE.md)
+- Enhanced Resources section in README with all project links
+
+### Changed
+
+- Improved README.md structure with better organization of features
+- Enhanced marketplace presentation with visual assets
+- Updated license badge to use standard MIT badge format
+- Reorganized feature descriptions for better clarity
+
+### Fixed
+
+- Extension packaging now includes all dependencies (image-size, exifreader)
+- Fixed .vscodeignore to properly include node_modules in VSIX
+- Resolved extension activation issues in WSL environment
+- License badge now uses standard format instead of GitHub-specific URL
+
+## [0.2.0] - 2025-11-13
+
 ### Added
 
 - **EXIF Data Removal Tool**: Remove all EXIF metadata from images with automatic backup
