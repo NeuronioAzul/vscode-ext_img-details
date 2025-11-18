@@ -2,11 +2,10 @@
 
 A powerful VS Code extension that displays comprehensive image metadata, EXIF data, and provides tools to clean metadata from images.
 
-[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/NeuronioAzul.image-details?color=blue&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
-[![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/NeuronioAzul.image-details?color=success)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
-[![Visual Studio Marketplace Rating](https://img.shields.io/visual-studio-marketplace/r/NeuronioAzul.image-details)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
+[![Version](https://vsmarketplacebadges.dev/version/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
+[![Installs](https://vsmarketplacebadges.dev/installs/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
+[![Rating](https://vsmarketplacebadges.dev/rating/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?logo=typescript)](https://www.typescriptlang.org/)
 
 ## Screenshots
 
