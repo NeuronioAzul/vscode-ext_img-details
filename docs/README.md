@@ -7,7 +7,6 @@
 - [**Contributing**](../CONTRIBUTING.md) - How to contribute
 - [**I18N Guide**](contributing/I18N.md) - Add translations
 
-
 ## Structure
 
 ```text
@@ -17,7 +16,6 @@ docs/
 └── development/
     └── TODO.md
 ```
-
 
 ## Guidelines
 

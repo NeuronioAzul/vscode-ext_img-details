@@ -5,6 +5,24 @@ All notable changes to the "Image Details" extension will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-11-18
+
+### 🚀 Performance & Documentation
+
+- **Bundling with esbuild**: Reduced from 149 files to 100 files (33% reduction)
+- **Optimized package size**: Single bundled JavaScript file improves activation time
+- **Documentation improvements**: Streamlined and professional documentation
+- **Cleaner structure**: All documentation organized in `docs/` folder
+
+### 🔧 Technical
+
+- Added esbuild bundling for production builds
+- Updated build scripts: `npm run package` for optimized builds
+- Watch mode now includes parallel type checking
+- Enhanced VS Code tasks configuration
+
+---
+
 ## [1.0.0] - 2025-11-18
 
 ### 🎉 Initial Public Release

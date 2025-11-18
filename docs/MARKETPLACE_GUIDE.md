@@ -61,11 +61,11 @@ The following resources are automatically displayed in the marketplace sidebar:
 
 ### Additional Configured Items
 
-6. **Q&A / Discussions** ✅
+1. **Q&A / Discussions** ✅
    - URL: `https://github.com/NeuronioAzul/vscode-ext_img-details/discussions`
    - Source: `package.json` → `qna`
 
-7. **Homepage** ✅
+2. **Homepage** ✅
    - URL: `https://github.com/NeuronioAzul/vscode-ext_img-details#readme`
    - Source: `package.json` → `homepage`
 
@@ -179,7 +179,7 @@ vsce publish major
 
 ## 📸 Next Steps
 
-3. **Publish to Marketplace**
+1. **Publish to Marketplace**
    - Create publisher account on marketplace
    - Run `vsce publish`
    - Verify marketplace page displays correctly

@@ -2,7 +2,7 @@
 
 ## Project Organization
 
-```
+```text
 vscode-ext_img-details/
 ├── README.md
 ├── CHANGELOG.md

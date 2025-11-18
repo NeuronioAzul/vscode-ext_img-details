@@ -2,8 +2,6 @@
 
 **Version:** 1.0.0 | **Updated:** November 2025
 
-
-
 ## 📊 Project Status
 
 | Category | Total | Completed | Pending | % Complete |
@@ -25,6 +23,7 @@
 ### 🎯 High Priority
 
 #### 1. Complete Extended Metadata
+
 **Complexity:** Medium | **Estimated Time:** 2-3 weeks
 
 - [ ] **Add detailed PNG metadata**
@@ -46,6 +45,7 @@
 ---
 
 #### 2. User Settings
+
 **Complexity:** Low-Medium | **Estimated Time:** 1-2 weeks
 
 - [ ] **Visible metadata selection**
@@ -67,6 +67,7 @@
 ### 🎯 Medium Priority
 
 #### 3. Testing System
+
 **Complexity:** High | **Estimated Time:** 2-3 weeks
 
 - [ ] **Unit tests**
@@ -89,6 +90,7 @@
 ---
 
 #### 4. CI/CD and Automation
+
 **Complexity:** Medium | **Estimated Time:** 1 week
 
 - [ ] **GitHub Actions workflow**
@@ -110,6 +112,7 @@
 ### 🎯 Medium-Low Priority
 
 #### 5. Performance and Optimization
+
 **Complexity:** Medium-High | **Estimated Time:** 2 weeks
 
 - [ ] **Lazy loading for large images**
@@ -130,6 +133,7 @@
 ---
 
 #### 6. Advanced Documentation
+
 **Complexity:** Low-Medium | **Estimated Time:** 1-2 weeks
 
 - [ ] **Documented internal API**
@@ -156,6 +160,7 @@
 ### 🎯 Advanced Features
 
 #### 7. Support for New Formats
+
 **Complexity:** High | **Estimated Time:** 3-4 weeks
 
 - [ ] **RAW formats**
@@ -175,6 +180,7 @@
 ---
 
 #### 8. Remote Resources
+
 **Complexity:** High | **Estimated Time:** 2-3 weeks
 
 - [ ] **Remote URL support**
@@ -194,6 +200,7 @@
 ---
 
 #### 9. Extended Compatibility
+
 **Complexity:** Medium | **Estimated Time:** 2 weeks
 
 - [ ] **Multi-version VS Code**
@@ -247,6 +254,7 @@
 ## 🏆 Milestones
 
 ### ✅ v1.0.0 - Initial Public Release (Completed)
+
 - ✅ Core functionality
 - ✅ EXIF support
 - ✅ Multi-language (EN, PT-BR)
@@ -255,17 +263,20 @@
 - ✅ Published to marketplace
 
 ### 🎯 v1.1.0 - Enhanced Metadata (Q1 2026)
+
 - Complete extended metadata
 - User settings
 - Basic testing system
 - CI/CD implemented
 
 ### 🔮 v1.2.0 - Performance & Quality (Q2 2026)
+
 - Optimized performance
 - Complete documentation
 - Test coverage > 80%
 
 ### 🌟 v2.0.0 - Professional Edition (Q3-Q4 2026)
+
 - RAW formats
 - Remote resources
 - Advanced features
@@ -275,12 +286,14 @@
 ## 📊 Success Metrics
 
 ### Goals for v1.1.0
+
 - [ ] 1,000+ installations
 - [ ] 4.5+ star rating
 - [ ] < 5 critical issues open
 - [ ] Test coverage > 60%
 
 ### Goals for v2.0.0
+
 - [ ] 10,000+ installations
 - [ ] 4.8+ star rating
 - [ ] External contributors: 5+
@@ -298,6 +311,7 @@ Want to help implement any roadmap item?
 4. Fork and start working!
 
 **Areas that need help most:**
+
 - 🧪 Automated testing
 - 📝 Documentation
 - 🌐 Translations to new languages
@@ -318,4 +332,3 @@ Have suggestions for the roadmap?
 **Note:** This roadmap is dynamic and may be adjusted based on community feedback, priorities, and available resources.
 
 **Last review:** November 18, 2025
-

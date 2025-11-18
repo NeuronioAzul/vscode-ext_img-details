@@ -29,7 +29,7 @@ Before publishing, ensure you have:
    - **Name**: `vsce-publish-token` (or any descriptive name)
    - **Organization**: All accessible organizations
    - **Expiration**: 90 days (or custom)
-   - **Scopes**: 
+   - **Scopes**:
      - Select **Custom defined**
      - Check **Marketplace** → **Manage**
 5. Click **Create**
@@ -69,6 +69,7 @@ vsce publish
 ```
 
 This will:
+
 1. Run `npm run vscode:prepublish` (compiles TypeScript)
 2. Package the extension
 3. Upload to marketplace
@@ -113,6 +114,7 @@ After publishing:
    - Resources links work (Repository, Issues, License)
 
 3. Test installation from marketplace:
+
    ```bash
    code --install-extension NeuronioAzul.image-details
    ```
@@ -142,6 +144,7 @@ git push origin v0.3.0
 ### Error: "Publisher not found"
 
 Make sure the publisher ID in `package.json` matches your marketplace publisher:
+
 ```json
 "publisher": "NeuronioAzul"
 ```
@@ -149,11 +152,13 @@ Make sure the publisher ID in `package.json` matches your marketplace publisher:
 ### Error: "Missing repository"
 
 Use the `--allow-missing-repository` flag:
+
 ```bash
 vsce publish --allow-missing-repository
 ```
 
 Or ensure `package.json` has:
+
 ```json
 "repository": {
   "type": "git",
@@ -164,6 +169,7 @@ Or ensure `package.json` has:
 ### Error: "Extension validation failed"
 
 Run validation locally:
+
 ```bash
 vsce package --allow-missing-repository
 ```
@@ -202,6 +208,7 @@ vsce unpublish NeuronioAzul.image-details@0.3.0
 ## Marketplace Statistics
 
 View download statistics and ratings:
+
 - [Publisher Dashboard](https://marketplace.visualstudio.com/manage/publishers/NeuronioAzul)
 
 ## Additional Resources

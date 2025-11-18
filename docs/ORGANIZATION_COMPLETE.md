@@ -2,7 +2,7 @@
 
 ## Structure
 
-```
+```text
 docs/
 ├── README.md
 ├── contributing/
