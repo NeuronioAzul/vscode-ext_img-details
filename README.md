@@ -2,8 +2,7 @@
 
 A powerful VS Code extension that displays comprehensive image metadata, EXIF data, and provides tools to clean metadata from images.
 
-<p align="center">
-
+<p style="text-align: center;">
 [![Version](https://vsmarketplacebadges.dev/version-short/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
 [![Installs](https://vsmarketplacebadges.dev/installs/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
 [![Downloads](https://vsmarketplacebadges.dev/downloads/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
