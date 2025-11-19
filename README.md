@@ -2,19 +2,15 @@
 
 A powerful VS Code extension that displays comprehensive image metadata, EXIF data, and provides tools to clean metadata from images.
 
-<p style="text-align: center;">
 [![Version](https://vsmarketplacebadges.dev/version-short/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
 [![Installs](https://vsmarketplacebadges.dev/installs/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
 [![Downloads](https://vsmarketplacebadges.dev/downloads/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
 [![Rating](https://vsmarketplacebadges.dev/rating/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 [![Follow on X](https://img.shields.io/twitter/follow/NeuronioAzul?style=social)](https://x.com/NeuronioAzul)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-orange?logo=buy-me-a-coffee)](https://www.buymeacoffee.com/neuronioazul)
 [![PayPal](https://img.shields.io/badge/PayPal-Donate-blue?logo=paypal)](https://www.paypal.com/donate/?hosted_button_id=QNEHQ5LAF64G2)
 [![GitHub Sponsors](https://img.shields.io/badge/GitHub-Sponsor-EA4AAA?logo=github)](https://github.com/sponsors/NeuronioAzul)
-</p>
 
 ## Screenshots
 
