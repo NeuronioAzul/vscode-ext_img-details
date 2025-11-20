@@ -6,3 +6,4 @@ node_modules
 
 # VS Code Extension Publishing credentials
 .vsce
+history.txt

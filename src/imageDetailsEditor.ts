@@ -431,6 +431,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 }
             } catch (error) {
                 // EXIF data not available or error reading it
+                // Silently handle - this is expected for images without EXIF data
             }
 
             return {
