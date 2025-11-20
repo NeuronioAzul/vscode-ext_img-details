@@ -50,6 +50,10 @@ interface Translations {
     removeExifConfirm: string;
     removeExifSuccess: string;
     removeExifError: string;
+    viewJsonMetadata: string;
+    metadataJson: string;
+    copyJson: string;
+    closeModal: string;
 }
 
 const translations: { [key: string]: Translations } = {
@@ -92,13 +96,17 @@ const translations: { [key: string]: Translations } = {
         basicInfo: 'Basic Information',
         collapse: 'Collapse',
         expand: 'Expand',
-        accordionMode: 'Accordion Mode',
-        listMode: 'List Mode',
-        sectionSettings: 'Section Display',
+        accordionMode: 'Accordion',
+        listMode: 'List',
+        sectionSettings: 'Display',
         removeExif: 'Remove EXIF Data',
         removeExifConfirm: 'Remove all EXIF metadata from this image? A new file will be saved without metadata.',
         removeExifSuccess: 'EXIF data removed successfully!',
-        removeExifError: 'Error removing EXIF data'
+        removeExifError: 'Error removing EXIF data',
+        viewJsonMetadata: 'View as JSON',
+        metadataJson: 'Metadata (JSON)',
+        copyJson: 'Copy JSON',
+        closeModal: 'Close'
     },
     'pt-br': {
         imageDetails: 'Detalhes da Imagem',
@@ -139,13 +147,17 @@ const translations: { [key: string]: Translations } = {
         basicInfo: 'Informações Básicas',
         collapse: 'Recolher',
         expand: 'Expandir',
-        accordionMode: 'Modo Sanfona',
-        listMode: 'Modo Lista',
-        sectionSettings: 'Exibição de Seções',
+        accordionMode: 'Sanfona',
+        listMode: 'Lista',
+        sectionSettings: 'Exibição',
         removeExif: 'Remover Dados EXIF',
         removeExifConfirm: 'Remover todos os metadados EXIF desta imagem? Um novo arquivo será salvo sem os metadados.',
         removeExifSuccess: 'Dados EXIF removidos com sucesso!',
-        removeExifError: 'Erro ao remover dados EXIF'
+        removeExifError: 'Erro ao remover dados EXIF',
+        viewJsonMetadata: 'Ver como JSON',
+        metadataJson: 'Metadados (JSON)',
+        copyJson: 'Copiar JSON',
+        closeModal: 'Fechar'
     }
 };
 
@@ -317,6 +329,13 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                                     command: 'resetRemoveExifButton'
                                 });
                             }
+                            break;
+                        case 'viewJsonMetadata':
+                            // Send metadata as JSON to webview
+                            webviewPanel.webview.postMessage({
+                                command: 'showJsonModal',
+                                metadata: metadata
+                            });
                             break;
                     }
                 },
@@ -559,7 +578,13 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             return desc !== undefined && desc !== null ? String(desc) : undefined;
         };
 
-        // Camera info
+        // === IMAGE DESCRIPTION ===
+        const imageDescription = getDescription(tags.ImageDescription);
+        if (imageDescription) {
+            exif.imageDescription = imageDescription;
+        }
+
+        // === CAMERA INFO ===
         const cameraMake = getDescription(tags.Make);
         if (cameraMake) {
             exif.cameraMake = cameraMake;
@@ -570,12 +595,14 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             exif.cameraModel = cameraModel;
         }
 
-        // Photo settings
+        // === PHOTO SETTINGS ===
+        // ISO
         const iso = getDescription(tags.ISO || tags.ISOSpeedRatings);
         if (iso) {
             exif.iso = iso;
         }
         
+        // Aperture (F-Number)
         if (tags.FNumber) {
             const fnumber = getDescription(tags.FNumber);
             if (fnumber) {
@@ -583,33 +610,252 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             }
         }
         
+        // Aperture Value
+        const apertureValue = getDescription(tags.ApertureValue);
+        if (apertureValue) {
+            exif.apertureValue = apertureValue;
+        }
+        
+        // Max Aperture
+        const maxAperture = getDescription(tags.MaxApertureValue);
+        if (maxAperture) {
+            exif.maxApertureValue = maxAperture;
+        }
+        
+        // Shutter Speed (Exposure Time)
         const exposureTime = getDescription(tags.ExposureTime);
         if (exposureTime) {
             exif.shutterSpeed = exposureTime;
         }
         
+        // Shutter Speed Value
+        const shutterSpeedValue = getDescription(tags.ShutterSpeedValue);
+        if (shutterSpeedValue) {
+            exif.shutterSpeedValue = shutterSpeedValue;
+        }
+        
+        // Focal Length
         if (tags.FocalLength) {
             const focal = getDescription(tags.FocalLength);
             if (focal) {
                 exif.focalLength = focal.includes('mm') ? focal : `${focal}mm`;
             }
         }
+        
+        // Focal Length in 35mm
+        const focalLength35mm = getDescription(tags.FocalLengthIn35mmFormat);
+        if (focalLength35mm) {
+            exif.focalLength35mm = focalLength35mm;
+        }
 
-        // Date info
+        // Exposure Program
+        const exposureProgram = getDescription(tags.ExposureProgram);
+        if (exposureProgram) {
+            exif.exposureProgram = exposureProgram;
+        }
+        
+        // Exposure Mode
+        const exposureMode = getDescription(tags.ExposureMode);
+        if (exposureMode) {
+            exif.exposureMode = exposureMode;
+        }
+        
+        // Exposure Compensation
+        const exposureCompensation = getDescription(tags.ExposureCompensation);
+        if (exposureCompensation !== undefined) {
+            exif.exposureCompensation = exposureCompensation;
+        }
+
+        // Metering Mode
+        const meteringMode = getDescription(tags.MeteringMode);
+        if (meteringMode) {
+            exif.meteringMode = meteringMode;
+        }
+
+        // Flash
+        const flash = getDescription(tags.Flash);
+        if (flash) {
+            exif.flash = flash;
+        }
+
+        // White Balance
+        const whiteBalance = getDescription(tags.WhiteBalance);
+        if (whiteBalance) {
+            exif.whiteBalance = whiteBalance;
+        }
+
+        // Components Configuration
+        const componentsConfig = getDescription(tags.ComponentsConfiguration);
+        if (componentsConfig) {
+            exif.componentsConfiguration = componentsConfig;
+        }
+
+        // User Comment
+        const userComment = getDescription(tags.UserComment);
+        if (userComment) {
+            exif.userComment = userComment;
+        }
+
+        // === DATE/TIME INFO ===
         const dateTaken = getDescription(tags.DateTimeOriginal || tags.DateTime);
         if (dateTaken) {
             exif.dateTaken = dateTaken;
         }
+        
+        const createDate = getDescription(tags.CreateDate);
+        if (createDate) {
+            exif.createDate = createDate;
+        }
+        
+        const modifyDate = getDescription(tags.ModifyDate);
+        if (modifyDate) {
+            exif.modifyDate = modifyDate;
+        }
 
-        // GPS info
+        // === GPS INFO ===
         const gpsLat = getDescription(tags.GPSLatitude);
         const gpsLon = getDescription(tags.GPSLongitude);
         if (gpsLat && gpsLon) {
             exif.gpsLatitude = gpsLat;
             exif.gpsLongitude = gpsLon;
         }
+        
+        const gpsLatRef = getDescription(tags.GPSLatitudeRef);
+        if (gpsLatRef) {
+            exif.gpsLatitudeRef = gpsLatRef;
+        }
+        
+        const gpsLonRef = getDescription(tags.GPSLongitudeRef);
+        if (gpsLonRef) {
+            exif.gpsLongitudeRef = gpsLonRef;
+        }
+        
+        const gpsAltitude = getDescription(tags.GPSAltitude);
+        if (gpsAltitude) {
+            exif.gpsAltitude = gpsAltitude;
+        }
+        
+        const gpsAltitudeRef = getDescription(tags.GPSAltitudeRef);
+        if (gpsAltitudeRef) {
+            exif.gpsAltitudeRef = gpsAltitudeRef;
+        }
+        
+        const gpsTimeStamp = getDescription(tags.GPSTimeStamp);
+        if (gpsTimeStamp) {
+            exif.gpsTimeStamp = gpsTimeStamp;
+        }
+        
+        const gpsDateStamp = getDescription(tags.GPSDateStamp);
+        if (gpsDateStamp) {
+            exif.gpsDateStamp = gpsDateStamp;
+        }
+        
+        const gpsSatellites = getDescription(tags.GPSSatellites);
+        if (gpsSatellites) {
+            exif.gpsSatellites = gpsSatellites;
+        }
+        
+        const gpsStatus = getDescription(tags.GPSStatus);
+        if (gpsStatus) {
+            exif.gpsStatus = gpsStatus;
+        }
+        
+        const gpsMeasureMode = getDescription(tags.GPSMeasureMode);
+        if (gpsMeasureMode) {
+            exif.gpsMeasureMode = gpsMeasureMode;
+        }
+        
+        const gpsDOP = getDescription(tags.GPSDOP);
+        if (gpsDOP) {
+            exif.gpsDOP = gpsDOP;
+        }
+        
+        const gpsSpeed = getDescription(tags.GPSSpeed);
+        if (gpsSpeed !== undefined) {
+            exif.gpsSpeed = gpsSpeed;
+        }
+        
+        const gpsSpeedRef = getDescription(tags.GPSSpeedRef);
+        if (gpsSpeedRef) {
+            exif.gpsSpeedRef = gpsSpeedRef;
+        }
+        
+        const gpsTrack = getDescription(tags.GPSTrack);
+        if (gpsTrack !== undefined) {
+            exif.gpsTrack = gpsTrack;
+        }
+        
+        const gpsTrackRef = getDescription(tags.GPSTrackRef);
+        if (gpsTrackRef) {
+            exif.gpsTrackRef = gpsTrackRef;
+        }
+        
+        const gpsImgDirection = getDescription(tags.GPSImgDirection);
+        if (gpsImgDirection !== undefined) {
+            exif.gpsImgDirection = gpsImgDirection;
+        }
+        
+        const gpsImgDirectionRef = getDescription(tags.GPSImgDirectionRef);
+        if (gpsImgDirectionRef) {
+            exif.gpsImgDirectionRef = gpsImgDirectionRef;
+        }
+        
+        const gpsMapDatum = getDescription(tags.GPSMapDatum);
+        if (gpsMapDatum) {
+            exif.gpsMapDatum = gpsMapDatum;
+        }
+        
+        const gpsDestLatitude = getDescription(tags.GPSDestLatitude);
+        if (gpsDestLatitude) {
+            exif.gpsDestLatitude = gpsDestLatitude;
+        }
+        
+        const gpsDestLatitudeRef = getDescription(tags.GPSDestLatitudeRef);
+        if (gpsDestLatitudeRef) {
+            exif.gpsDestLatitudeRef = gpsDestLatitudeRef;
+        }
+        
+        const gpsDestLongitude = getDescription(tags.GPSDestLongitude);
+        if (gpsDestLongitude) {
+            exif.gpsDestLongitude = gpsDestLongitude;
+        }
+        
+        const gpsDestLongitudeRef = getDescription(tags.GPSDestLongitudeRef);
+        if (gpsDestLongitudeRef) {
+            exif.gpsDestLongitudeRef = gpsDestLongitudeRef;
+        }
+        
+        const gpsDestBearing = getDescription(tags.GPSDestBearing);
+        if (gpsDestBearing !== undefined) {
+            exif.gpsDestBearing = gpsDestBearing;
+        }
+        
+        const gpsDestBearingRef = getDescription(tags.GPSDestBearingRef);
+        if (gpsDestBearingRef) {
+            exif.gpsDestBearingRef = gpsDestBearingRef;
+        }
+        
+        const gpsDestDistance = getDescription(tags.GPSDestDistance);
+        if (gpsDestDistance !== undefined) {
+            exif.gpsDestDistance = gpsDestDistance;
+        }
+        
+        const gpsDestDistanceRef = getDescription(tags.GPSDestDistanceRef);
+        if (gpsDestDistanceRef) {
+            exif.gpsDestDistanceRef = gpsDestDistanceRef;
+        }
+        
+        const gpsDifferential = getDescription(tags.GPSDifferential);
+        if (gpsDifferential) {
+            exif.gpsDifferential = gpsDifferential;
+        }
+        
+        const gpsVersionID = getDescription(tags.GPSVersionID);
+        if (gpsVersionID) {
+            exif.gpsVersionID = gpsVersionID;
+        }
 
-        // Image info
+        // === IMAGE INFO ===
         const orientation = getDescription(tags.Orientation);
         if (orientation) {
             exif.orientation = orientation;
@@ -624,8 +870,70 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         if (software) {
             exif.software = software;
         }
+        
+        const artist = getDescription(tags.Artist);
+        if (artist) {
+            exif.artist = artist;
+        }
+        
+        const copyright = getDescription(tags.Copyright);
+        if (copyright) {
+            exif.copyright = copyright;
+        }
+        
+        const compression = getDescription(tags.Compression);
+        if (compression) {
+            exif.compression = compression;
+        }
+        
+        const yCbCrPositioning = getDescription(tags.YCbCrPositioning);
+        if (yCbCrPositioning) {
+            exif.yCbCrPositioning = yCbCrPositioning;
+        }
 
-        // Bit depth information
+        // === LENS INFO ===
+        const lensMake = getDescription(tags.LensMake);
+        if (lensMake) {
+            exif.lensMake = lensMake;
+        }
+        
+        const lensModel = getDescription(tags.LensModel);
+        if (lensModel) {
+            exif.lensModel = lensModel;
+        }
+        
+        const lensSerialNumber = getDescription(tags.LensSerialNumber);
+        if (lensSerialNumber) {
+            exif.lensSerialNumber = lensSerialNumber;
+        }
+        
+        const ownerName = getDescription(tags.OwnerName);
+        if (ownerName) {
+            exif.ownerName = ownerName;
+        }
+
+        // === VERSION INFO ===
+        const exifVersion = getDescription(tags.ExifVersion);
+        if (exifVersion) {
+            exif.exifVersion = exifVersion;
+        }
+        
+        const flashpixVersion = getDescription(tags.FlashpixVersion);
+        if (flashpixVersion) {
+            exif.flashpixVersion = flashpixVersion;
+        }
+        
+        const interopIndex = getDescription(tags.InteropIndex);
+        if (interopIndex) {
+            exif.interopIndex = interopIndex;
+        }
+        
+        const interopVersion = getDescription(tags.InteropVersion);
+        if (interopVersion) {
+            exif.interopVersion = interopVersion;
+        }
+
+        // === BIT DEPTH INFORMATION ===
         const bitsPerSample = getDescription(tags.BitsPerSample);
         if (bitsPerSample) {
             exif.bitsPerSample = bitsPerSample;
@@ -636,12 +944,16 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             exif.samplesPerPixel = samplesPerPixel;
         }
 
-        // DPI/PPI information
+        // === DPI/PPI INFORMATION ===
         const xResolution = tags.XResolution?.value || tags.XResolution?.description;
         const yResolution = tags.YResolution?.value || tags.YResolution?.description;
         const resolutionUnit = tags.ResolutionUnit?.description || tags.ResolutionUnit?.value;
         
         if (xResolution && yResolution) {
+            exif.xResolution = xResolution;
+            exif.yResolution = yResolution;
+            exif.resolutionUnit = resolutionUnit || 'inches';
+            
             const unit = resolutionUnit === '3' || resolutionUnit === 'cm' ? 'pixels/cm' : 'DPI';
             if (xResolution === yResolution) {
                 exif.dpi = `${xResolution} ${unit}`;
@@ -1070,6 +1382,140 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             cursor: not-allowed;
         }
         
+        /* View JSON button styles */
+        .view-json-button {
+            width: 100%;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background-color: var(--vscode-button-background);
+            color: var(--vscode-button-foreground);
+            border: 1px solid var(--vscode-button-border);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .view-json-button:hover {
+            background-color: var(--vscode-button-hoverBackground);
+        }
+        .view-json-button:active {
+            transform: scale(0.98);
+        }
+        
+        /* JSON Modal styles */
+        .json-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+        }
+        .json-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .json-modal-content {
+            background-color: var(--vscode-editor-background);
+            border: 1px solid var(--vscode-panel-border);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .json-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--vscode-panel-border);
+        }
+        .json-modal-header h2 {
+            margin: 0;
+            font-size: 16px;
+            color: var(--vscode-foreground);
+        }
+        .json-modal-close {
+            background: none;
+            border: none;
+            color: var(--vscode-foreground);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+        .json-modal-close:hover {
+            background-color: var(--vscode-toolbar-hoverBackground);
+        }
+        .json-modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .json-modal-body pre {
+            margin: 0;
+            padding: 12px;
+            background-color: var(--vscode-editor-background);
+            border: 1px solid var(--vscode-input-border);
+            border-radius: 4px;
+            font-family: var(--vscode-editor-font-family);
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-x: auto;
+            color: var(--vscode-editor-foreground);
+        }
+        .json-modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--vscode-panel-border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        .json-copy-button,
+        .json-close-button {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .json-copy-button {
+            background-color: var(--vscode-button-background);
+            color: var(--vscode-button-foreground);
+            border: 1px solid var(--vscode-button-border);
+        }
+        .json-copy-button:hover {
+            background-color: var(--vscode-button-hoverBackground);
+        }
+        .json-close-button {
+            background-color: var(--vscode-button-secondaryBackground);
+            color: var(--vscode-button-secondaryForeground);
+            border: 1px solid var(--vscode-button-border);
+        }
+        .json-close-button:hover {
+            background-color: var(--vscode-button-secondaryHoverBackground);
+        }
+        
         /* Support section styles */
         .support-section {
             margin: 24px 0;
@@ -1262,7 +1708,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             
             <!-- Display Mode Toggle -->
             <div class="display-mode-toggle">
-                <label>⚙️ ${t.sectionSettings}:</label>
+                <label>${t.sectionSettings}:</label>
                 <button class="mode-button ${displayMode === 'accordion' ? 'active' : ''}" onclick="setDisplayMode('accordion')">${t.accordionMode}</button>
                 <button class="mode-button ${displayMode === 'list' ? 'active' : ''}" onclick="setDisplayMode('list')">${t.listMode}</button>
             </div>
@@ -1276,6 +1722,9 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 ${metadata.exif ? `<button class="remove-exif-button" onclick="removeExifData()" id="removeExifBtn">
                     🗑️ ${t.removeExif}
                 </button>` : ''}
+                <button class="view-json-button" onclick="viewJsonMetadata()">
+                    📋 ${t.viewJsonMetadata}
+                </button>
             </div>
             
             <div class="${displayMode === 'list' ? 'list-mode' : ''}">
@@ -1304,6 +1753,27 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
     
     <div class="copy-feedback" id="copyFeedback">
         ✅ ${t.copied}!
+    </div>
+    
+    <!-- JSON Modal -->
+    <div class="json-modal" id="jsonModal">
+        <div class="json-modal-content">
+            <div class="json-modal-header">
+                <h2>${t.metadataJson}</h2>
+                <button class="json-modal-close" onclick="closeJsonModal()">✕</button>
+            </div>
+            <div class="json-modal-body">
+                <pre id="jsonContent"></pre>
+            </div>
+            <div class="json-modal-footer">
+                <button class="json-copy-button" onclick="copyJsonMetadata()">
+                    📋 ${t.copyJson}
+                </button>
+                <button class="json-close-button" onclick="closeJsonModal()">
+                    ${t.closeModal}
+                </button>
+            </div>
+        </div>
     </div>
     
     <script>
@@ -1513,11 +1983,51 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 command: 'removeExif'
             });
         }
+        
+        // View JSON metadata functionality
+        function viewJsonMetadata() {
+            vscode.postMessage({
+                command: 'viewJsonMetadata'
+            });
+        }
+        
+        // Close JSON modal
+        function closeJsonModal() {
+            const modal = document.getElementById('jsonModal');
+            if (modal) {
+                modal.classList.remove('show');
+            }
+        }
+        
+        // Copy JSON metadata
+        function copyJsonMetadata() {
+            const jsonContent = document.getElementById('jsonContent');
+            if (jsonContent) {
+                const text = jsonContent.textContent;
+                vscode.postMessage({
+                    command: 'copy',
+                    text: text
+                });
+                
+                // Show feedback
+                const feedback = document.getElementById('copyFeedback');
+                if (feedback) {
+                    feedback.textContent = '✅ JSON ' + copiedText + '!';
+                    feedback.classList.add('show');
+                    setTimeout(() => {
+                        feedback.classList.remove('show');
+                    }, 2000);
+                }
+            }
+        }
 
         // Make functions available globally
         window.toggleSection = toggleSection;
         window.setDisplayMode = setDisplayMode;
         window.removeExifData = removeExifData;
+        window.viewJsonMetadata = viewJsonMetadata;
+        window.closeJsonModal = closeJsonModal;
+        window.copyJsonMetadata = copyJsonMetadata;
         
         // Listen for messages from the extension
         window.addEventListener('message', event => {
@@ -1528,6 +2038,14 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                     if (btn) {
                         btn.disabled = false;
                         btn.textContent = '🗑️ ${t.removeExif}';
+                    }
+                    break;
+                case 'showJsonModal':
+                    const modal = document.getElementById('jsonModal');
+                    const jsonContent = document.getElementById('jsonContent');
+                    if (modal && jsonContent && message.metadata) {
+                        jsonContent.textContent = JSON.stringify(message.metadata, null, 2);
+                        modal.classList.add('show');
                     }
                     break;
             }
@@ -1709,8 +2227,17 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             </div>
             <div class="section-content ${expandedClass}" id="exif-data-content">`;
 
-        // Camera Information
-        if (exif.cameraMake || exif.cameraModel) {
+        // === IMAGE DESCRIPTION ===
+        if (exif.imageDescription) {
+            html += `
+            <div class="metadata-item">
+                <div class="metadata-label">📝 Image Description</div>
+                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.imageDescription)}')">${this.escapeHtml(exif.imageDescription)}</div>
+            </div>`;
+        }
+
+        // === CAMERA INFORMATION ===
+        if (exif.cameraMake || exif.cameraModel || exif.ownerName) {
             html += `<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">${t.camera}</h3>`;
             
             if (exif.cameraMake) {
@@ -1728,10 +2255,47 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.cameraModel)}')">${this.escapeHtml(exif.cameraModel)}</div>
                 </div>`;
             }
+            
+            if (exif.ownerName) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">👤 Owner Name</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.ownerName)}')">${this.escapeHtml(exif.ownerName)}</div>
+                </div>`;
+            }
         }
 
-        // Photo Settings
-        if (exif.iso || exif.aperture || exif.shutterSpeed || exif.focalLength) {
+        // === LENS INFORMATION ===
+        if (exif.lensMake || exif.lensModel || exif.lensSerialNumber) {
+            html += `<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">🔭 Lens</h3>`;
+            
+            if (exif.lensMake) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🏭 Lens Make</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.lensMake)}')">${this.escapeHtml(exif.lensMake)}</div>
+                </div>`;
+            }
+            
+            if (exif.lensModel) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🔭 Lens Model</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.lensModel)}')">${this.escapeHtml(exif.lensModel)}</div>
+                </div>`;
+            }
+            
+            if (exif.lensSerialNumber) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🔢 Lens Serial Number</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.lensSerialNumber)}')">${this.escapeHtml(exif.lensSerialNumber)}</div>
+                </div>`;
+            }
+        }
+
+        // === PHOTO SETTINGS ===
+        if (exif.iso || exif.aperture || exif.apertureValue || exif.maxApertureValue || exif.shutterSpeed || exif.shutterSpeedValue || exif.focalLength || exif.focalLength35mm || exif.exposureProgram || exif.exposureMode || exif.exposureCompensation !== undefined || exif.meteringMode || exif.flash || exif.whiteBalance || exif.componentsConfiguration || exif.userComment) {
             html += `<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">${t.photoSettings}</h3>`;
             
             if (exif.iso) {
@@ -1745,16 +2309,40 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.aperture) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🔍 ${t.aperture}</div>
+                    <div class="metadata-label">🔍 ${t.aperture} (F-Number)</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.aperture)}')">${this.escapeHtml(exif.aperture)}</div>
+                </div>`;
+            }
+            
+            if (exif.apertureValue) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🔍 Aperture Value</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.apertureValue)}')">${this.escapeHtml(exif.apertureValue)}</div>
+                </div>`;
+            }
+            
+            if (exif.maxApertureValue) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🔍 Max Aperture</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.maxApertureValue)}')">${this.escapeHtml(exif.maxApertureValue)}</div>
                 </div>`;
             }
             
             if (exif.shutterSpeed) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">⚡ ${t.shutterSpeed}</div>
+                    <div class="metadata-label">⚡ ${t.shutterSpeed} (Exposure Time)</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.shutterSpeed)}')">${this.escapeHtml(exif.shutterSpeed)}</div>
+                </div>`;
+            }
+            
+            if (exif.shutterSpeedValue) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">⚡ Shutter Speed Value</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.shutterSpeedValue)}')">${this.escapeHtml(exif.shutterSpeedValue)}</div>
                 </div>`;
             }
             
@@ -1765,27 +2353,140 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.focalLength)}')">${this.escapeHtml(exif.focalLength)}</div>
                 </div>`;
             }
+            
+            if (exif.focalLength35mm) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🎯 Focal Length (35mm)</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.focalLength35mm)}')">${this.escapeHtml(exif.focalLength35mm)}</div>
+                </div>`;
+            }
+            
+            if (exif.exposureProgram) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📊 Exposure Program</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.exposureProgram)}')">${this.escapeHtml(exif.exposureProgram)}</div>
+                </div>`;
+            }
+            
+            if (exif.exposureMode) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📊 Exposure Mode</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.exposureMode)}')">${this.escapeHtml(exif.exposureMode)}</div>
+                </div>`;
+            }
+            
+            if (exif.exposureCompensation !== undefined) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📊 Exposure Compensation</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.exposureCompensation)}')">${this.escapeHtml(exif.exposureCompensation)}</div>
+                </div>`;
+            }
+            
+            if (exif.meteringMode) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📏 Metering Mode</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.meteringMode)}')">${this.escapeHtml(exif.meteringMode)}</div>
+                </div>`;
+            }
+            
+            if (exif.flash) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">⚡ Flash</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.flash)}')">${this.escapeHtml(exif.flash)}</div>
+                </div>`;
+            }
+            
+            if (exif.whiteBalance) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">⚖️ White Balance</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.whiteBalance)}')">${this.escapeHtml(exif.whiteBalance)}</div>
+                </div>`;
+            }
+            
+            if (exif.componentsConfiguration) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🔧 Components Configuration</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.componentsConfiguration)}')">${this.escapeHtml(exif.componentsConfiguration)}</div>
+                </div>`;
+            }
+            
+            if (exif.userComment) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">💬 User Comment</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.userComment)}')">${this.escapeHtml(exif.userComment)}</div>
+                </div>`;
+            }
         }
 
-        // Date Information
-        if (exif.dateTaken) {
+        // === DATE & TIME INFORMATION ===
+        if (exif.dateTaken || exif.createDate || exif.modifyDate) {
             html += `<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">${t.date}</h3>`;
-            html += `
-            <div class="metadata-item">
-                <div class="metadata-label">📅 ${t.dateTaken}</div>
-                <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.dateTaken)}')">${this.escapeHtml(exif.dateTaken)}</div>
-            </div>`;
+            
+            if (exif.dateTaken) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📅 ${t.dateTaken} (Original)</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.dateTaken)}')">${this.escapeHtml(exif.dateTaken)}</div>
+                </div>`;
+            }
+            
+            if (exif.createDate) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📅 Create Date</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.createDate)}')">${this.escapeHtml(exif.createDate)}</div>
+                </div>`;
+            }
+            
+            if (exif.modifyDate) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📅 Modify Date</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.modifyDate)}')">${this.escapeHtml(exif.modifyDate)}</div>
+                </div>`;
+            }
         }
 
-        // GPS Information
-        if (exif.gpsLatitude || exif.gpsLongitude) {
-            html += `<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">${t.location}</h3>`;
+        // === GPS INFORMATION ===
+        const hasGPS = exif.gpsLatitude || exif.gpsLongitude || exif.gpsAltitude || exif.gpsTimeStamp || exif.gpsDateStamp || 
+                       exif.gpsSatellites || exif.gpsStatus || exif.gpsMeasureMode || exif.gpsDOP || exif.gpsSpeed !== undefined || 
+                       exif.gpsTrack !== undefined || exif.gpsImgDirection !== undefined || exif.gpsMapDatum || 
+                       exif.gpsDestLatitude || exif.gpsDestLongitude || exif.gpsDestBearing !== undefined || 
+                       exif.gpsDestDistance !== undefined || exif.gpsDifferential || exif.gpsVersionID;
+        
+        if (hasGPS) {
+            html += `<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">${t.location} (GPS)</h3>`;
+            
+            if (exif.gpsVersionID) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🔖 GPS Version ID</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsVersionID)}')">${this.escapeHtml(exif.gpsVersionID)}</div>
+                </div>`;
+            }
             
             if (exif.gpsLatitude) {
                 html += `
                 <div class="metadata-item">
                     <div class="metadata-label">🌍 ${t.latitude}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsLatitude)}')">${this.escapeHtml(exif.gpsLatitude)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsLatitudeRef) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🌍 Latitude Ref</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsLatitudeRef)}')">${this.escapeHtml(exif.gpsLatitudeRef)}</div>
                 </div>`;
             }
             
@@ -1796,17 +2497,249 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsLongitude)}')">${this.escapeHtml(exif.gpsLongitude)}</div>
                 </div>`;
             }
+            
+            if (exif.gpsLongitudeRef) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🌍 Longitude Ref</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsLongitudeRef)}')">${this.escapeHtml(exif.gpsLongitudeRef)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsAltitude) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">⛰️ GPS Altitude</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsAltitude)}')">${this.escapeHtml(exif.gpsAltitude)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsAltitudeRef) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">⛰️ Altitude Ref</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsAltitudeRef)}')">${this.escapeHtml(exif.gpsAltitudeRef)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsTimeStamp) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">⏰ GPS Time Stamp</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsTimeStamp)}')">${this.escapeHtml(exif.gpsTimeStamp)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsDateStamp) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📅 GPS Date Stamp</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDateStamp)}')">${this.escapeHtml(exif.gpsDateStamp)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsSatellites) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🛰️ GPS Satellites</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsSatellites)}')">${this.escapeHtml(exif.gpsSatellites)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsStatus) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📡 GPS Status</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsStatus)}')">${this.escapeHtml(exif.gpsStatus)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsMeasureMode) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📐 GPS Measure Mode</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsMeasureMode)}')">${this.escapeHtml(exif.gpsMeasureMode)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsDOP) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📊 GPS DOP</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDOP)}')">${this.escapeHtml(exif.gpsDOP)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsSpeed !== undefined) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🚗 GPS Speed</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsSpeed)}')">${this.escapeHtml(exif.gpsSpeed)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsSpeedRef) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🚗 GPS Speed Ref</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsSpeedRef)}')">${this.escapeHtml(exif.gpsSpeedRef)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsTrack !== undefined) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🧭 GPS Track</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsTrack)}')">${this.escapeHtml(exif.gpsTrack)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsTrackRef) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🧭 GPS Track Ref</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsTrackRef)}')">${this.escapeHtml(exif.gpsTrackRef)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsImgDirection !== undefined) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📷 GPS Image Direction</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsImgDirection)}')">${this.escapeHtml(exif.gpsImgDirection)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsImgDirectionRef) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📷 GPS Image Direction Ref</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsImgDirectionRef)}')">${this.escapeHtml(exif.gpsImgDirectionRef)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsMapDatum) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🗺️ GPS Map Datum</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsMapDatum)}')">${this.escapeHtml(exif.gpsMapDatum)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsDestLatitude) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🎯 GPS Dest Latitude</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDestLatitude)}')">${this.escapeHtml(exif.gpsDestLatitude)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsDestLatitudeRef) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🎯 GPS Dest Latitude Ref</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDestLatitudeRef)}')">${this.escapeHtml(exif.gpsDestLatitudeRef)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsDestLongitude) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🎯 GPS Dest Longitude</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDestLongitude)}')">${this.escapeHtml(exif.gpsDestLongitude)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsDestLongitudeRef) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🎯 GPS Dest Longitude Ref</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDestLongitudeRef)}')">${this.escapeHtml(exif.gpsDestLongitudeRef)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsDestBearing !== undefined) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🎯 GPS Dest Bearing</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDestBearing)}')">${this.escapeHtml(exif.gpsDestBearing)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsDestBearingRef) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🎯 GPS Dest Bearing Ref</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDestBearingRef)}')">${this.escapeHtml(exif.gpsDestBearingRef)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsDestDistance !== undefined) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🎯 GPS Dest Distance</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDestDistance)}')">${this.escapeHtml(exif.gpsDestDistance)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsDestDistanceRef) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🎯 GPS Dest Distance Ref</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDestDistanceRef)}')">${this.escapeHtml(exif.gpsDestDistanceRef)}</div>
+                </div>`;
+            }
+            
+            if (exif.gpsDifferential) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📊 GPS Differential</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDifferential)}')">${this.escapeHtml(exif.gpsDifferential)}</div>
+                </div>`;
+            }
         }
 
-        // Additional Information
-        if (exif.orientation || exif.colorSpace || exif.software) {
+        // === IMAGE TECHNICAL INFO ===
+        if (exif.orientation || exif.colorSpace || exif.software || exif.artist || exif.copyright || exif.compression || exif.yCbCrPositioning || exif.exifVersion || exif.flashpixVersion || exif.interopIndex || exif.interopVersion || exif.xResolution || exif.yResolution || exif.resolutionUnit) {
             html += `<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">${t.additionalInfo}</h3>`;
+            
+            if (exif.compression) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🗜️ Compression</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.compression)}')">${this.escapeHtml(exif.compression)}</div>
+                </div>`;
+            }
             
             if (exif.orientation) {
                 html += `
                 <div class="metadata-item">
                     <div class="metadata-label">🔄 ${t.orientation}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.orientation)}')">${this.escapeHtml(exif.orientation)}</div>
+                </div>`;
+            }
+            
+            if (exif.xResolution) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📏 X Resolution</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.xResolution)}')">${this.escapeHtml(exif.xResolution)}</div>
+                </div>`;
+            }
+            
+            if (exif.yResolution) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📏 Y Resolution</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.yResolution)}')">${this.escapeHtml(exif.yResolution)}</div>
+                </div>`;
+            }
+            
+            if (exif.resolutionUnit) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📏 Resolution Unit</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.resolutionUnit)}')">${this.escapeHtml(exif.resolutionUnit)}</div>
                 </div>`;
             }
             
@@ -1818,11 +2751,67 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 </div>`;
             }
             
+            if (exif.yCbCrPositioning) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🎨 YCbCr Positioning</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.yCbCrPositioning)}')">${this.escapeHtml(exif.yCbCrPositioning)}</div>
+                </div>`;
+            }
+            
             if (exif.software) {
                 html += `
                 <div class="metadata-item">
                     <div class="metadata-label">💻 ${t.software}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.software)}')">${this.escapeHtml(exif.software)}</div>
+                </div>`;
+            }
+            
+            if (exif.artist) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🎨 Artist</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.artist)}')">${this.escapeHtml(exif.artist)}</div>
+                </div>`;
+            }
+            
+            if (exif.copyright) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">©️ Copyright</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.copyright)}')">${this.escapeHtml(exif.copyright)}</div>
+                </div>`;
+            }
+            
+            if (exif.exifVersion) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🔖 EXIF Version</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.exifVersion)}')">${this.escapeHtml(exif.exifVersion)}</div>
+                </div>`;
+            }
+            
+            if (exif.flashpixVersion) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🔖 Flashpix Version</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.flashpixVersion)}')">${this.escapeHtml(exif.flashpixVersion)}</div>
+                </div>`;
+            }
+            
+            if (exif.interopIndex) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🔗 Interop Index</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.interopIndex)}')">${this.escapeHtml(exif.interopIndex)}</div>
+                </div>`;
+            }
+            
+            if (exif.interopVersion) {
+                html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">🔗 Interop Version</div>
+                    <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.interopVersion)}')">${this.escapeHtml(exif.interopVersion)}</div>
                 </div>`;
             }
         }

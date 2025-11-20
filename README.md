@@ -41,21 +41,52 @@ You can click any metadata value to copy it to clipboard.
   - And more...
 
 - **📷 EXIF Data Support**
-  - EXIF metadata for photos (when available):
+  - **Comprehensive metadata for photos** (70+ fields when available):
+  - **Image Description**: Photo title and description
   - **Camera Information**:
     - Camera make and model
-    - Lens information
-  - **Photo Settings**:
+    - Owner name
+  - **Lens Information**:
+    - Lens make and model
+    - Lens serial number
+  - **Photo Settings** (Complete):
     - ISO sensitivity
-    - Aperture (f-stop)
-    - Shutter speed (exposure time)
-    - Focal length
-  - **Additional Data**:
-    - Date and time taken
-    - GPS location (latitude, longitude)
-    - Image orientation
-    - Color space information
-    - Software/editor used
+    - Aperture (f-stop) and values
+    - Shutter speed (exposure time) and values
+    - Focal length (including 35mm equivalent)
+    - Exposure program, mode, and compensation
+    - Metering mode
+    - Flash settings
+    - White balance
+    - Components configuration
+    - User comments
+  - **Date & Time Information**:
+    - Original date taken
+    - Create and modify dates
+  - **GPS Information** (Complete - 30+ fields):
+    - GPS version and coordinates (latitude/longitude with references)
+    - Altitude with reference
+    - Timestamps and date stamps
+    - Satellite count and status
+    - Measurement mode and DOP
+    - Speed and track with references
+    - Image direction
+    - Map datum (e.g., WGS-84)
+    - Destination coordinates and bearing
+    - Distance and differential correction
+  - **Image Technical Information**:
+    - Compression type
+    - Orientation
+    - Resolution (X/Y and unit)
+    - Color space and YCbCr positioning
+    - Software used
+    - Artist and copyright information
+    - EXIF, Flashpix, and Interop versions
+
+- **JSON Metadata Viewer**
+  - View all metadata in formatted JSON
+  - Easy copy-to-clipboard for entire metadata object
+  - Perfect for developers and advanced users
 
 ### Supported Image Formats
 

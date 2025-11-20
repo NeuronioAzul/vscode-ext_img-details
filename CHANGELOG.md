@@ -5,6 +5,35 @@ All notable changes to the "Image Details" extension will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2025-11-20
+
+### ✨ New Features
+
+- **Comprehensive EXIF Metadata Display**: Expanded EXIF data visualization to include 70+ fields
+  - Image Description
+  - Camera Information: Make, Model, Owner Name
+  - Lens Information: Make, Model, Serial Number
+  - Photo Settings: ISO, Aperture, Shutter Speed, Focal Length, Exposure Program/Mode/Compensation, Metering Mode, Flash, White Balance, Components Configuration, User Comment
+  - Date/Time Information: Date Taken, Create Date, Modify Date
+  - GPS Information (30+ fields): Version ID, Coordinates with references, Altitude, Timestamps, Satellites, Status, Measure Mode, DOP, Speed, Track, Image Direction, Map Datum, Destination coordinates, Bearing, Distance, Differential
+  - Image Technical Information: Compression, Orientation, Resolution (X/Y), Color Space, YCbCr Positioning, Software, Artist, Copyright, EXIF/Flashpix/Interop Versions
+
+- **JSON Metadata Viewer**: New button to view all metadata in JSON format
+  - Modal dialog with formatted JSON
+  - Easy copy-to-clipboard functionality
+  - Useful for developers and advanced users
+
+### 🎨 UI Improvements
+
+- Organized EXIF data into logical sections with clear hierarchy
+- Added icons for each metadata category
+- Improved section headers and visual grouping
+
+### 📝 Documentation
+
+- Updated README with new EXIF features
+- Enhanced documentation organization
+
 ## [1.0.2] - 2025-11-18
 
 ### 🐛 Bug Fixes
