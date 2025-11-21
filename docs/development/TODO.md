@@ -179,20 +179,43 @@
 npm install -g @vscode/vsce
 ```
 
-2. Criar pacote
+## 📦 Publishing & Release Management
 
-```bash
-vsce package
-```
+- [x] Automated publishing script (`publish.sh`)
+  - [x] Interactive version selection (patch/minor/major)
+  - [x] Automatic CHANGELOG extraction
+  - [x] Git tag creation and push
+  - [x] GitHub release creation
+  - [x] VS Code Marketplace publishing
+  - [x] Dry-run mode for testing
+  - [x] Command-line options support
+- [x] Publishing documentation
+  - [x] Complete guide in `docs/PUBLISHING.md`
+  - [x] Best practices and troubleshooting
+  - [x] Security notes for PAT handling
 
-3. Testar o pacote
+## 🚀 Manual Publishing Steps
 
-```bash
-code --install-extension image-details-0.1.0.vsix
-```
+For manual publishing without the script:
 
-4. Publicar (requer token do marketplace)
+1. Bump version in `package.json`
 
-```bash
-vsce publish
-```
+1. Create pacote
+
+   ```bash
+   vsce package
+   ```
+
+1. Test the package
+
+   ```bash
+   code --install-extension image-details-0.1.0.vsix
+   ```
+
+1. Publish (requires marketplace token)
+
+   ```bash
+   vsce publish
+   ```
+
+**Note:** It's recommended to use the automated `publish.sh` script for consistent and reliable publishing.

@@ -5,7 +5,7 @@ All notable changes to the "Image Details" extension will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.3] - 2025-11-20
+## [1.1.0] - 2025-11-20
 
 ### ✨ New Features
 
@@ -23,6 +23,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Easy copy-to-clipboard functionality
   - Useful for developers and advanced users
 
+### 🌍 Internationalization
+
+- **Complete Bilingual Support**: All 70+ EXIF fields now fully translated
+  - Portuguese (Brazil) - pt-BR
+  - English - en
+- **65 New Translation Keys**: Added comprehensive translations for all new EXIF metadata fields
+- **Consistent User Experience**: No mixed language display - complete localization
+
 ### 🎨 UI Improvements
 
 - Organized EXIF data into logical sections with clear hierarchy
@@ -33,6 +41,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated README with new EXIF features
 - Enhanced documentation organization
+
+### 🛠️ Developer Tools
+
+- **Automated Publishing Script**: Interactive publishing automation with professional UX
+  - Intelligent version suggestion (Semantic Versioning)
+  - Automatic CHANGELOG extraction for release notes
+  - Git tag creation and push automation
+  - GitHub release creation (via GitHub CLI)
+  - VS Code Marketplace publishing
+  - Dry-run mode for testing
+  - Visual progress indicators and formatted output
+  - Command-line options for non-interactive use
+- **Publishing Documentation**: Complete guide in `docs/PUBLISHING.md`
+  - Prerequisites and setup instructions
+  - Workflow explanation with examples
+  - Troubleshooting section
+  - Security best practices
 
 ## [1.0.2] - 2025-11-18
 

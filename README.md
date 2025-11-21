@@ -154,6 +154,45 @@ Works with all common image formats:
 - `imageDetails.defaultSectionStates`: Default expanded sections
 - `imageDetails.rememberSectionStates`: Remember state between sessions
 
+## Development & Publishing
+
+### For Developers
+
+```bash
+# Clone repository
+git clone https://github.com/NeuronioAzul/vscode-ext_img-details.git
+cd vscode-ext_img-details
+
+# Install dependencies
+npm install
+
+# Compile
+npm run compile
+
+# Watch mode (development)
+npm run watch
+
+# Test in VS Code
+# Press F5 to open Extension Development Host
+```
+
+### For Maintainers
+
+To publish a new version, use the interactive publishing script:
+
+```bash
+./publish.sh
+```
+
+The script will guide you through:
+
+- Version selection (patch/minor/major)
+- Git tag creation and push
+- GitHub release creation
+- VS Code Marketplace publishing
+
+For detailed instructions, see [Publishing Guide](docs/PUBLISHING.md).
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for:
@@ -167,6 +206,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for:
 
 - [Changelog](CHANGELOG.md)
 - [Documentation](docs/README.md)
+- [Publishing Guide](docs/PUBLISHING.md) - For maintainers
 - [Issues](https://github.com/NeuronioAzul/vscode-ext_img-details/issues)
 - [Marketplace](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
 

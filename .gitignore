@@ -7,3 +7,12 @@ node_modules
 # VS Code Extension Publishing credentials
 .vsce
 history.txt
+
+# Environment variables (PAT tokens, etc.)
+.env
+.env.local
+*.secret
+*.token
+
+# Publishing script temporary files
+publish-*

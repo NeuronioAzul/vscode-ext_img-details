@@ -54,6 +54,66 @@ interface Translations {
     metadataJson: string;
     copyJson: string;
     closeModal: string;
+    imageDescription: string;
+    ownerName: string;
+    lens: string;
+    lensMake: string;
+    lensModel: string;
+    lensSerialNumber: string;
+    apertureValue: string;
+    maxAperture: string;
+    exposureTime: string;
+    shutterSpeedValue: string;
+    focalLength35mm: string;
+    exposureProgram: string;
+    exposureMode: string;
+    exposureCompensation: string;
+    meteringMode: string;
+    flash: string;
+    whiteBalance: string;
+    componentsConfiguration: string;
+    userComment: string;
+    createDate: string;
+    modifyDate: string;
+    gps: string;
+    gpsVersionId: string;
+    latitudeRef: string;
+    longitudeRef: string;
+    gpsAltitude: string;
+    altitudeRef: string;
+    gpsTimeStamp: string;
+    gpsDateStamp: string;
+    gpsSatellites: string;
+    gpsStatus: string;
+    gpsMeasureMode: string;
+    gpsDOP: string;
+    gpsSpeed: string;
+    gpsSpeedRef: string;
+    gpsTrack: string;
+    gpsTrackRef: string;
+    gpsImgDirection: string;
+    gpsImgDirectionRef: string;
+    gpsMapDatum: string;
+    gpsDestLatitude: string;
+    gpsDestLatitudeRef: string;
+    gpsDestLongitude: string;
+    gpsDestLongitudeRef: string;
+    gpsDestBearing: string;
+    gpsDestBearingRef: string;
+    gpsDestDistance: string;
+    gpsDestDistanceRef: string;
+    gpsDifferential: string;
+    compression: string;
+    xResolution: string;
+    yResolution: string;
+    resolutionUnit: string;
+    yCbCrPositioning: string;
+    artist: string;
+    copyright: string;
+    exifVersion: string;
+    flashpixVersion: string;
+    interopIndex: string;
+    interopVersion: string;
 }
 
 const translations: { [key: string]: Translations } = {
@@ -106,7 +166,67 @@ const translations: { [key: string]: Translations } = {
         viewJsonMetadata: 'View as JSON',
         metadataJson: 'Metadata (JSON)',
         copyJson: 'Copy JSON',
-        closeModal: 'Close'
+        closeModal: 'Close',
+        imageDescription: 'Image Description',
+        ownerName: 'Owner Name',
+        lens: 'Lens',
+        lensMake: 'Lens Make',
+        lensModel: 'Lens Model',
+        lensSerialNumber: 'Lens Serial Number',
+        apertureValue: 'Aperture Value',
+        maxAperture: 'Max Aperture',
+        exposureTime: 'Exposure Time',
+        shutterSpeedValue: 'Shutter Speed Value',
+        focalLength35mm: 'Focal Length (35mm)',
+        exposureProgram: 'Exposure Program',
+        exposureMode: 'Exposure Mode',
+        exposureCompensation: 'Exposure Compensation',
+        meteringMode: 'Metering Mode',
+        flash: 'Flash',
+        whiteBalance: 'White Balance',
+        componentsConfiguration: 'Components Configuration',
+        userComment: 'User Comment',
+        createDate: 'Create Date',
+        modifyDate: 'Modify Date',
+        gps: 'GPS',
+        gpsVersionId: 'GPS Version ID',
+        latitudeRef: 'Latitude Ref',
+        longitudeRef: 'Longitude Ref',
+        gpsAltitude: 'GPS Altitude',
+        altitudeRef: 'Altitude Ref',
+        gpsTimeStamp: 'GPS Time Stamp',
+        gpsDateStamp: 'GPS Date Stamp',
+        gpsSatellites: 'GPS Satellites',
+        gpsStatus: 'GPS Status',
+        gpsMeasureMode: 'GPS Measure Mode',
+        gpsDOP: 'GPS DOP',
+        gpsSpeed: 'GPS Speed',
+        gpsSpeedRef: 'GPS Speed Ref',
+        gpsTrack: 'GPS Track',
+        gpsTrackRef: 'GPS Track Ref',
+        gpsImgDirection: 'GPS Image Direction',
+        gpsImgDirectionRef: 'GPS Image Direction Ref',
+        gpsMapDatum: 'GPS Map Datum',
+        gpsDestLatitude: 'GPS Dest Latitude',
+        gpsDestLatitudeRef: 'GPS Dest Latitude Ref',
+        gpsDestLongitude: 'GPS Dest Longitude',
+        gpsDestLongitudeRef: 'GPS Dest Longitude Ref',
+        gpsDestBearing: 'GPS Dest Bearing',
+        gpsDestBearingRef: 'GPS Dest Bearing Ref',
+        gpsDestDistance: 'GPS Dest Distance',
+        gpsDestDistanceRef: 'GPS Dest Distance Ref',
+        gpsDifferential: 'GPS Differential',
+        compression: 'Compression',
+        xResolution: 'X Resolution',
+        yResolution: 'Y Resolution',
+        resolutionUnit: 'Resolution Unit',
+        yCbCrPositioning: 'YCbCr Positioning',
+        artist: 'Artist',
+        copyright: 'Copyright',
+        exifVersion: 'EXIF Version',
+        flashpixVersion: 'Flashpix Version',
+        interopIndex: 'Interop Index',
+        interopVersion: 'Interop Version'
     },
     'pt-br': {
         imageDetails: 'Detalhes da Imagem',
@@ -157,7 +277,67 @@ const translations: { [key: string]: Translations } = {
         viewJsonMetadata: 'Ver como JSON',
         metadataJson: 'Metadados (JSON)',
         copyJson: 'Copiar JSON',
-        closeModal: 'Fechar'
+        closeModal: 'Fechar',
+        imageDescription: 'Descrição da Imagem',
+        ownerName: 'Nome do Proprietário',
+        lens: 'Lente',
+        lensMake: 'Fabricante da Lente',
+        lensModel: 'Modelo da Lente',
+        lensSerialNumber: 'Número de Série da Lente',
+        apertureValue: 'Valor da Abertura',
+        maxAperture: 'Abertura Máxima',
+        exposureTime: 'Tempo de Exposição',
+        shutterSpeedValue: 'Valor da Velocidade do Obturador',
+        focalLength35mm: 'Distância Focal (35mm)',
+        exposureProgram: 'Programa de Exposição',
+        exposureMode: 'Modo de Exposição',
+        exposureCompensation: 'Compensação de Exposição',
+        meteringMode: 'Modo de Medição',
+        flash: 'Flash',
+        whiteBalance: 'Balanço de Branco',
+        componentsConfiguration: 'Configuração de Componentes',
+        userComment: 'Comentário do Usuário',
+        createDate: 'Data de Criação',
+        modifyDate: 'Data de Modificação',
+        gps: 'GPS',
+        gpsVersionId: 'ID de Versão GPS',
+        latitudeRef: 'Ref. Latitude',
+        longitudeRef: 'Ref. Longitude',
+        gpsAltitude: 'Altitude GPS',
+        altitudeRef: 'Ref. Altitude',
+        gpsTimeStamp: 'Carimbo de Tempo GPS',
+        gpsDateStamp: 'Carimbo de Data GPS',
+        gpsSatellites: 'Satélites GPS',
+        gpsStatus: 'Status GPS',
+        gpsMeasureMode: 'Modo de Medição GPS',
+        gpsDOP: 'DOP GPS',
+        gpsSpeed: 'Velocidade GPS',
+        gpsSpeedRef: 'Ref. Velocidade GPS',
+        gpsTrack: 'Trilha GPS',
+        gpsTrackRef: 'Ref. Trilha GPS',
+        gpsImgDirection: 'Direção da Imagem GPS',
+        gpsImgDirectionRef: 'Ref. Direção da Imagem GPS',
+        gpsMapDatum: 'Datum do Mapa GPS',
+        gpsDestLatitude: 'Latitude de Destino GPS',
+        gpsDestLatitudeRef: 'Ref. Latitude de Destino GPS',
+        gpsDestLongitude: 'Longitude de Destino GPS',
+        gpsDestLongitudeRef: 'Ref. Longitude de Destino GPS',
+        gpsDestBearing: 'Rumo de Destino GPS',
+        gpsDestBearingRef: 'Ref. Rumo de Destino GPS',
+        gpsDestDistance: 'Distância de Destino GPS',
+        gpsDestDistanceRef: 'Ref. Distância de Destino GPS',
+        gpsDifferential: 'Diferencial GPS',
+        compression: 'Compressão',
+        xResolution: 'Resolução X',
+        yResolution: 'Resolução Y',
+        resolutionUnit: 'Unidade de Resolução',
+        yCbCrPositioning: 'Posicionamento YCbCr',
+        artist: 'Artista',
+        copyright: 'Direitos Autorais',
+        exifVersion: 'Versão EXIF',
+        flashpixVersion: 'Versão Flashpix',
+        interopIndex: 'Índice Interop',
+        interopVersion: 'Versão Interop'
     }
 };
 
@@ -2231,7 +2411,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         if (exif.imageDescription) {
             html += `
             <div class="metadata-item">
-                <div class="metadata-label">📝 Image Description</div>
+                <div class="metadata-label">📝 ${t.imageDescription}</div>
                 <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.imageDescription)}')">${this.escapeHtml(exif.imageDescription)}</div>
             </div>`;
         }
@@ -2259,7 +2439,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.ownerName) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">👤 Owner Name</div>
+                    <div class="metadata-label">👤 ${t.ownerName}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.ownerName)}')">${this.escapeHtml(exif.ownerName)}</div>
                 </div>`;
             }
@@ -2267,12 +2447,12 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
 
         // === LENS INFORMATION ===
         if (exif.lensMake || exif.lensModel || exif.lensSerialNumber) {
-            html += `<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">🔭 Lens</h3>`;
+            html += `<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">🔭 ${t.lens}</h3>`;
             
             if (exif.lensMake) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🏭 Lens Make</div>
+                    <div class="metadata-label">🏭 ${t.lensMake}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.lensMake)}')">${this.escapeHtml(exif.lensMake)}</div>
                 </div>`;
             }
@@ -2280,7 +2460,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.lensModel) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🔭 Lens Model</div>
+                    <div class="metadata-label">🔭 ${t.lensModel}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.lensModel)}')">${this.escapeHtml(exif.lensModel)}</div>
                 </div>`;
             }
@@ -2288,7 +2468,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.lensSerialNumber) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🔢 Lens Serial Number</div>
+                    <div class="metadata-label">🔢 ${t.lensSerialNumber}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.lensSerialNumber)}')">${this.escapeHtml(exif.lensSerialNumber)}</div>
                 </div>`;
             }
@@ -2317,7 +2497,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.apertureValue) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🔍 Aperture Value</div>
+                    <div class="metadata-label">🔍 ${t.apertureValue}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.apertureValue)}')">${this.escapeHtml(exif.apertureValue)}</div>
                 </div>`;
             }
@@ -2325,7 +2505,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.maxApertureValue) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🔍 Max Aperture</div>
+                    <div class="metadata-label">🔍 ${t.maxAperture}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.maxApertureValue)}')">${this.escapeHtml(exif.maxApertureValue)}</div>
                 </div>`;
             }
@@ -2333,7 +2513,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.shutterSpeed) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">⚡ ${t.shutterSpeed} (Exposure Time)</div>
+                    <div class="metadata-label">⚡ ${t.shutterSpeed} (${t.exposureTime})</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.shutterSpeed)}')">${this.escapeHtml(exif.shutterSpeed)}</div>
                 </div>`;
             }
@@ -2341,7 +2521,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.shutterSpeedValue) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">⚡ Shutter Speed Value</div>
+                    <div class="metadata-label">⚡ ${t.shutterSpeedValue}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.shutterSpeedValue)}')">${this.escapeHtml(exif.shutterSpeedValue)}</div>
                 </div>`;
             }
@@ -2357,7 +2537,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.focalLength35mm) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🎯 Focal Length (35mm)</div>
+                    <div class="metadata-label">🎯 ${t.focalLength35mm}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.focalLength35mm)}')">${this.escapeHtml(exif.focalLength35mm)}</div>
                 </div>`;
             }
@@ -2365,7 +2545,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.exposureProgram) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📊 Exposure Program</div>
+                    <div class="metadata-label">📊 ${t.exposureProgram}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.exposureProgram)}')">${this.escapeHtml(exif.exposureProgram)}</div>
                 </div>`;
             }
@@ -2373,7 +2553,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.exposureMode) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📊 Exposure Mode</div>
+                    <div class="metadata-label">📊 ${t.exposureMode}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.exposureMode)}')">${this.escapeHtml(exif.exposureMode)}</div>
                 </div>`;
             }
@@ -2381,7 +2561,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.exposureCompensation !== undefined) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📊 Exposure Compensation</div>
+                    <div class="metadata-label">📊 ${t.exposureCompensation}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.exposureCompensation)}')">${this.escapeHtml(exif.exposureCompensation)}</div>
                 </div>`;
             }
@@ -2389,7 +2569,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.meteringMode) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📏 Metering Mode</div>
+                    <div class="metadata-label">📏 ${t.meteringMode}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.meteringMode)}')">${this.escapeHtml(exif.meteringMode)}</div>
                 </div>`;
             }
@@ -2397,7 +2577,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.flash) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">⚡ Flash</div>
+                    <div class="metadata-label">⚡ ${t.flash}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.flash)}')">${this.escapeHtml(exif.flash)}</div>
                 </div>`;
             }
@@ -2405,7 +2585,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.whiteBalance) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">⚖️ White Balance</div>
+                    <div class="metadata-label">⚖️ ${t.whiteBalance}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.whiteBalance)}')">${this.escapeHtml(exif.whiteBalance)}</div>
                 </div>`;
             }
@@ -2413,7 +2593,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.componentsConfiguration) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🔧 Components Configuration</div>
+                    <div class="metadata-label">🔧 ${t.componentsConfiguration}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.componentsConfiguration)}')">${this.escapeHtml(exif.componentsConfiguration)}</div>
                 </div>`;
             }
@@ -2421,7 +2601,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.userComment) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">💬 User Comment</div>
+                    <div class="metadata-label">💬 ${t.userComment}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.userComment)}')">${this.escapeHtml(exif.userComment)}</div>
                 </div>`;
             }
@@ -2442,7 +2622,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.createDate) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📅 Create Date</div>
+                    <div class="metadata-label">📅 ${t.createDate}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.createDate)}')">${this.escapeHtml(exif.createDate)}</div>
                 </div>`;
             }
@@ -2450,7 +2630,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.modifyDate) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📅 Modify Date</div>
+                    <div class="metadata-label">📅 ${t.modifyDate}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.modifyDate)}')">${this.escapeHtml(exif.modifyDate)}</div>
                 </div>`;
             }
@@ -2464,12 +2644,12 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                        exif.gpsDestDistance !== undefined || exif.gpsDifferential || exif.gpsVersionID;
         
         if (hasGPS) {
-            html += `<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">${t.location} (GPS)</h3>`;
+            html += `<h3 style="font-size: 14px; margin-top: 16px; margin-bottom: 12px; color: var(--vscode-descriptionForeground);">${t.location} (${t.gps})</h3>`;
             
             if (exif.gpsVersionID) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🔖 GPS Version ID</div>
+                    <div class="metadata-label">🔖 ${t.gpsVersionId}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsVersionID)}')">${this.escapeHtml(exif.gpsVersionID)}</div>
                 </div>`;
             }
@@ -2485,7 +2665,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsLatitudeRef) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🌍 Latitude Ref</div>
+                    <div class="metadata-label">🌍 ${t.latitudeRef}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsLatitudeRef)}')">${this.escapeHtml(exif.gpsLatitudeRef)}</div>
                 </div>`;
             }
@@ -2501,7 +2681,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsLongitudeRef) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🌍 Longitude Ref</div>
+                    <div class="metadata-label">🌍 ${t.longitudeRef}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsLongitudeRef)}')">${this.escapeHtml(exif.gpsLongitudeRef)}</div>
                 </div>`;
             }
@@ -2509,7 +2689,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsAltitude) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">⛰️ GPS Altitude</div>
+                    <div class="metadata-label">⛰️ ${t.gpsAltitude}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsAltitude)}')">${this.escapeHtml(exif.gpsAltitude)}</div>
                 </div>`;
             }
@@ -2517,7 +2697,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsAltitudeRef) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">⛰️ Altitude Ref</div>
+                    <div class="metadata-label">⛰️ ${t.altitudeRef}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsAltitudeRef)}')">${this.escapeHtml(exif.gpsAltitudeRef)}</div>
                 </div>`;
             }
@@ -2525,7 +2705,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsTimeStamp) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">⏰ GPS Time Stamp</div>
+                    <div class="metadata-label">⏰ ${t.gpsTimeStamp}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsTimeStamp)}')">${this.escapeHtml(exif.gpsTimeStamp)}</div>
                 </div>`;
             }
@@ -2533,7 +2713,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsDateStamp) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📅 GPS Date Stamp</div>
+                    <div class="metadata-label">📅 ${t.gpsDateStamp}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDateStamp)}')">${this.escapeHtml(exif.gpsDateStamp)}</div>
                 </div>`;
             }
@@ -2541,7 +2721,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsSatellites) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🛰️ GPS Satellites</div>
+                    <div class="metadata-label">🛰️ ${t.gpsSatellites}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsSatellites)}')">${this.escapeHtml(exif.gpsSatellites)}</div>
                 </div>`;
             }
@@ -2549,7 +2729,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsStatus) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📡 GPS Status</div>
+                    <div class="metadata-label">📡 ${t.gpsStatus}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsStatus)}')">${this.escapeHtml(exif.gpsStatus)}</div>
                 </div>`;
             }
@@ -2557,7 +2737,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsMeasureMode) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📐 GPS Measure Mode</div>
+                    <div class="metadata-label">📐 ${t.gpsMeasureMode}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsMeasureMode)}')">${this.escapeHtml(exif.gpsMeasureMode)}</div>
                 </div>`;
             }
@@ -2565,7 +2745,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsDOP) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📊 GPS DOP</div>
+                    <div class="metadata-label">📊 ${t.gpsDOP}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDOP)}')">${this.escapeHtml(exif.gpsDOP)}</div>
                 </div>`;
             }
@@ -2573,7 +2753,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsSpeed !== undefined) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🚗 GPS Speed</div>
+                    <div class="metadata-label">🚗 ${t.gpsSpeed}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsSpeed)}')">${this.escapeHtml(exif.gpsSpeed)}</div>
                 </div>`;
             }
@@ -2581,7 +2761,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsSpeedRef) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🚗 GPS Speed Ref</div>
+                    <div class="metadata-label">🚗 ${t.gpsSpeedRef}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsSpeedRef)}')">${this.escapeHtml(exif.gpsSpeedRef)}</div>
                 </div>`;
             }
@@ -2589,7 +2769,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsTrack !== undefined) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🧭 GPS Track</div>
+                    <div class="metadata-label">🧭 ${t.gpsTrack}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsTrack)}')">${this.escapeHtml(exif.gpsTrack)}</div>
                 </div>`;
             }
@@ -2597,7 +2777,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsTrackRef) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🧭 GPS Track Ref</div>
+                    <div class="metadata-label">🧭 ${t.gpsTrackRef}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsTrackRef)}')">${this.escapeHtml(exif.gpsTrackRef)}</div>
                 </div>`;
             }
@@ -2605,7 +2785,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsImgDirection !== undefined) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📷 GPS Image Direction</div>
+                    <div class="metadata-label">📷 ${t.gpsImgDirection}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsImgDirection)}')">${this.escapeHtml(exif.gpsImgDirection)}</div>
                 </div>`;
             }
@@ -2613,7 +2793,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsImgDirectionRef) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📷 GPS Image Direction Ref</div>
+                    <div class="metadata-label">📷 ${t.gpsImgDirectionRef}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsImgDirectionRef)}')">${this.escapeHtml(exif.gpsImgDirectionRef)}</div>
                 </div>`;
             }
@@ -2621,7 +2801,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsMapDatum) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🗺️ GPS Map Datum</div>
+                    <div class="metadata-label">🗺️ ${t.gpsMapDatum}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsMapDatum)}')">${this.escapeHtml(exif.gpsMapDatum)}</div>
                 </div>`;
             }
@@ -2629,7 +2809,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsDestLatitude) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🎯 GPS Dest Latitude</div>
+                    <div class="metadata-label">🎯 ${t.gpsDestLatitude}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDestLatitude)}')">${this.escapeHtml(exif.gpsDestLatitude)}</div>
                 </div>`;
             }
@@ -2637,7 +2817,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsDestLatitudeRef) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🎯 GPS Dest Latitude Ref</div>
+                    <div class="metadata-label">🎯 ${t.gpsDestLatitudeRef}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDestLatitudeRef)}')">${this.escapeHtml(exif.gpsDestLatitudeRef)}</div>
                 </div>`;
             }
@@ -2645,7 +2825,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsDestLongitude) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🎯 GPS Dest Longitude</div>
+                    <div class="metadata-label">🎯 ${t.gpsDestLongitude}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDestLongitude)}')">${this.escapeHtml(exif.gpsDestLongitude)}</div>
                 </div>`;
             }
@@ -2653,7 +2833,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsDestLongitudeRef) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🎯 GPS Dest Longitude Ref</div>
+                    <div class="metadata-label">🎯 ${t.gpsDestLongitudeRef}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDestLongitudeRef)}')">${this.escapeHtml(exif.gpsDestLongitudeRef)}</div>
                 </div>`;
             }
@@ -2661,7 +2841,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsDestBearing !== undefined) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🎯 GPS Dest Bearing</div>
+                    <div class="metadata-label">🎯 ${t.gpsDestBearing}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDestBearing)}')">${this.escapeHtml(exif.gpsDestBearing)}</div>
                 </div>`;
             }
@@ -2669,7 +2849,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsDestBearingRef) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🎯 GPS Dest Bearing Ref</div>
+                    <div class="metadata-label">🎯 ${t.gpsDestBearingRef}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDestBearingRef)}')">${this.escapeHtml(exif.gpsDestBearingRef)}</div>
                 </div>`;
             }
@@ -2677,7 +2857,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsDestDistance !== undefined) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🎯 GPS Dest Distance</div>
+                    <div class="metadata-label">🎯 ${t.gpsDestDistance}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDestDistance)}')">${this.escapeHtml(exif.gpsDestDistance)}</div>
                 </div>`;
             }
@@ -2685,7 +2865,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsDestDistanceRef) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🎯 GPS Dest Distance Ref</div>
+                    <div class="metadata-label">🎯 ${t.gpsDestDistanceRef}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDestDistanceRef)}')">${this.escapeHtml(exif.gpsDestDistanceRef)}</div>
                 </div>`;
             }
@@ -2693,7 +2873,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.gpsDifferential) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📊 GPS Differential</div>
+                    <div class="metadata-label">📊 ${t.gpsDifferential}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.gpsDifferential)}')">${this.escapeHtml(exif.gpsDifferential)}</div>
                 </div>`;
             }
@@ -2722,7 +2902,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.xResolution) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📏 X Resolution</div>
+                    <div class="metadata-label">📏 ${t.xResolution}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.xResolution)}')">${this.escapeHtml(exif.xResolution)}</div>
                 </div>`;
             }
@@ -2730,7 +2910,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.yResolution) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📏 Y Resolution</div>
+                    <div class="metadata-label">📏 ${t.yResolution}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.yResolution)}')">${this.escapeHtml(exif.yResolution)}</div>
                 </div>`;
             }
@@ -2738,7 +2918,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.resolutionUnit) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">📏 Resolution Unit</div>
+                    <div class="metadata-label">📏 ${t.resolutionUnit}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.resolutionUnit)}')">${this.escapeHtml(exif.resolutionUnit)}</div>
                 </div>`;
             }
@@ -2754,7 +2934,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.yCbCrPositioning) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🎨 YCbCr Positioning</div>
+                    <div class="metadata-label">🎨 ${t.yCbCrPositioning}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.yCbCrPositioning)}')">${this.escapeHtml(exif.yCbCrPositioning)}</div>
                 </div>`;
             }
@@ -2770,7 +2950,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.artist) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🎨 Artist</div>
+                    <div class="metadata-label">🎨 ${t.artist}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.artist)}')">${this.escapeHtml(exif.artist)}</div>
                 </div>`;
             }
@@ -2778,7 +2958,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.copyright) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">©️ Copyright</div>
+                    <div class="metadata-label">©️ ${t.copyright}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.copyright)}')">${this.escapeHtml(exif.copyright)}</div>
                 </div>`;
             }
@@ -2786,7 +2966,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.exifVersion) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🔖 EXIF Version</div>
+                    <div class="metadata-label">🔖 ${t.exifVersion}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.exifVersion)}')">${this.escapeHtml(exif.exifVersion)}</div>
                 </div>`;
             }
@@ -2794,7 +2974,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.flashpixVersion) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🔖 Flashpix Version</div>
+                    <div class="metadata-label">🔖 ${t.flashpixVersion}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.flashpixVersion)}')">${this.escapeHtml(exif.flashpixVersion)}</div>
                 </div>`;
             }
@@ -2802,7 +2982,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.interopIndex) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🔗 Interop Index</div>
+                    <div class="metadata-label">🔗 ${t.interopIndex}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.interopIndex)}')">${this.escapeHtml(exif.interopIndex)}</div>
                 </div>`;
             }
@@ -2810,7 +2990,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (exif.interopVersion) {
                 html += `
                 <div class="metadata-item">
-                    <div class="metadata-label">🔗 Interop Version</div>
+                    <div class="metadata-label">🔗 ${t.interopVersion}</div>
                     <div class="metadata-value" title="${t.clickToCopy}" onclick="copyToClipboard('${this.escapeHtml(exif.interopVersion)}')">${this.escapeHtml(exif.interopVersion)}</div>
                 </div>`;
             }
