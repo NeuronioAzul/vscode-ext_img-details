@@ -129,6 +129,29 @@ get_current_version() {
     grep -o '"version": *"[^"]*"' "$PACKAGE_JSON" | grep -o '[0-9][^"]*'
 }
 
+# Atualiza a versão no package.json
+# Args:
+#   $1: Nova versão (ex: "1.1.0")
+# Returns:
+#   0 se sucesso
+update_package_version() {
+    local new_version=$1
+    
+    print_step "Updating package.json version to $new_version"
+    
+    if [ "$DRY_RUN" = true ]; then
+        print_info "[DRY-RUN] Would update package.json version to: $new_version"
+        return 0
+    fi
+    
+    # Usa sed para substituir a versão no package.json
+    # Cria backup temporário e depois remove
+    sed -i.bak "s/\"version\": *\"[^\"]*\"/\"version\": \"$new_version\"/" "$PACKAGE_JSON"
+    rm -f "${PACKAGE_JSON}.bak"
+    
+    print_success "package.json updated to version $new_version"
+}
+
 # Remove o prefixo 'v' de uma string de versão se presente
 # Args:
 #   $1: Versão com ou sem prefixo 'v' (ex: "v1.0.3" ou "1.0.3")
@@ -699,22 +722,28 @@ main() {
     # ============================================================
     print_header "🚀 Publishing Workflow"
     
-    echo -e "${CYAN}Progress: [1/3] Git Tagging${NC}"
+    echo -e "${CYAN}Progress: [1/4] Updating package.json${NC}"
     echo -e "${CYAN}─────────────────────────────────────────────────────────────${NC}"
-    # Passo 1: Criar e fazer push da tag git
+    # Passo 1: Atualizar versão no package.json
+    update_package_version "$VERSION" || exit 1
+    echo ""
+    
+    echo -e "${CYAN}Progress: [2/4] Git Tagging${NC}"
+    echo -e "${CYAN}─────────────────────────────────────────────────────────────${NC}"
+    # Passo 2: Criar e fazer push da tag git
     create_git_tag "$VERSION" "$MESSAGE" || exit 1
     push_git_tag "$VERSION" || exit 1
     echo ""
     
-    echo -e "${CYAN}Progress: [2/3] GitHub Release${NC}"
+    echo -e "${CYAN}Progress: [3/4] GitHub Release${NC}"
     echo -e "${CYAN}─────────────────────────────────────────────────────────────${NC}"
-    # Passo 2: Criar release no GitHub (opcional, não bloqueia se falhar)
+    # Passo 3: Criar release no GitHub (opcional, não bloqueia se falhar)
     create_github_release "$VERSION" "$MESSAGE"
     echo ""
     
-    echo -e "${CYAN}Progress: [3/3] Marketplace Publishing${NC}"
+    echo -e "${CYAN}Progress: [4/4] Marketplace Publishing${NC}"
     echo -e "${CYAN}─────────────────────────────────────────────────────────────${NC}"
-    # Passo 3: Publicar no marketplace (com confirmação)
+    # Passo 4: Publicar no marketplace (com confirmação)
     if confirm "Publish to VS Code Marketplace?" "y"; then
         publish_to_marketplace "$PAT" || exit 1
     else
