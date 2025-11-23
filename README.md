@@ -18,15 +18,15 @@ A powerful VS Code extension that displays comprehensive image metadata, EXIF da
 
 Demonstration you can choose to view image metadata in either **Accordion** or **List** mode.:
 
-![Copy Metadata Demo](https://raw.githubusercontent.com/NeuronioAzul/vscode-ext_img-details/main/media/demo/screen-record-1-v1-1-1-p.gif)
+![Accordion or List mode](https://raw.githubusercontent.com/NeuronioAzul/vscode-ext_img-details/main/media/demo/screen-record-1-v1-1-1-p.gif)
 
 Show metadata in JSON format for developers and advanced users:
 
-![Copy Metadata Demo](https://raw.githubusercontent.com/NeuronioAzul/vscode-ext_img-details/main/media/demo/screen-record-2-v1-1-1-p.gif)
+![metadata in JSON format](https://raw.githubusercontent.com/NeuronioAzul/vscode-ext_img-details/main/media/demo/screen-record-2-v1-1-1-p.gif)
 
 Remove EXIF metadata from images with a single click to protect your privacy, while automatically creating a backup of the original image:
 
-![Copy Metadata Demo](https://raw.githubusercontent.com/NeuronioAzul/vscode-ext_img-details/main/media/demo/screen-record-3-v1-1-1-p.gif)
+![Remove EXIF Metadata](https://raw.githubusercontent.com/NeuronioAzul/vscode-ext_img-details/main/media/demo/screen-record-3-v1-1-1-p.gif)
 
 ## ✨ Features
 
