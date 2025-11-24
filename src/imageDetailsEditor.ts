@@ -533,9 +533,10 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         const isExpanded = sectionStates['basic-info'] !== false; // Default to true if not set
         const expandedClass = isExpanded ? 'expanded' : 'collapsed';
         const toggleClass = isExpanded ? '' : 'collapsed';
-        const eyeOpenSvg = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M8 5.5C6.897 5.5 6 6.397 6 7.5c0 1.103.897 2 2 2s2-.897 2-2c0-1.103-.897-2-2-2zm0 3c-.551 0-1-.449-1-1s.449-1 1-1 1 .449 1 1-.449 1-1 1z"/><path d="M8 2C4.545 2 1.584 4.373 0 7.5c1.584 3.127 4.545 5.5 8 5.5s6.416-2.373 8-5.5C14.416 4.373 11.455 2 8 2zm0 10c-2.757 0-5.287-1.822-6.766-4.5C2.713 5.322 5.243 3.5 8 3.5s5.287 1.822 6.766 4.5C13.287 10.678 10.757 12.5 8 12.5z"/></svg>';
-        const eyeClosedSvg = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M1.354 2.354l12.293 12.293-.707.707L10.584 13A7.95 7.95 0 0 1 8 13.5c-3.455 0-6.416-2.373-8-5.5a8.658 8.658 0 0 1 2.995-3.484L1.354 2.939l-.707-.707.707-.878zm1.891 1.477A7.664 7.664 0 0 0 1 8c1.519 2.678 4.243 4.5 7 4.5.939 0 1.843-.178 2.668-.5l-1.523-1.523A2.988 2.988 0 0 1 8 10.5c-1.657 0-3-1.343-3-3 0-.474.113-.923.311-1.322L3.245 3.831zM8 2.5c3.455 0 6.416 2.373 8 5.5a8.658 8.658 0 0 1-2.197 3.097l-.742-.742A7.664 7.664 0 0 0 15 8c-1.519-2.678-4.243-4.5-7-4.5a7.95 7.95 0 0 0-2.668.461l-.817-.817A8.817 8.817 0 0 1 8 2.5zm-.5 3.207l2.793 2.793A2.014 2.014 0 0 0 10 7.5c0-1.103-.897-2-2-2-.174 0-.342.029-.5.086v.121zm-1.293.586A2.988 2.988 0 0 0 5 7.5c0 1.657 1.343 3 3 3 .474 0 .923-.113 1.322-.311l-.793-.793A2.014 2.014 0 0 1 8 9.5c-1.103 0-2-.897-2-2 0-.174.029-.342.086-.5l-.879-.707z"/></svg>';
-        const toggleIcon = isExpanded ? eyeOpenSvg : eyeClosedSvg;
+        // VS Code Codicon chevron-down (expanded) and chevron-right (collapsed)
+        const chevronDown = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.976 10.072l4.357-4.357.62.618L8.284 11h-.618L3 6.333l.619-.618 4.357 4.357z"/></svg>';
+        const chevronRight = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.072 8.024L5.715 3.667l.618-.62L11 7.716v.618L6.333 13l-.618-.619 4.357-4.357z"/></svg>';
+        const toggleIcon = isExpanded ? chevronDown : chevronRight;
 
         return `
         <div class="collapsible-section">
@@ -2124,19 +2125,20 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             if (content && toggle) {
                 const isExpanded = content.classList.contains('expanded');
                 
-                const eyeOpenSvg = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M8 5.5C6.897 5.5 6 6.397 6 7.5c0 1.103.897 2 2 2s2-.897 2-2c0-1.103-.897-2-2-2zm0 3c-.551 0-1-.449-1-1s.449-1 1-1 1 .449 1 1-.449 1-1 1z"/><path d="M8 2C4.545 2 1.584 4.373 0 7.5c1.584 3.127 4.545 5.5 8 5.5s6.416-2.373 8-5.5C14.416 4.373 11.455 2 8 2zm0 10c-2.757 0-5.287-1.822-6.766-4.5C2.713 5.322 5.243 3.5 8 3.5s5.287 1.822 6.766 4.5C13.287 10.678 10.757 12.5 8 12.5z"/></svg>';
-                const eyeClosedSvg = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M1.354 2.354l12.293 12.293-.707.707L10.584 13A7.95 7.95 0 0 1 8 13.5c-3.455 0-6.416-2.373-8-5.5a8.658 8.658 0 0 1 2.995-3.484L1.354 2.939l-.707-.707.707-.878zm1.891 1.477A7.664 7.664 0 0 0 1 8c1.519 2.678 4.243 4.5 7 4.5.939 0 1.843-.178 2.668-.5l-1.523-1.523A2.988 2.988 0 0 1 8 10.5c-1.657 0-3-1.343-3-3 0-.474.113-.923.311-1.322L3.245 3.831zM8 2.5c3.455 0 6.416 2.373 8 5.5a8.658 8.658 0 0 1-2.197 3.097l-.742-.742A7.664 7.664 0 0 0 15 8c-1.519-2.678-4.243-4.5-7-4.5a7.95 7.95 0 0 0-2.668.461l-.817-.817A8.817 8.817 0 0 1 8 2.5zm-.5 3.207l2.793 2.793A2.014 2.014 0 0 0 10 7.5c0-1.103-.897-2-2-2-.174 0-.342.029-.5.086v.121zm-1.293.586A2.988 2.988 0 0 0 5 7.5c0 1.657 1.343 3 3 3 .474 0 .923-.113 1.322-.311l-.793-.793A2.014 2.014 0 0 1 8 9.5c-1.103 0-2-.897-2-2 0-.174.029-.342.086-.5l-.879-.707z"/></svg>';
+                // VS Code Codicon chevron-down (expanded) and chevron-right (collapsed)
+                const chevronDown = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.976 10.072l4.357-4.357.62.618L8.284 11h-.618L3 6.333l.619-.618 4.357 4.357z"/></svg>';
+                const chevronRight = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.072 8.024L5.715 3.667l.618-.62L11 7.716v.618L6.333 13l-.618-.619 4.357-4.357z"/></svg>';
                 
                 if (isExpanded) {
                     content.classList.remove('expanded');
                     content.classList.add('collapsed');
                     toggle.classList.add('collapsed');
-                    toggle.innerHTML = eyeClosedSvg;
+                    toggle.innerHTML = chevronRight;
                 } else {
                     content.classList.remove('collapsed');
                     content.classList.add('expanded');
                     toggle.classList.remove('collapsed');
-                    toggle.innerHTML = eyeOpenSvg;
+                    toggle.innerHTML = chevronDown;
                 }
                 
                 // Save state to extension
@@ -2358,9 +2360,10 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         const isExpanded = sectionStates['color-info'] !== undefined ? sectionStates['color-info'] : false;
         const expandedClass = isExpanded ? 'expanded' : 'collapsed';
         const toggleClass = isExpanded ? '' : 'collapsed';
-        const eyeOpenSvg = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M8 5.5C6.897 5.5 6 6.397 6 7.5c0 1.103.897 2 2 2s2-.897 2-2c0-1.103-.897-2-2-2zm0 3c-.551 0-1-.449-1-1s.449-1 1-1 1 .449 1 1-.449 1-1 1z"/><path d="M8 2C4.545 2 1.584 4.373 0 7.5c1.584 3.127 4.545 5.5 8 5.5s6.416-2.373 8-5.5C14.416 4.373 11.455 2 8 2zm0 10c-2.757 0-5.287-1.822-6.766-4.5C2.713 5.322 5.243 3.5 8 3.5s5.287 1.822 6.766 4.5C13.287 10.678 10.757 12.5 8 12.5z"/></svg>';
-        const eyeClosedSvg = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M1.354 2.354l12.293 12.293-.707.707L10.584 13A7.95 7.95 0 0 1 8 13.5c-3.455 0-6.416-2.373-8-5.5a8.658 8.658 0 0 1 2.995-3.484L1.354 2.939l-.707-.707.707-.878zm1.891 1.477A7.664 7.664 0 0 0 1 8c1.519 2.678 4.243 4.5 7 4.5.939 0 1.843-.178 2.668-.5l-1.523-1.523A2.988 2.988 0 0 1 8 10.5c-1.657 0-3-1.343-3-3 0-.474.113-.923.311-1.322L3.245 3.831zM8 2.5c3.455 0 6.416 2.373 8 5.5a8.658 8.658 0 0 1-2.197 3.097l-.742-.742A7.664 7.664 0 0 0 15 8c-1.519-2.678-4.243-4.5-7-4.5a7.95 7.95 0 0 0-2.668.461l-.817-.817A8.817 8.817 0 0 1 8 2.5zm-.5 3.207l2.793 2.793A2.014 2.014 0 0 0 10 7.5c0-1.103-.897-2-2-2-.174 0-.342.029-.5.086v.121zm-1.293.586A2.988 2.988 0 0 0 5 7.5c0 1.657 1.343 3 3 3 .474 0 .923-.113 1.322-.311l-.793-.793A2.014 2.014 0 0 1 8 9.5c-1.103 0-2-.897-2-2 0-.174.029-.342.086-.5l-.879-.707z"/></svg>';
-        const toggleIcon = isExpanded ? eyeOpenSvg : eyeClosedSvg;
+        // VS Code Codicon chevron-down (expanded) and chevron-right (collapsed)
+        const chevronDown = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.976 10.072l4.357-4.357.62.618L8.284 11h-.618L3 6.333l.619-.618 4.357 4.357z"/></svg>';
+        const chevronRight = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.072 8.024L5.715 3.667l.618-.62L11 7.716v.618L6.333 13l-.618-.619 4.357-4.357z"/></svg>';
+        const toggleIcon = isExpanded ? chevronDown : chevronRight;
 
         let html = `
         <div class="collapsible-section">
@@ -2404,9 +2407,10 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         const isExpanded = sectionStates['exif-data'] !== undefined ? sectionStates['exif-data'] : false;
         const expandedClass = isExpanded ? 'expanded' : 'collapsed';
         const toggleClass = isExpanded ? '' : 'collapsed';
-        const eyeOpenSvg = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M8 5.5C6.897 5.5 6 6.397 6 7.5c0 1.103.897 2 2 2s2-.897 2-2c0-1.103-.897-2-2-2zm0 3c-.551 0-1-.449-1-1s.449-1 1-1 1 .449 1 1-.449 1-1 1z"/><path d="M8 2C4.545 2 1.584 4.373 0 7.5c1.584 3.127 4.545 5.5 8 5.5s6.416-2.373 8-5.5C14.416 4.373 11.455 2 8 2zm0 10c-2.757 0-5.287-1.822-6.766-4.5C2.713 5.322 5.243 3.5 8 3.5s5.287 1.822 6.766 4.5C13.287 10.678 10.757 12.5 8 12.5z"/></svg>';
-        const eyeClosedSvg = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M1.354 2.354l12.293 12.293-.707.707L10.584 13A7.95 7.95 0 0 1 8 13.5c-3.455 0-6.416-2.373-8-5.5a8.658 8.658 0 0 1 2.995-3.484L1.354 2.939l-.707-.707.707-.878zm1.891 1.477A7.664 7.664 0 0 0 1 8c1.519 2.678 4.243 4.5 7 4.5.939 0 1.843-.178 2.668-.5l-1.523-1.523A2.988 2.988 0 0 1 8 10.5c-1.657 0-3-1.343-3-3 0-.474.113-.923.311-1.322L3.245 3.831zM8 2.5c3.455 0 6.416 2.373 8 5.5a8.658 8.658 0 0 1-2.197 3.097l-.742-.742A7.664 7.664 0 0 0 15 8c-1.519-2.678-4.243-4.5-7-4.5a7.95 7.95 0 0 0-2.668.461l-.817-.817A8.817 8.817 0 0 1 8 2.5zm-.5 3.207l2.793 2.793A2.014 2.014 0 0 0 10 7.5c0-1.103-.897-2-2-2-.174 0-.342.029-.5.086v.121zm-1.293.586A2.988 2.988 0 0 0 5 7.5c0 1.657 1.343 3 3 3 .474 0 .923-.113 1.322-.311l-.793-.793A2.014 2.014 0 0 1 8 9.5c-1.103 0-2-.897-2-2 0-.174.029-.342.086-.5l-.879-.707z"/></svg>';
-        const toggleIcon = isExpanded ? eyeOpenSvg : eyeClosedSvg;
+        // VS Code Codicon chevron-down (expanded) and chevron-right (collapsed)
+        const chevronDown = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.976 10.072l4.357-4.357.62.618L8.284 11h-.618L3 6.333l.619-.618 4.357 4.357z"/></svg>';
+        const chevronRight = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.072 8.024L5.715 3.667l.618-.62L11 7.716v.618L6.333 13l-.618-.619 4.357-4.357z"/></svg>';
+        const toggleIcon = isExpanded ? chevronDown : chevronRight;
 
         let html = `
         <div class="collapsible-section">
