@@ -1788,7 +1788,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             opacity: 1;
         }
         .section-content.expanded {
-            max-height: 1000px;
+            max-height: 10000px;
             opacity: 1;
             padding: 8px 0;
         }
