@@ -223,6 +223,8 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.1.0",
+    "@vscode/codicons": "^0.0.43",
     "exifreader": "^4.32.0",
     "image-size": "^1.1.1"
   }
