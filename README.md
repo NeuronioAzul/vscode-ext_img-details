@@ -2,6 +2,8 @@
 
 A powerful VS Code extension that displays comprehensive image metadata, EXIF data, and provides tools to clean metadata from images for privacy.
 
+<div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+
 [![Version](https://vsmarketplacebadges.dev/version-short/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
 [![Installs](https://vsmarketplacebadges.dev/installs/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
 [![Downloads](https://vsmarketplacebadges.dev/downloads/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
@@ -12,9 +14,43 @@ A powerful VS Code extension that displays comprehensive image metadata, EXIF da
 [![PayPal](https://img.shields.io/badge/PayPal-Donate-blue?logo=paypal)](https://www.paypal.com/donate/?hosted_button_id=QNEHQ5LAF64G2)
 [![GitHub Sponsors](https://img.shields.io/badge/GitHub-Sponsor-EA4AAA?logo=github)](https://github.com/sponsors/NeuronioAzul)
 
-## Screenshots
+</div>
+
+## Screenshot
 
 ![Image Details Viewer Main Interface](https://raw.githubusercontent.com/NeuronioAzul/vscode-ext_img-details/main/media/screenshots/screenshot-main-v1-1-1.png)
+
+## Usage
+
+### Quick Start
+
+1. **Open any image file** in VS Code (supports PNG, JPG, GIF, WebP, BMP, SVG, ICO)
+2. The extension **automatically activates** and displays the Image Details Viewer
+3. View comprehensive metadata in the **resizable sidebar** on the right
+4. **Click any metadata value** to instantly copy it to your clipboard
+5. **Use zoom controls** to inspect images in detail
+
+### Interacting with Images
+
+#### Advanced Zoom Controls
+
+- **Buttons**: Use the visual `+`, `-`, `⟲`, and `⊡` buttons in the toolbar
+- **Keyboard**: Press `+` to zoom in, `-` to zoom out, `0` to reset
+- **Mouse Wheel**: Hold `Ctrl` (Windows/Linux) or `Cmd` (Mac) and scroll
+- **Click**: Click anywhere on the image to toggle 2× zoom
+- **Fit to Screen**: Click the fit button to auto-adjust image size
+
+### EXIF Data Management
+
+- **Remove EXIF Metadata**: One-click button to strip all EXIF data from images
+- **Automatic Backup**: Creates a backup file (`_backup`) before removing metadata
+- **Remove EXIF Format Supported**: Works with JPEG/JPG and PNG images
+- **Smart Detection**: Button only appears when image contains EXIF data
+- **Safe Operation**: Confirmation dialog prevents accidental removal
+- **Error Recovery**: Automatically restores from backup if operation fails
+- **Real-time Update**: Interface refreshes automatically after metadata removal
+
+## 📽️ Demonstrations
 
 Demonstration you can choose to view image metadata in either **Accordion** or **List** mode.:
 
@@ -108,39 +144,7 @@ Works with all common image formats:
 - SVG (`.svg`)
 - ICO (`.ico`)
 
-## Usage
-
-### Quick Start
-
-1. **Open any image file** in VS Code (supports PNG, JPG, GIF, WebP, BMP, SVG, ICO)
-2. The extension **automatically activates** and displays the Image Details Viewer
-3. View comprehensive metadata in the **resizable sidebar** on the right
-4. **Click any metadata value** to instantly copy it to your clipboard
-5. **Use zoom controls** to inspect images in detail
-
-### Interacting with Images
-
-#### Advanced Zoom Controls
-
-- **Buttons**: Use the visual `+`, `-`, `⟲`, and `⊡` buttons in the toolbar
-- **Keyboard**: Press `+` to zoom in, `-` to zoom out, `0` to reset
-- **Mouse Wheel**: Hold `Ctrl` (Windows/Linux) or `Cmd` (Mac) and scroll
-- **Click**: Click anywhere on the image to toggle 2× zoom
-- **Fit to Screen**: Click the fit button to auto-adjust image size
-
-### EXIF Data Management
-
-- **Remove EXIF Metadata**: One-click button to strip all EXIF data from images
-- **Automatic Backup**: Creates a backup file (`_backup`) before removing metadata
-- **Format Support**: Works with JPEG/JPG and PNG images
-- **Smart Detection**: Button only appears when image contains EXIF data
-- **Safe Operation**: Confirmation dialog prevents accidental removal
-- **Error Recovery**: Automatically restores from backup if operation fails
-- **Real-time Update**: Interface refreshes automatically after metadata removal
-
 ### Internationalization (i18n)
-
-### Internationalization
 
 - English and Portuguese (Brasil)
 - Auto-detects VS Code language
@@ -158,50 +162,36 @@ Works with all common image formats:
 
 ## Configuration
 
-- `imageDetails.defaultDisplayMode`: Accordion or list mode
-- `imageDetails.defaultSectionStates`: Default expanded sections
-- `imageDetails.rememberSectionStates`: Remember state between sessions
+> `imageDetails.defaultDisplayMode`: Accordion or list mode (default: accordion) or set in `settings.json`:
 
-## Development & Publishing
-
-### For Developers
-
-```bash
-# Clone repository
-git clone https://github.com/NeuronioAzul/vscode-ext_img-details.git
-cd vscode-ext_img-details
-
-# Install dependencies
-npm install
-
-# Compile
-npm run compile
-
-# Watch mode (development)
-npm run watch
-
-# Test in VS Code
-# Press F5 to open Extension Development Host
+```json
+{
+  "imageDetails.defaultDisplayMode": "list"
+}
 ```
 
-### For Maintainers
+> `imageDetails.defaultSectionStates`: Default expanded sections (default: all collapsed) or set in `settings.json`:
 
-To publish a new version, use the interactive publishing script:
-
-```bash
-./publish.sh
+```json
+{
+  "imageDetails.defaultSectionStates": {
+    "basicInfo": true,
+    "colorInfo": false,
+    "exifData": false,
+    "jsonData": false
+  }
+}
 ```
 
-The script will guide you through:
+> `imageDetails.rememberSectionStates`: Remember state between sessions (default: true) or set in `settings.json`:
 
-- Version selection (patch/minor/major)
-- Git tag creation and push
-- GitHub release creation
-- VS Code Marketplace publishing
+```json
+{
+  "imageDetails.rememberSectionStates": true
+}
+```
 
-For detailed instructions, see [Publishing Guide](docs/PUBLISHING.md).
-
-## Contributing
+## Contributing 🤝
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for:
 
@@ -214,7 +204,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for:
 
 - [Changelog](CHANGELOG.md)
 - [Documentation](docs/README.md)
-- [Publishing Guide](docs/PUBLISHING.md) - For maintainers
 - [Issues](https://github.com/NeuronioAzul/vscode-ext_img-details/issues)
 - [Marketplace](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
 
@@ -226,10 +215,18 @@ MIT - See [LICENSE](LICENSE)
 
 If you find this extension useful:
 
-[![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/v2/default-blue.png)](https://www.buymeacoffee.com/neuronioazul)
-[![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/donate/?hosted_button_id=QNEHQ5LAF64G2)
-[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-EA4AAA?logo=github)](https://github.com/sponsors/NeuronioAzul)
+<div align="center">
+
+<a href="https://www.buymeacoffee.com/neuronioazul" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" width="120"></a>
+
+<a href="https://www.paypal.com/donate/?hosted_button_id=QNEHQ5LAF64G2" target="_blank"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" alt="PayPal Donate"></a>
+
+<a href="https://github.com/sponsors/NeuronioAzul" target="_blank"><img src="https://img.shields.io/badge/Sponsor-GitHub-EA4AAA?logo=github" alt="GitHub Sponsors"></a>
+
+</div>
 
 ---
 
 **[NeuronioAzul](https://github.com/NeuronioAzul)** | Give it a ⭐ on [GitHub](https://github.com/NeuronioAzul/vscode-ext_img-details)
+
+---
