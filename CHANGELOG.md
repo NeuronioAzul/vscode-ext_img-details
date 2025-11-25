@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.4] - 2025-11-25
 
-### 🌐 New Language Support version 1.1.4
+### 🌐 Japanese and Spanish Language Support v1.1.4
+
+- **Spanish Language (Español)**: Added complete Spanish translation
+  - All 110+ UI strings translated
+  - Automatic detection for all Spanish locales (`es`, `es-ES`, `es-MX`, `es-AR`, etc.)
+  - Full EXIF metadata field translations
+  - Spanish is the 4th most spoken language globally with 500+ million speakers
 
 - **Japanese Language (日本語)**: Added complete Japanese translation
   - All 110+ UI strings translated
@@ -16,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.3] - 2025-11-24
 
-### 📦 build package improvement version 1.1.3
+### 📦 build package improvement v1.1.3
 
 - **Bundling Optimization**: Updated esbuild configuration to exclude unnecessary files from the final package
   - Removed redundant type declaration files (.d.ts) from `node_modules`
@@ -24,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.2] - 2025-11-24
 
-### 🎨 UI Improvements version 1.1.2
+### 🎨 UI Improvements v1.1.2
 
 - **Accordion Icons Update**: Changed accordion toggle icons to use VS Code native Codicon chevrons
   - Chevron-right (▶) when section is collapsed
@@ -32,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Maintains consistency with VS Code's standard UI patterns
   - All icons are inline SVG for offline compatibility
 
-### 🐛 Bug Fixes version 1.1.2
+### 🐛 Bug Fixes v1.1.2
 
 - **Fixed EXIF Data Display in Accordion Mode**: Increased max-height for expanded sections from 1000px to 10000px
   - Resolves issue where not all EXIF metadata items were visible when expanded
@@ -41,13 +47,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.1] - 2025-11-21
 
-### 🐛 Bug Fixes version 1.1.1
+### 🐛 Bug Fixes v1.1.1
 
 - Fixed an issue where the publishing script failed to update the version number in `package.json` when using the `--version` flag.
 
 ## [1.1.0] - 2025-11-20
 
-### ✨ New Features version 1.1.0
+### ✨ New Features v1.1.0
 
 - **Comprehensive EXIF Metadata Display**: Expanded EXIF data visualization to include 70+ fields
   - Image Description
@@ -63,7 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Easy copy-to-clipboard functionality
   - Useful for developers and advanced users
 
-### 🌍 Internationalization version 1.1.0
+### 🌍 Internationalization v1.1.0
 
 - **Complete Bilingual Support**: All 70+ EXIF fields now fully translated
   - Portuguese (Brazil) - pt-BR
@@ -71,18 +77,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **65 New Translation Keys**: Added comprehensive translations for all new EXIF metadata fields
 - **Consistent User Experience**: No mixed language display - complete localization
 
-### 🎨 UI Improvements version 1.1.0
+### 🎨 UI Improvements v1.1.0
 
 - Organized EXIF data into logical sections with clear hierarchy
 - Added icons for each metadata category
 - Improved section headers and visual grouping
 
-### 📝 Documentation version 1.1.0
+### 📝 Documentation v1.1.0
 
 - Updated README with new EXIF features
 - Enhanced documentation organization
 
-### 🛠️ Developer Tools version 1.1.0
+### 🛠️ Developer Tools v1.1.0
 
 - **Automated Publishing Script**: Interactive publishing automation with professional UX
   - Intelligent version suggestion (Semantic Versioning)
@@ -101,20 +107,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.2] - 2025-11-18
 
-### 🐛 Bug Fixes version 1.0.2
+### 🐛 Bug Fixes v1.0.2
 
 - Fixed badges in README.md not displaying correctly on GitHub and VS Code Marketplace
 
 ## [1.0.1] - 2025-11-18
 
-### 🚀 Performance & Documentation version 1.0.1
+### 🚀 Performance & Documentation v1.0.1
 
 - **Bundling with esbuild**: Reduced from 149 files to 100 files (33% reduction)
 - **Optimized package size**: Single bundled JavaScript file improves activation time
 - **Documentation improvements**: Streamlined and professional documentation
 - **Cleaner structure**: All documentation organized in `docs/` folder
 
-### 🔧 Technical version 1.0.1
+### 🔧 Technical v1.0.1
 
 - Added esbuild bundling for production builds
 - Updated build scripts: `npm run package` for optimized builds
@@ -129,7 +135,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is the first stable public release of Image Details extension for VS Code.
 
-### ✨ Features version 1.0.0
+### ✨ Features v1.0.0
 
 - **Comprehensive Image Metadata Display**
   - Basic information: dimensions, format, file size, timestamps
@@ -155,19 +161,19 @@ This is the first stable public release of Image Details extension for VS Code.
   - Dark/Light theme responsive
   - Custom icons for metadata types
 
-### 🔒 Security version 1.0.0
+### 🔒 Security v1.0.0
 
 - Clean commit history
 - Public repository ready
 
-### 📚 Documentation version 1.0.0
+### 📚 Documentation v1.0.0
 
 - Complete README with screenshots and demo
 - Contributing guidelines
 - Internationalization guide
 - Comprehensive Development docs
 
-### 🛠️ Technical version 1.0.0
+### 🛠️ Technical v1.0.0
 
 - VS Code API 1.94.0 support
 - TypeScript 5.3.3
