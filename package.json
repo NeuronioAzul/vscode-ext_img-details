@@ -3,7 +3,7 @@
   "icon": "icon.png",
   "displayName": "Image Details",
   "description": "View image and metadata, EXIF data, you can clean metadata for privacy. Supports zoom and copy-to-clipboard.",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "publisher": "NeuronioAzul",
   "author": {
     "name": "NeuronioAzul",
