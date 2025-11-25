@@ -1,19 +1,64 @@
+# ========================================
+# VS Code Extension - Files to Exclude
+# ========================================
+
+# Development folders
 .vscode/**
 .vscode-test/**
 src/**
 out/**
-.gitignore
-.yarnrc
-vsc-extension-quickstart.md
-**/tsconfig.json
-**/.eslintrc.json
-**/*.map
-**/*.ts
-.git/**
-.github/**
+node_modules/**
+
+# Test and demo files
+test-images/**
+tests/**
+**/*.test.ts
+**/*.spec.ts
+
+# Documentation (not needed in extension)
+docs/**
+ROADMAP.md
+CONTRIBUTING.md
+I18N.md
+TODO.md
+CODE_OF_CONDUCT.md
+
+# Build and config files
 tsconfig.json
 .eslintrc.json
 esbuild.js
+**/*.map
+**/*.ts
+!**/*.d.ts
+
+# Git and GitHub
+.git/**
+.github/**
+.gitignore
+.gitattributes
+
+# Package managers
+.yarnrc
+yarn.lock
+.npmrc
+.npmignore
+
+# Publishing scripts and admin
+publish.sh
+_ADM/**
+.vsce/**
+*.vsix
+
+# IDE and OS files
 **/.DS_Store
 **/Thumbs.db
-.vsce
+.idea/**
+*.swp
+*.swo
+*~
+
+# Misc
+vsc-extension-quickstart.md
+*.log
+.env
+.env.*
