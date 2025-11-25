@@ -24,19 +24,29 @@
   },
   "badges": [
     {
-      "url": "https://img.shields.io/visual-studio-marketplace/v/NeuronioAzul.image-details",
+      "url": "https://vsmarketplacebadges.dev/version-short/NeuronioAzul.image-details.svg",
       "href": "https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details",
-      "description": "Visual Studio Marketplace Version"
+      "description": "Version"
     },
     {
-      "url": "https://img.shields.io/visual-studio-marketplace/i/NeuronioAzul.image-details",
+      "url": "https://vsmarketplacebadges.dev/installs/NeuronioAzul.image-details.svg",
       "href": "https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details",
-      "description": "Visual Studio Marketplace Installs"
+      "description": "Installs"
     },
     {
-      "url": "https://img.shields.io/visual-studio-marketplace/r/NeuronioAzul.image-details",
+      "url": "https://vsmarketplacebadges.dev/downloads/NeuronioAzul.image-details.svg",
       "href": "https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details",
-      "description": "Visual Studio Marketplace Rating"
+      "description": "Downloads"
+    },
+    {
+      "url": "https://vsmarketplacebadges.dev/rating/NeuronioAzul.image-details.svg",
+      "href": "https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details",
+      "description": "Rating"
+    },
+    {
+      "url": "https://img.shields.io/badge/License-MIT-yellow.svg",
+      "href": "https://opensource.org/licenses/MIT",
+      "description": "License: MIT"
     }
   ],
   "keywords": [

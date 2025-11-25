@@ -5,6 +5,23 @@ All notable changes to the "Image Details" extension will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2] - 2025-11-24
+
+### 🎨 UI Improvements
+
+- **Accordion Icons Update**: Changed accordion toggle icons to use VS Code native Codicon chevrons
+  - Chevron-right (▶) when section is collapsed
+  - Chevron-down (▼) when section is expanded
+  - Maintains consistency with VS Code's standard UI patterns
+  - All icons are inline SVG for offline compatibility
+
+### 🐛 Bug Fixes
+
+- **Fixed EXIF Data Display in Accordion Mode**: Increased max-height for expanded sections from 1000px to 10000px
+  - Resolves issue where not all EXIF metadata items were visible when expanded
+  - Ensures all 70+ EXIF fields display correctly in accordion mode
+  - Maintains smooth animation transitions
+
 ## [1.1.1] - 2025-11-21
 
 ### 🐛 Bug Fixes
