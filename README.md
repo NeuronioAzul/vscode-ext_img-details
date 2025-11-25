@@ -8,17 +8,18 @@ A powerful VS Code extension that displays comprehensive image metadata, EXIF da
 [![Installs](https://vsmarketplacebadges.dev/installs/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
 [![Downloads](https://vsmarketplacebadges.dev/downloads/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
 [![Rating](https://vsmarketplacebadges.dev/rating/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Follow on X](https://img.shields.io/twitter/follow/NeuronioAzul?style=social)](https://x.com/NeuronioAzul)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  
+  
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-orange?logo=buy-me-a-coffee)](https://www.buymeacoffee.com/neuronioazul)
 [![PayPal](https://img.shields.io/badge/PayPal-Donate-blue?logo=paypal)](https://www.paypal.com/donate/?hosted_button_id=QNEHQ5LAF64G2)
 [![GitHub Sponsors](https://img.shields.io/badge/GitHub-Sponsor-EA4AAA?logo=github)](https://github.com/sponsors/NeuronioAzul)
+[![Follow on X](https://img.shields.io/twitter/follow/NeuronioAzul?style=social)](https://x.com/NeuronioAzul)
 
 </div>
 
 ## Screenshot
 
-![Image Details Viewer Main Interface](https://raw.githubusercontent.com/NeuronioAzul/vscode-ext_img-details/main/media/screenshots/screenshot-main-v1-1-1.png)
+![Image Details Viewer Main Interface](https://iili.io/fft5iMJ.png)
 
 ## Usage
 
@@ -54,15 +55,15 @@ A powerful VS Code extension that displays comprehensive image metadata, EXIF da
 
 Demonstration you can choose to view image metadata in either **Accordion** or **List** mode.:
 
-![Accordion or List mode](https://raw.githubusercontent.com/NeuronioAzul/vscode-ext_img-details/main/media/demo/screen-record-1-v1-1-1-p.gif)
+![Accordion or List mode](https://iili.io/fft5s6v.gif)
 
 Show metadata in JSON format for developers and advanced users:
 
-![metadata in JSON format](https://raw.githubusercontent.com/NeuronioAzul/vscode-ext_img-details/main/media/demo/screen-record-2-v1-1-1-p.gif)
+![metadata in JSON format](https://iili.io/fft5QFR.gif)
 
 Remove EXIF metadata from images with a single click to protect your privacy, while automatically creating a backup of the original image:
 
-![Remove EXIF Metadata](https://raw.githubusercontent.com/NeuronioAzul/vscode-ext_img-details/main/media/demo/screen-record-3-v1-1-1-p.gif)
+![Remove EXIF Metadata](https://iili.io/fft5Zap.gif)
 
 ## ✨ Features
 
