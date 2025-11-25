@@ -1,121 +1,27 @@
+/**
+ * Image Details Editor Provider
+ * Main entry point for the custom image editor
+ * 
+ * Refactored: 2025-11-25
+ * Architecture: Modular design with separation of concerns
+ */
+
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import sizeOf from 'image-size';
 import ExifReader from 'exifreader';
 
-interface Translations {
-    imageDetails: string;
-    fileName: string;
-    dimensions: string;
-    format: string;
-    fileSize: string;
-    sizeBytes: string;
-    extension: string;
-    fullPath: string;
-    created: string;
-    modified: string;
-    exifData: string;
-    camera: string;
-    make: string;
-    model: string;
-    photoSettings: string;
-    iso: string;
-    aperture: string;
-    shutterSpeed: string;
-    focalLength: string;
-    date: string;
-    dateTaken: string;
-    location: string;
-    latitude: string;
-    longitude: string;
-    additionalInfo: string;
-    orientation: string;
-    colorSpace: string;
-    software: string;
-    clickToCopy: string;
-    copied: string;
-    colorInformation: string;
-    supportsTransparency: string;
-    colorDepth: string;
-    dpi: string;
-    thumbnail: string;
-    basicInfo: string;
-    collapse: string;
-    expand: string;
-    accordionMode: string;
-    listMode: string;
-    sectionSettings: string;
-    removeExif: string;
-    removeExifConfirm: string;
-    removeExifSuccess: string;
-    removeExifError: string;
-    viewJsonMetadata: string;
-    metadataJson: string;
-    copyJson: string;
-    closeModal: string;
-    imageDescription: string;
-    ownerName: string;
-    lens: string;
-    lensMake: string;
-    lensModel: string;
-    lensSerialNumber: string;
-    apertureValue: string;
-    maxAperture: string;
-    exposureTime: string;
-    shutterSpeedValue: string;
-    focalLength35mm: string;
-    exposureProgram: string;
-    exposureMode: string;
-    exposureCompensation: string;
-    meteringMode: string;
-    flash: string;
-    whiteBalance: string;
-    componentsConfiguration: string;
-    userComment: string;
-    createDate: string;
-    modifyDate: string;
-    gps: string;
-    gpsVersionId: string;
-    latitudeRef: string;
-    longitudeRef: string;
-    gpsAltitude: string;
-    altitudeRef: string;
-    gpsTimeStamp: string;
-    gpsDateStamp: string;
-    gpsSatellites: string;
-    gpsStatus: string;
-    gpsMeasureMode: string;
-    gpsDOP: string;
-    gpsSpeed: string;
-    gpsSpeedRef: string;
-    gpsTrack: string;
-    gpsTrackRef: string;
-    gpsImgDirection: string;
-    gpsImgDirectionRef: string;
-    gpsMapDatum: string;
-    gpsDestLatitude: string;
-    gpsDestLatitudeRef: string;
-    gpsDestLongitude: string;
-    gpsDestLongitudeRef: string;
-    gpsDestBearing: string;
-    gpsDestBearingRef: string;
-    gpsDestDistance: string;
-    gpsDestDistanceRef: string;
-    gpsDifferential: string;
-    compression: string;
-    xResolution: string;
-    yResolution: string;
-    resolutionUnit: string;
-    yCbCrPositioning: string;
-    artist: string;
-    copyright: string;
-    exifVersion: string;
-    flashpixVersion: string;
-    interopIndex: string;
-    interopVersion: string;
-}
+// Import types
+import { Translations, DisplayMode, SectionStates } from './types';
 
+// Import i18n
+import { getTranslations } from './i18n/translations';
+
+// Import utility functions
+import { formatFileSize, getColorInfo, calculateBitDepth, extractRelevantExifData } from './utils/metadata';
+
+// Legacy translation object kept for backward compatibility during migration
 const translations: { [key: string]: Translations } = {
     'en': {
         imageDetails: 'Image Details',
@@ -570,40 +476,15 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
 
     constructor(private readonly context: vscode.ExtensionContext) {}
 
+    /**
+     * Get translations for current VS Code locale
+     * Migrated to use centralized i18n module
+     */
     private getTranslations(): Translations {
-        const locale = vscode.env.language.toLowerCase();
-        
-        // Check for exact match
-        if (translations[locale]) {
-            return translations[locale];
-        }
-        
-        // Check for language without region (e.g., 'pt' from 'pt-BR', 'ja' from 'ja-JP')
-        const lang = locale.split('-')[0];
-        if (translations[lang]) {
-            return translations[lang];
-        }
-        
-        // Check for 'pt-br' variations
-        if (locale.includes('pt')) {
-            return translations['pt-br'];
-        }
-        
-        // Check for Japanese variations
-        if (locale.includes('ja')) {
-            return translations['ja'];
-        }
-        
-        // Check for Spanish variations (es, es-ES, es-MX, es-AR, etc.)
-        if (locale.includes('es')) {
-            return translations['es'];
-        }
-        
-        // Default to English
-        return translations['en'];
+        return getTranslations(vscode.env.language);
     }
 
-    private getSectionStates(): { [key: string]: boolean } {
+    private getSectionStates(): SectionStates {
         const rememberStates = vscode.workspace.getConfiguration('imageDetails').get<boolean>('rememberSectionStates', true);
         
         if (rememberStates) {
@@ -638,18 +519,18 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         }
     }
 
-    private getDisplayMode(): 'accordion' | 'list' {
+    private getDisplayMode(): DisplayMode {
         // First check user's saved preference
-        const saved = this.context.globalState.get<'accordion' | 'list'>(ImageDetailsEditorProvider.displayModeKey);
+        const saved = this.context.globalState.get<DisplayMode>(ImageDetailsEditorProvider.displayModeKey);
         if (saved) {
             return saved;
         }
         
         // Fall back to configuration setting
-        return vscode.workspace.getConfiguration('imageDetails').get<'accordion' | 'list'>('defaultDisplayMode', 'accordion');
+        return vscode.workspace.getConfiguration('imageDetails').get<DisplayMode>('defaultDisplayMode', 'accordion');
     }
 
-    private setDisplayMode(mode: 'accordion' | 'list'): void {
+    private setDisplayMode(mode: DisplayMode): void {
         this.context.globalState.update(ImageDetailsEditorProvider.displayModeKey, mode);
     }
 
@@ -841,7 +722,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 
                 // Get color information
                 if (size.type) {
-                    colorInfo = this.getColorInfo(size);
+                    colorInfo = getColorInfo(size);
                 }
             } catch (error) {
                 // Silently handle error, return unknown dimensions
@@ -852,7 +733,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             try {
                 const buffer = await fs.promises.readFile(filePath);
                 const tags = ExifReader.load(buffer);
-                exifData = this.extractRelevantExifData(tags);
+                exifData = extractRelevantExifData(tags);
                 
                 // Add DPI from EXIF to colorInfo if available
                 if (exifData && exifData.dpi) {
@@ -861,7 +742,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 
                 // Enhance color depth with EXIF data
                 if (exifData && (exifData.bitsPerSample || exifData.samplesPerPixel)) {
-                    colorInfo.colorDepth = this.calculateBitDepth(exifData.bitsPerSample, exifData.samplesPerPixel, colorInfo.colorDepth);
+                    colorInfo.colorDepth = calculateBitDepth(exifData.bitsPerSample, exifData.samplesPerPixel, colorInfo.colorDepth);
                 }
             } catch (error) {
                 // EXIF data not available or error reading it
@@ -871,7 +752,7 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             return {
                 path: filePath,
                 fileName: path.basename(filePath),
-                fileSize: this.formatFileSize(stats.size),
+                fileSize: formatFileSize(stats.size),
                 fileSizeBytes: stats.size,
                 width: dimensions.width,
                 height: dimensions.height,
@@ -899,485 +780,6 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 exif: null
             };
         }
-    }
-
-    private formatFileSize(bytes: number): string {
-        if (bytes === 0) {return '0 Bytes';}
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
-    }
-
-    private getColorInfo(size: any): any {
-        const colorInfo: any = {};
-        
-        // Check for transparency support based on format
-        const transparentFormats = ['png', 'gif', 'webp', 'svg'];
-        if (size.type && transparentFormats.includes(size.type.toLowerCase())) {
-            colorInfo.supportsTransparency = 'Yes';
-        } else {
-            colorInfo.supportsTransparency = 'No';
-        }
-        
-        // Get bit depth if available
-        if (size.type) {
-            const format = size.type.toLowerCase();
-            if (format === 'png' || format === 'bmp') {
-                // PNG and BMP can have various bit depths
-                colorInfo.colorDepth = 'Variable (8-32 bit)';
-            } else if (format === 'jpg' || format === 'jpeg') {
-                colorInfo.colorDepth = '24 bit (8 bit per channel)';
-            } else if (format === 'gif') {
-                colorInfo.colorDepth = '8 bit (256 colors)';
-            } else if (format === 'webp') {
-                colorInfo.colorDepth = '24-32 bit';
-            }
-        }
-        
-        return colorInfo;
-    }
-
-    private calculateBitDepth(bitsPerSample: string | undefined, samplesPerPixel: string | undefined, fallback: string | undefined): string {
-        if (!bitsPerSample && !samplesPerPixel) {
-            return fallback || 'Unknown';
-        }
-
-        try {
-            let bitDepthInfo = '';
-            
-            if (bitsPerSample) {
-                // BitsPerSample pode ser um array como "8 8 8" para RGB
-                const bits = bitsPerSample.toString().trim();
-                const bitsArray = bits.split(/\s+/).map(b => parseInt(b)).filter(b => !isNaN(b));
-                
-                if (bitsArray.length > 0) {
-                    const uniqueBits = [...new Set(bitsArray)];
-                    if (uniqueBits.length === 1) {
-                        // Todos os canais têm a mesma profundidade
-                        const bitsPerChannel = uniqueBits[0];
-                        const totalChannels = samplesPerPixel ? parseInt(samplesPerPixel.toString()) : bitsArray.length;
-                        const totalBits = bitsPerChannel * (totalChannels || bitsArray.length);
-                        
-                        if (totalChannels && totalChannels > 1) {
-                            bitDepthInfo = `${totalBits} bit (${bitsPerChannel} bit per channel, ${totalChannels} channels)`;
-                        } else {
-                            bitDepthInfo = `${bitsPerChannel} bit`;
-                        }
-                    } else {
-                        // Diferentes profundidades por canal
-                        const totalBits = bitsArray.reduce((sum, bits) => sum + bits, 0);
-                        bitDepthInfo = `${totalBits} bit (${bits} per channel)`;
-                    }
-                }
-            } else if (samplesPerPixel) {
-                const channels = parseInt(samplesPerPixel.toString());
-                if (!isNaN(channels)) {
-                    bitDepthInfo = `${channels} channel${channels > 1 ? 's' : ''}`;
-                }
-            }
-
-            return bitDepthInfo || fallback || 'Unknown';
-        } catch (error) {
-            return fallback || 'Unknown';
-        }
-    }
-
-    private extractRelevantExifData(tags: any): any {
-        const exif: any = {};
-
-        // Helper function to safely get description
-        const getDescription = (tag: any): string | undefined => {
-            if (!tag) return undefined;
-            const desc = tag.description || tag.value;
-            return desc !== undefined && desc !== null ? String(desc) : undefined;
-        };
-
-        // === IMAGE DESCRIPTION ===
-        const imageDescription = getDescription(tags.ImageDescription);
-        if (imageDescription) {
-            exif.imageDescription = imageDescription;
-        }
-
-        // === CAMERA INFO ===
-        const cameraMake = getDescription(tags.Make);
-        if (cameraMake) {
-            exif.cameraMake = cameraMake;
-        }
-        
-        const cameraModel = getDescription(tags.Model);
-        if (cameraModel) {
-            exif.cameraModel = cameraModel;
-        }
-
-        // === PHOTO SETTINGS ===
-        // ISO
-        const iso = getDescription(tags.ISO || tags.ISOSpeedRatings);
-        if (iso) {
-            exif.iso = iso;
-        }
-        
-        // Aperture (F-Number)
-        if (tags.FNumber) {
-            const fnumber = getDescription(tags.FNumber);
-            if (fnumber) {
-                exif.aperture = fnumber.includes('f/') ? fnumber : `f/${fnumber}`;
-            }
-        }
-        
-        // Aperture Value
-        const apertureValue = getDescription(tags.ApertureValue);
-        if (apertureValue) {
-            exif.apertureValue = apertureValue;
-        }
-        
-        // Max Aperture
-        const maxAperture = getDescription(tags.MaxApertureValue);
-        if (maxAperture) {
-            exif.maxApertureValue = maxAperture;
-        }
-        
-        // Shutter Speed (Exposure Time)
-        const exposureTime = getDescription(tags.ExposureTime);
-        if (exposureTime) {
-            exif.shutterSpeed = exposureTime;
-        }
-        
-        // Shutter Speed Value
-        const shutterSpeedValue = getDescription(tags.ShutterSpeedValue);
-        if (shutterSpeedValue) {
-            exif.shutterSpeedValue = shutterSpeedValue;
-        }
-        
-        // Focal Length
-        if (tags.FocalLength) {
-            const focal = getDescription(tags.FocalLength);
-            if (focal) {
-                exif.focalLength = focal.includes('mm') ? focal : `${focal}mm`;
-            }
-        }
-        
-        // Focal Length in 35mm
-        const focalLength35mm = getDescription(tags.FocalLengthIn35mmFormat);
-        if (focalLength35mm) {
-            exif.focalLength35mm = focalLength35mm;
-        }
-
-        // Exposure Program
-        const exposureProgram = getDescription(tags.ExposureProgram);
-        if (exposureProgram) {
-            exif.exposureProgram = exposureProgram;
-        }
-        
-        // Exposure Mode
-        const exposureMode = getDescription(tags.ExposureMode);
-        if (exposureMode) {
-            exif.exposureMode = exposureMode;
-        }
-        
-        // Exposure Compensation
-        const exposureCompensation = getDescription(tags.ExposureCompensation);
-        if (exposureCompensation !== undefined) {
-            exif.exposureCompensation = exposureCompensation;
-        }
-
-        // Metering Mode
-        const meteringMode = getDescription(tags.MeteringMode);
-        if (meteringMode) {
-            exif.meteringMode = meteringMode;
-        }
-
-        // Flash
-        const flash = getDescription(tags.Flash);
-        if (flash) {
-            exif.flash = flash;
-        }
-
-        // White Balance
-        const whiteBalance = getDescription(tags.WhiteBalance);
-        if (whiteBalance) {
-            exif.whiteBalance = whiteBalance;
-        }
-
-        // Components Configuration
-        const componentsConfig = getDescription(tags.ComponentsConfiguration);
-        if (componentsConfig) {
-            exif.componentsConfiguration = componentsConfig;
-        }
-
-        // User Comment
-        const userComment = getDescription(tags.UserComment);
-        if (userComment) {
-            exif.userComment = userComment;
-        }
-
-        // === DATE/TIME INFO ===
-        const dateTaken = getDescription(tags.DateTimeOriginal || tags.DateTime);
-        if (dateTaken) {
-            exif.dateTaken = dateTaken;
-        }
-        
-        const createDate = getDescription(tags.CreateDate);
-        if (createDate) {
-            exif.createDate = createDate;
-        }
-        
-        const modifyDate = getDescription(tags.ModifyDate);
-        if (modifyDate) {
-            exif.modifyDate = modifyDate;
-        }
-
-        // === GPS INFO ===
-        const gpsLat = getDescription(tags.GPSLatitude);
-        const gpsLon = getDescription(tags.GPSLongitude);
-        if (gpsLat && gpsLon) {
-            exif.gpsLatitude = gpsLat;
-            exif.gpsLongitude = gpsLon;
-        }
-        
-        const gpsLatRef = getDescription(tags.GPSLatitudeRef);
-        if (gpsLatRef) {
-            exif.gpsLatitudeRef = gpsLatRef;
-        }
-        
-        const gpsLonRef = getDescription(tags.GPSLongitudeRef);
-        if (gpsLonRef) {
-            exif.gpsLongitudeRef = gpsLonRef;
-        }
-        
-        const gpsAltitude = getDescription(tags.GPSAltitude);
-        if (gpsAltitude) {
-            exif.gpsAltitude = gpsAltitude;
-        }
-        
-        const gpsAltitudeRef = getDescription(tags.GPSAltitudeRef);
-        if (gpsAltitudeRef) {
-            exif.gpsAltitudeRef = gpsAltitudeRef;
-        }
-        
-        const gpsTimeStamp = getDescription(tags.GPSTimeStamp);
-        if (gpsTimeStamp) {
-            exif.gpsTimeStamp = gpsTimeStamp;
-        }
-        
-        const gpsDateStamp = getDescription(tags.GPSDateStamp);
-        if (gpsDateStamp) {
-            exif.gpsDateStamp = gpsDateStamp;
-        }
-        
-        const gpsSatellites = getDescription(tags.GPSSatellites);
-        if (gpsSatellites) {
-            exif.gpsSatellites = gpsSatellites;
-        }
-        
-        const gpsStatus = getDescription(tags.GPSStatus);
-        if (gpsStatus) {
-            exif.gpsStatus = gpsStatus;
-        }
-        
-        const gpsMeasureMode = getDescription(tags.GPSMeasureMode);
-        if (gpsMeasureMode) {
-            exif.gpsMeasureMode = gpsMeasureMode;
-        }
-        
-        const gpsDOP = getDescription(tags.GPSDOP);
-        if (gpsDOP) {
-            exif.gpsDOP = gpsDOP;
-        }
-        
-        const gpsSpeed = getDescription(tags.GPSSpeed);
-        if (gpsSpeed !== undefined) {
-            exif.gpsSpeed = gpsSpeed;
-        }
-        
-        const gpsSpeedRef = getDescription(tags.GPSSpeedRef);
-        if (gpsSpeedRef) {
-            exif.gpsSpeedRef = gpsSpeedRef;
-        }
-        
-        const gpsTrack = getDescription(tags.GPSTrack);
-        if (gpsTrack !== undefined) {
-            exif.gpsTrack = gpsTrack;
-        }
-        
-        const gpsTrackRef = getDescription(tags.GPSTrackRef);
-        if (gpsTrackRef) {
-            exif.gpsTrackRef = gpsTrackRef;
-        }
-        
-        const gpsImgDirection = getDescription(tags.GPSImgDirection);
-        if (gpsImgDirection !== undefined) {
-            exif.gpsImgDirection = gpsImgDirection;
-        }
-        
-        const gpsImgDirectionRef = getDescription(tags.GPSImgDirectionRef);
-        if (gpsImgDirectionRef) {
-            exif.gpsImgDirectionRef = gpsImgDirectionRef;
-        }
-        
-        const gpsMapDatum = getDescription(tags.GPSMapDatum);
-        if (gpsMapDatum) {
-            exif.gpsMapDatum = gpsMapDatum;
-        }
-        
-        const gpsDestLatitude = getDescription(tags.GPSDestLatitude);
-        if (gpsDestLatitude) {
-            exif.gpsDestLatitude = gpsDestLatitude;
-        }
-        
-        const gpsDestLatitudeRef = getDescription(tags.GPSDestLatitudeRef);
-        if (gpsDestLatitudeRef) {
-            exif.gpsDestLatitudeRef = gpsDestLatitudeRef;
-        }
-        
-        const gpsDestLongitude = getDescription(tags.GPSDestLongitude);
-        if (gpsDestLongitude) {
-            exif.gpsDestLongitude = gpsDestLongitude;
-        }
-        
-        const gpsDestLongitudeRef = getDescription(tags.GPSDestLongitudeRef);
-        if (gpsDestLongitudeRef) {
-            exif.gpsDestLongitudeRef = gpsDestLongitudeRef;
-        }
-        
-        const gpsDestBearing = getDescription(tags.GPSDestBearing);
-        if (gpsDestBearing !== undefined) {
-            exif.gpsDestBearing = gpsDestBearing;
-        }
-        
-        const gpsDestBearingRef = getDescription(tags.GPSDestBearingRef);
-        if (gpsDestBearingRef) {
-            exif.gpsDestBearingRef = gpsDestBearingRef;
-        }
-        
-        const gpsDestDistance = getDescription(tags.GPSDestDistance);
-        if (gpsDestDistance !== undefined) {
-            exif.gpsDestDistance = gpsDestDistance;
-        }
-        
-        const gpsDestDistanceRef = getDescription(tags.GPSDestDistanceRef);
-        if (gpsDestDistanceRef) {
-            exif.gpsDestDistanceRef = gpsDestDistanceRef;
-        }
-        
-        const gpsDifferential = getDescription(tags.GPSDifferential);
-        if (gpsDifferential) {
-            exif.gpsDifferential = gpsDifferential;
-        }
-        
-        const gpsVersionID = getDescription(tags.GPSVersionID);
-        if (gpsVersionID) {
-            exif.gpsVersionID = gpsVersionID;
-        }
-
-        // === IMAGE INFO ===
-        const orientation = getDescription(tags.Orientation);
-        if (orientation) {
-            exif.orientation = orientation;
-        }
-        
-        const colorSpace = getDescription(tags.ColorSpace);
-        if (colorSpace) {
-            exif.colorSpace = colorSpace;
-        }
-        
-        const software = getDescription(tags.Software);
-        if (software) {
-            exif.software = software;
-        }
-        
-        const artist = getDescription(tags.Artist);
-        if (artist) {
-            exif.artist = artist;
-        }
-        
-        const copyright = getDescription(tags.Copyright);
-        if (copyright) {
-            exif.copyright = copyright;
-        }
-        
-        const compression = getDescription(tags.Compression);
-        if (compression) {
-            exif.compression = compression;
-        }
-        
-        const yCbCrPositioning = getDescription(tags.YCbCrPositioning);
-        if (yCbCrPositioning) {
-            exif.yCbCrPositioning = yCbCrPositioning;
-        }
-
-        // === LENS INFO ===
-        const lensMake = getDescription(tags.LensMake);
-        if (lensMake) {
-            exif.lensMake = lensMake;
-        }
-        
-        const lensModel = getDescription(tags.LensModel);
-        if (lensModel) {
-            exif.lensModel = lensModel;
-        }
-        
-        const lensSerialNumber = getDescription(tags.LensSerialNumber);
-        if (lensSerialNumber) {
-            exif.lensSerialNumber = lensSerialNumber;
-        }
-        
-        const ownerName = getDescription(tags.OwnerName);
-        if (ownerName) {
-            exif.ownerName = ownerName;
-        }
-
-        // === VERSION INFO ===
-        const exifVersion = getDescription(tags.ExifVersion);
-        if (exifVersion) {
-            exif.exifVersion = exifVersion;
-        }
-        
-        const flashpixVersion = getDescription(tags.FlashpixVersion);
-        if (flashpixVersion) {
-            exif.flashpixVersion = flashpixVersion;
-        }
-        
-        const interopIndex = getDescription(tags.InteropIndex);
-        if (interopIndex) {
-            exif.interopIndex = interopIndex;
-        }
-        
-        const interopVersion = getDescription(tags.InteropVersion);
-        if (interopVersion) {
-            exif.interopVersion = interopVersion;
-        }
-
-        // === BIT DEPTH INFORMATION ===
-        const bitsPerSample = getDescription(tags.BitsPerSample);
-        if (bitsPerSample) {
-            exif.bitsPerSample = bitsPerSample;
-        }
-
-        const samplesPerPixel = getDescription(tags.SamplesPerPixel);
-        if (samplesPerPixel) {
-            exif.samplesPerPixel = samplesPerPixel;
-        }
-
-        // === DPI/PPI INFORMATION ===
-        const xResolution = tags.XResolution?.value || tags.XResolution?.description;
-        const yResolution = tags.YResolution?.value || tags.YResolution?.description;
-        const resolutionUnit = tags.ResolutionUnit?.description || tags.ResolutionUnit?.value;
-        
-        if (xResolution && yResolution) {
-            exif.xResolution = xResolution;
-            exif.yResolution = yResolution;
-            exif.resolutionUnit = resolutionUnit || 'inches';
-            
-            const unit = resolutionUnit === '3' || resolutionUnit === 'cm' ? 'pixels/cm' : 'DPI';
-            if (xResolution === yResolution) {
-                exif.dpi = `${xResolution} ${unit}`;
-            } else {
-                exif.dpi = `${xResolution} x ${yResolution} ${unit}`;
-            }
-        }
-
-        return Object.keys(exif).length > 0 ? exif : null;
     }
 
     private async removeExifData(uri: vscode.Uri): Promise<void> {

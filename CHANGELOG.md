@@ -5,6 +5,50 @@ All notable changes to the "Image Details" extension will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.5] - 2025-11-25
+
+### 🏗️ Code Architecture Refactoring
+
+- **Modular Architecture - Phase 3 Complete**: Refactored monolithic 3250-line file into professional modular structure
+  - **`src/types/`**: Centralized TypeScript type definitions (`Translations`, `DisplayMode`, `SectionStates`)
+  - **`src/i18n/`**: Internationalization module with automatic locale detection
+  - **`src/i18n/locales/`**: Separate files for each language (en, pt-br, ja, es)
+  - **`src/utils/metadata.ts`**: Complete metadata processing utilities (507 lines)
+  - **`src/templates/`**: HTML generation functions separated from business logic (pending)
+
+- **Phase 3 - Utility Functions Migration** (COMPLETED):
+  - Extracted `formatFileSize()` - File size formatting (8 lines)
+  - Extracted `getColorInfo()` - Color information extraction (37 lines)
+  - Extracted `calculateBitDepth()` - Bit depth calculation (45 lines)
+  - Extracted `extractRelevantExifData()` - Complete EXIF processing (580 lines)
+  - Updated all function calls from `this.method()` to `method()`
+  - Added comprehensive JSDoc documentation
+  - Zero compilation errors
+
+- **Code Reduction Metrics**:
+  - Main file: 3,131 → 2,651 lines (-480 lines, -15.3%)
+  - Total reduction: 599 lines from original (18.4%)
+  - Code extracted to modules: 670+ lines
+
+- **Phase 2 - Core Migration** (COMPLETED):
+  - Replaced `getTranslations()` method with centralized i18n module (28 → 3 lines, 89% reduction)
+  - Updated type definitions to use imported types
+  - Removed duplicate interface definitions
+
+- **Benefits**:
+  - Improved maintainability (reduced code duplication)
+  - Better testability (pure functions, loose coupling)
+  - Enhanced reusability (functions can be imported by other modules)
+  - Easier to add new languages (create one file per locale)
+  - Clear separation of concerns
+  - Better code organization and readability
+
+- **Documentation**: Added comprehensive refactoring docs
+  - `REFACTORING_SUMMARY.md`: Executive summary
+  - `docs/development/REFACTORING.md`: Technical documentation
+  - `MIGRATION_STATUS.md`: Migration progress tracker (updated for Phase 3)
+  - `PHASE_3_COMPLETE.md`: Detailed Phase 3 completion report
+
 ## [1.1.4] - 2025-11-25
 
 ### 🌐 Japanese and Spanish Language Support v1.1.4
