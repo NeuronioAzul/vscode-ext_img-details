@@ -33,6 +33,62 @@
   - [x] Automatic detection for all Spanish locales (es, es-ES, es-MX, es-AR, etc.)
   - [x] Full EXIF metadata field translations
 
+### 🌍 Internationalization (i18n) Expansion Plan
+
+#### ✅ Implemented Languages (4)
+
+- [x] English (en) - Base language
+- [x] Portuguese - Brazil (pt-br)
+- [x] Japanese (ja) - 日本語
+- [x] Spanish (es) - Español
+
+#### 🔥 High Priority Languages (3)
+
+- [ ] Chinese Simplified (zh-cn) - 简体中文
+  - ~25-30% of VS Code users
+  - Largest developer community worldwide
+  - Critical for Asian market penetration
+- [ ] French (fr) - Français
+  - ~8-12% of VS Code users
+  - France + Francophone communities (Africa, Canada, Belgium)
+  - Strong European developer base
+- [ ] German (de) - Deutsch
+  - ~8-12% of VS Code users
+  - Germany: tech powerhouse in Europe
+  - Strong engineering culture
+
+#### ⭐ Medium Priority Languages (3)
+
+- [ ] Russian (ru) - Русский
+  - ~5-8% of VS Code users
+  - Large developer community
+  - Strong presence in open source
+- [ ] Korean (ko) - 한국어
+  - ~5-8% of VS Code users
+  - South Korea: major tech hub
+  - Strong software/hardware industry
+- [ ] Italian (it) - Italiano
+  - European market presence
+  - Active developer community
+  - Design and creativity focus
+
+#### 💎 Special Consideration Languages (2)
+
+- [ ] Chinese Traditional (zh-tw) - 繁體中文
+  - Taiwan: significant tech industry
+  - Hong Kong: financial/tech hub
+  - Cultural preference for traditional characters
+- [ ] Hindi (hi) - हिन्दी
+  - India: massive emerging market
+  - Explosion of young developers
+  - Enormous future growth potential
+
+**Coverage Goal:**
+
+- Phase 1 (High Priority): ~70% global coverage
+- Phase 2 (Medium Priority): ~85% global coverage
+- Phase 3 (Special Consideration): ~90% global coverage
+
 ### ✅ Documentation
 
 - [x] Refactoring documentation
