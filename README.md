@@ -216,7 +216,7 @@ MIT - See [LICENSE](LICENSE)
 
 If you find this extension useful:
 
-<div align="center">
+<div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
 
 <a href="https://www.buymeacoffee.com/neuronioazul" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" width="120"></a>
 
