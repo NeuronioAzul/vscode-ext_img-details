@@ -147,7 +147,7 @@ Works with all common image formats:
 
 ### Internationalization (i18n)
 
-- English, Portuguese (Brasil), Japanese (日本語), and Spanish (Español)
+- English, Portuguese (Brasil), Japanese (日本語), Spanish (Español), and Chinese Simplified (简体中文)
 - Auto-detects VS Code language
 - Extensible ([I18N Guide](docs/contributing/I18N.md))
 

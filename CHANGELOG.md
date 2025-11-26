@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.5] - 2025-11-25
 
+### 🌐 Chinese Simplified (zh-cn) - 简体中文 Language Support v1.1.4
+
+- **Chinese Simplified Language (简体中文)**: Added complete Chinese Simplified translation
+  - All 110+ UI strings translated
+  - Automatic detection for all Chinese Simplified locales (`zh-cn`, `zh-sg`, etc.)
+  - Full EXIF metadata field translations
+  - Chinese is the most spoken language globally with over 1 billion speakers
+
 ### 🏗️ Code Architecture Refactoring
 
 - **Modular Architecture Implementation**
@@ -25,7 +33,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Easier to add new languages (create one file per locale)
   - Clear separation of concerns
   - Better code organization and readability
-
 
 - **Modular Architecture - Phase 3 Complete**: Refactored monolithic 3250-line file into professional modular structure
   - **`src/types/`**: Centralized TypeScript type definitions (`Translations`, `DisplayMode`, `SectionStates`)

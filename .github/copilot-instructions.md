@@ -33,7 +33,7 @@ This is a VS Code extension that provides a custom webview editor for viewing co
 
 5. **`src/i18n/`** - Internationalization (modular, ~50 lines core)
    - `translations.ts` - `getTranslations(locale)` with fallback logic
-   - `locales/en.ts`, `pt-br.ts`, `ja.ts`, `es.ts` - Language files (~115 lines each)
+   - `locales/en.ts`, `pt-br.ts`, `ja.ts`, `es.ts`, `zh-cn.ts` - Language files (~115 lines each)
    - Auto-detects VS Code locale (`vscode.env.language`)
 
 6. **`src/types/index.ts`** - TypeScript interfaces (~150 lines)
@@ -72,8 +72,16 @@ This is a VS Code extension that provides a custom webview editor for viewing co
 2. Translate all 114 string keys
 3. Import in `src/i18n/translations.ts`: `import { de } from './locales/de';`
 4. Add to exports: `'de': de,`
+5. Add fallback logic if needed in `getTranslations()` function
 
 **Why modular?** See `REFACTORING_SUMMARY.md` - reduces maintenance burden from 3250-line monolith to 115-line files per language.
+
+**Supported languages (5):**
+- English (en)
+- Portuguese - Brazil (pt-br)
+- Japanese (ja)
+- Spanish (es)
+- Chinese Simplified (zh-cn)
 
 ### State Management
 

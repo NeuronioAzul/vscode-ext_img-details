@@ -1,6 +1,6 @@
 /**
  * Internationalization (i18n) for Image Details extension
- * Languages: English, Portuguese (Brasil), Japanese, Spanish
+ * Languages: English, Portuguese (Brasil), Japanese, Spanish, Chinese Simplified
  */
 
 import { Translations } from '../types';
@@ -8,12 +8,15 @@ import { en } from './locales/en';
 import { ptBr } from './locales/pt-br';
 import { ja } from './locales/ja';
 import { es } from './locales/es';
+import { zhCn } from './locales/zh-cn';
 
 export const translations: { [key: string]: Translations } = {
     'en': en,
     'pt-br': ptBr,
     'ja': ja,
-    'es': es
+    'es': es,
+    'zh-cn': zhCn,
+    'zh': zhCn
 };
 
 /**
@@ -37,6 +40,7 @@ export function getTranslations(locale: string): Translations {
     if (normalizedLocale.includes('pt')) return translations['pt-br'];
     if (normalizedLocale.includes('ja')) return translations['ja'];
     if (normalizedLocale.includes('es')) return translations['es'];
+    if (normalizedLocale.includes('zh')) return translations['zh-cn'];
     
     // Default to English
     return translations['en'];
