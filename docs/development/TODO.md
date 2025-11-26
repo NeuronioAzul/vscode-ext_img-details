@@ -4,16 +4,23 @@
 
 ### ✅ Code Architecture Refactoring
 
-- [x] Modular architecture implementation
+- [x] Modular architecture implementation (Phase 1-3)
   - [x] Create `src/types/index.ts` with centralized type definitions
   - [x] Create `src/i18n/translations.ts` with locale detection
   - [x] Create `src/i18n/locales/` with separate language files (en, pt-br, ja, es)
-  - [x] Create `src/utils/metadata.ts` for utility functions (stub)
+  - [x] Create `src/utils/metadata.ts` for utility functions
   - [x] Create `src/templates/htmlGenerators.ts` for HTML generators (stub)
   - [x] Refactor `imageDetailsEditor.ts` to use new modules
-  - [x] Replace `getTranslations()` method (28 lines → 3 lines)
+  - [x] Replace `getTranslations()` method (28 lines → 3 lines, 89% reduction)
   - [x] Update type definitions to use imported types
+  - [x] Extract utility functions to `src/utils/metadata.ts`
+    - [x] `formatFileSize()` - 8 lines
+    - [x] `getColorInfo()` - 37 lines
+    - [x] `calculateBitDepth()` - 45 lines
+    - [x] `extractRelevantExifData()` - 580 lines
+  - [x] Update all function calls and imports
   - [x] Successful compilation with zero errors
+  - [x] Code reduction: 3,131 → 2,651 lines (-480 lines, -15.3%)
 
 ### ✅ Internationalization (i18n)
 
@@ -35,15 +42,22 @@
 
 ## 🔧 Melhorias Planejadas
 
-### 1. Code Architecture - Phase 3 (Next Steps)
+### 1. Code Architecture - Phase 4 (In Progress)
 
-- [ ] 1.1 Move utility functions to `src/utils/metadata.ts`
-  - [ ] 1.1.1 Move `formatFileSize()` function
-  - [ ] 1.1.2 Move `getColorInfo()` function
-  - [ ] 1.1.3 Move `extractRelevantExifData()` function (complete implementation)
-  - [ ] 1.1.4 Add unit tests for utility functions
+- [x] 1.1 Move utility functions to `src/utils/metadata.ts` ✅ COMPLETED
+  - [x] 1.1.1 Move `formatFileSize()` function
+  - [x] 1.1.2 Move `getColorInfo()` function
+  - [x] 1.1.3 Move `calculateBitDepth()` function
+  - [x] 1.1.4 Move `extractRelevantExifData()` function (complete implementation)
+  - [ ] 1.1.5 Add unit tests for utility functions
 
-- [ ] 1.2 Move HTML generators to `src/templates/htmlGenerators.ts`
+- [x] 1.2 Move HTML generators to `src/templates/htmlGenerators.ts` ✅ PHASE 4A COMPLETE
+  - [x] 1.2.0 Create htmlGenerators module structure
+  - [x] 1.2.1 Move `escapeHtml()` helper function (18 lines)
+  - [x] 1.2.2 Move `getErrorHtml()` function (86 lines)
+  - [ ] 1.2.3 Move `generateColorInfoHtml()` function (~50 lines) - Phase 4B
+  - [ ] 1.2.4 Move `generateExifHtml()` function (~600 lines) - Phase 4B
+  - [ ] 1.2.5 Move `getHtmlForWebview()` function (~950 lines) - Phase 4B
   - [ ] 1.2.1 Move `generateBasicInfoSection()` function
   - [ ] 1.2.2 Move `generateColorInfoHtml()` function
   - [ ] 1.2.3 Move `generateExifHtml()` function
@@ -214,10 +228,15 @@
 
 ## 📝 Notas
 
-- ✅ v1.1.6: Modular architecture successfully implemented (Phase 1 & 2)
-- 🎯 Next: Continue refactoring (Phase 3 & 4) + testing
-- 📊 Code quality improved: Better maintainability and testability
+- ✅ v1.1.5: Modular architecture Phases 1-4A successfully implemented
+  - Phase 1: Module structure creation ✅
+  - Phase 2: Core migration (types, i18n) ✅
+  - Phase 3: Utility functions extraction ✅
+  - Phase 4A: HTML helpers extraction ✅ (2/5 functions, 104 lines)
+- 🎯 Next: Phase 4B (remaining HTML generators ~1600 lines) + Phase 5 (cleanup & testing)
+- 📊 Code quality improved: 18.4% reduction, better maintainability and testability
 - 🌐 4 languages supported: English, Portuguese, Japanese, Spanish
+- 📐 Progress: ~60% complete overall, Phase 4: 40% complete
 
 ## 📦 Publishing & Release Management
 
