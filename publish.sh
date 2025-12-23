@@ -560,7 +560,16 @@ validate_pat_token() {
         return 1
     elif [ "$http_code" = "403" ]; then
         print_error "Personal Access Token doesn't have required permissions"
-        print_info "Required scopes: Marketplace (Publish)"
+        echo "" >&2
+        print_info "Required: Marketplace (${BOLD}Manage${NC}) - NOT just 'Publish'" >&2
+        print_info "Create new PAT at: ${BLUE}https://dev.azure.com/[org]/_usersSettings/tokens${NC}" >&2
+        return 1
+    elif [ "$http_code" = "404" ]; then
+        print_error "Publisher not found or you don't have access to it"
+        echo "" >&2
+        local publisher=$(grep -o '"publisher": *"[^"]*"' "$PACKAGE_JSON" | grep -o '[^"]*"$' | tr -d '"')
+        print_info "Publisher in package.json: ${BOLD}$publisher${NC}" >&2
+        print_info "Add your account to publisher: ${BLUE}https://marketplace.visualstudio.com/manage/publishers/$publisher${NC}" >&2
         return 1
     elif [ "$http_code" != "200" ]; then
         # Outro erro - avisa mas não bloqueia (pode ser problema de rede)
@@ -585,7 +594,11 @@ prompt_pat_token() {
     echo -e "${CYAN}A Personal Access Token (PAT) is required to publish to the marketplace.${NC}" >&2
     echo -e "${CYAN}Get your PAT from: ${BLUE}https://dev.azure.com/[organization]/_usersSettings/tokens${NC}\n" >&2
     echo -e "${BOLD}Required permissions:${NC}" >&2
-    echo -e "  ${GREEN}✓${NC} Marketplace: ${BOLD}Publish${NC}" >&2
+    echo -e "  ${GREEN}✓${NC} Marketplace: ${BOLD}Manage${NC} ${YELLOW}(NOT just 'Publish' - use 'Manage')${NC}" >&2
+    echo -e "" >&2
+    echo -e "${BOLD}${RED}IMPORTANT:${NC}" >&2
+    echo -e "  ${YELLOW}⚠${NC}  Your Microsoft account must be added to the publisher" >&2
+    echo -e "  ${YELLOW}⚠${NC}  Manage publisher members at: ${BLUE}https://marketplace.visualstudio.com/manage/publishers/${NC}" >&2
     echo -e "" >&2
     
     while [ $attempts -lt $max_attempts ]; do
@@ -657,16 +670,56 @@ publish_to_marketplace() {
         # Se foi fornecido via CLI, valida antes de prosseguir
         if ! validate_pat_token "$pat"; then
             print_error "The provided PAT is invalid or expired"
-            print_info "Please provide a valid Personal Access Token"
+            echo ""
+            print_info "Common issues:"
+            print_info "  1. PAT needs 'Marketplace (Manage)' permission, not just 'Publish'"
+            print_info "  2. Your Microsoft account must be added to the publisher"
+            print_info "  3. Manage at: ${BLUE}https://marketplace.visualstudio.com/manage${NC}"
             return 1
         fi
+    fi
+    
+    # Verificação final antes de publicar
+    local publisher=$(grep -o '"publisher": *"[^"]*"' "$PACKAGE_JSON" | grep -o '[^"]*"$' | tr -d '"')
+    echo ""
+    print_info "Publisher: ${BOLD}$publisher${NC}"
+    print_warning "Make sure your Microsoft account is authorized for this publisher"
+    if ! confirm "Continue with publishing?" "y"; then
+        print_warning "Publishing cancelled"
+        return 1
     fi
     
     # Empacota e publica a extensão
     # -p: especifica o PAT para autenticação
     print_step "Packaging and uploading to marketplace..."
-    vsce publish -p "$pat"
     
+    # Captura output e exit code do vsce
+    if ! vsce publish -p "$pat" 2>&1 | tee /tmp/vsce_output.log; then
+        local exit_code=$?
+        print_error "Failed to publish to marketplace (exit code: $exit_code)"
+        echo ""
+        
+        # Verifica se é erro de autorização
+        if grep -q "TF400813\|not authorized\|403" /tmp/vsce_output.log; then
+            print_error "Authorization error detected!"
+            echo ""
+            print_info "Common causes:"
+            print_info "  1. PAT needs 'Marketplace (${BOLD}Manage${NC})' permission"
+            print_info "  2. Your account is not added to the publisher"
+            echo ""
+            print_info "See detailed guide: ${BLUE}docs/PUBLISHING_TROUBLESHOOTING.md${NC}"
+            echo ""
+            print_info "Quick fix:"
+            local publisher=$(grep -o '"publisher": *"[^"]*"' "$PACKAGE_JSON" | grep -o '[^"]*"$' | tr -d '"')
+            print_info "  • Add yourself: ${BLUE}https://marketplace.visualstudio.com/manage/publishers/$publisher${NC}"
+            print_info "  • New PAT: ${BLUE}https://dev.azure.com/_usersSettings/tokens${NC}"
+        fi
+        
+        rm -f /tmp/vsce_output.log
+        return 1
+    fi
+    
+    rm -f /tmp/vsce_output.log
     print_success "Published to VS Code Marketplace"
 }
 
