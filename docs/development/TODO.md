@@ -190,7 +190,7 @@
   - [x] 3.7.9 Traduções em múltiplos idiomas (en, pt-br, ja, es, zh-cn)
   - [ ] 3.7.10 Histórico de redimensionamentos (undo/redo)
 
-**✅ Resize Feature - IMPLEMENTADA (v1.2.0)**
+**✅ Resize Feature - IMPLEMENTADA (v1.2.0 - v1.2.1)**
 
 Todos os itens da especificação técnica foram implementados:
 - ✅ Botão "Resize Image" no painel de ferramentas
@@ -204,6 +204,15 @@ Todos os itens da especificação técnica foram implementados:
 - ✅ Restauração automática do backup em caso de erro
 - ✅ Atualização automática da visualização
 - ✅ Traduções completas em 5 idiomas (en, pt-br, ja, es, zh-cn)
+
+**Bug Fixes (v1.2.1):**
+- ✅ Corrigido loop infinito na abertura da modal
+- ✅ Corrigido pointer-events bloqueando interação
+- ✅ Campos de input agora aceitam valores numéricos corretamente
+- ✅ Botões de fechar (X, Cancel, overlay) funcionam corretamente
+- ✅ Atalhos de teclado modificados para usar Ctrl (evita conflitos com digitação)
+- ✅ Atalhos de zoom: `Ctrl + +`, `Ctrl + -`, `Ctrl + 0`
+- ✅ Atalhos desabilitados quando digitando em campos de input
 
 **Dependências instaladas:**
 - `sharp@0.33.1` - High-performance image processing

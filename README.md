@@ -36,10 +36,22 @@ A powerful VS Code extension that displays comprehensive image metadata, EXIF da
 #### Advanced Zoom Controls
 
 - **Buttons**: Use the visual `+`, `-`, `⟲`, and `⊡` buttons in the toolbar
-- **Keyboard**: Press `+` to zoom in, `-` to zoom out, `0` to reset
+- **Keyboard**: Press `Ctrl + +` to zoom in, `Ctrl + -` to zoom out, `Ctrl + 0` to reset
 - **Mouse Wheel**: Hold `Ctrl` (Windows/Linux) or `Cmd` (Mac) and scroll
 - **Click**: Click anywhere on the image to toggle 2× zoom
 - **Fit to Screen**: Click the fit button to auto-adjust image size
+
+### Image Resize Tool
+
+- **Resize Images**: Resize images directly from the viewer with high-quality processing
+- **Interactive Modal**: User-friendly dialog with width and height inputs
+- **Aspect Ratio Lock**: Checkbox to maintain proportions when resizing
+- **Quality Control**: Adjustable quality slider (0-100) for JPEG/WebP compression
+- **Automatic Backup**: Creates backup with `-original` suffix before resizing
+- **Real-time Preview**: See new dimensions before applying changes
+- **Format Support**: Works with JPEG, PNG, and WebP formats
+- **Error Recovery**: Automatically restores from backup if operation fails
+- **Safe Operation**: Confirmation dialog prevents accidental changes
 
 ### EXIF Data Management
 
