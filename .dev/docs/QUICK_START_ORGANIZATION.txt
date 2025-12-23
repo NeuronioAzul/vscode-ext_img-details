@@ -1,0 +1,215 @@
+```
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                                                                               ║
+║                   🗂️  GUIA DE ORGANIZAÇÃO DO REPOSITÓRIO                      ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+📋 RESUMO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Organizar repositório em 2 branches:
+
+  ┌─────────────┐                           ┌─────────────┐
+  │    main     │  ← Somente Produção       │     dev     │  ← Desenvolvimento
+  │             │                            │             │
+  │  README     │                            │  [main] +   │
+  │  CHANGELOG  │                            │             │
+  │  LICENSE    │                            │  .dev/      │
+  │  src/       │                            │    ├─docs/  │
+  │  dist/      │                            │    ├─tests/ │
+  │  package.*  │                            │    ├─admin/ │
+  │  tsconfig   │                            │    └─scripts/│
+  └─────────────┘                           └─────────────┘
+       ↑                                            ↑
+       │                                            │
+  Releases                                   Desenvolvimento
+
+
+🎯 OBJETIVO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Branch main limpa e profissional
+✅ Arquivos de desenvolvimento organizados em .dev/
+✅ Clone mais rápido para usuários finais
+✅ Separação clara: produção vs desenvolvimento
+
+
+📁 ARQUIVOS NA MAIN (Produção)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ MANTER:
+   ├── .github/              # CI/CD workflows
+   ├── .vscode/              # Configurações workspace
+   ├── dist/                 # Código compilado
+   ├── media/                # Imagens (screenshots)
+   ├── src/                  # Código fonte
+   ├── .eslintrc.json
+   ├── .gitignore
+   ├── .vscodeignore
+   ├── CHANGELOG.md          ⭐ Essencial
+   ├── CONTRIBUTING.md       ⭐ Novo
+   ├── esbuild.js
+   ├── icon.png
+   ├── LICENSE               ⭐ Essencial
+   ├── package.json          ⭐ Essencial
+   ├── package-lock.json
+   ├── README.md             ⭐ Essencial
+   └── tsconfig.json
+
+❌ REMOVER (Mover para .dev/ na branch dev):
+   ├── _ADM/                 → .dev/admin/
+   ├── docs/                 → .dev/docs/
+   ├── test-images/          → .dev/test-images/
+   ├── publish.sh            → .dev/scripts/
+   ├── ROADMAP.md            → .dev/planning/
+   ├── MIGRATION_STATUS.md   → .dev/planning/
+   ├── PHASE_*.md            → .dev/planning/
+   └── REFACTORING_SUMMARY.md → .dev/planning/
+
+
+📁 ESTRUTURA .dev/ (Branch dev)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+.dev/
+├── README.md                 # Guia de desenvolvimento
+├── docs/                     # Documentação técnica
+│   ├── contributing/
+│   │   ├── CONTRIBUTING.md
+│   │   └── I18N.md
+│   ├── development/
+│   │   ├── REFACTORING.md
+│   │   └── TODO.md
+│   ├── MARKETPLACE_GUIDE.md
+│   ├── PUBLISH_GUIDE.md
+│   └── PUBLISHING_TROUBLESHOOTING.md
+├── test-images/              # Imagens de teste
+│   ├── test1.jpg
+│   ├── test2.png
+│   └── ...
+├── admin/                    # Administrativo
+│   └── img-details-logo.xcf
+├── scripts/                  # Scripts
+│   └── publish.sh
+└── planning/                 # Planejamento
+    ├── ROADMAP.md
+    ├── MIGRATION_STATUS.md
+    ├── PHASE_*.md
+    ├── REFACTORING_SUMMARY.md
+    └── ORGANIZATION_PLAN.md
+
+
+🚀 EXECUÇÃO RÁPIDA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Certifique-se de estar na branch main e com git limpo:
+   
+   $ git checkout main
+   $ git status  # Deve estar limpo
+
+2. Execute o script de organização:
+   
+   $ ./organize_repo.sh
+
+3. O script irá automaticamente:
+   
+   ✓ Criar branch dev
+   ✓ Mover arquivos para .dev/
+   ✓ Limpar branch main
+   ✓ Criar README.md e CONTRIBUTING.md
+   ✓ Fazer commits em ambas branches
+
+4. Revise as mudanças:
+   
+   $ git checkout main
+   $ git log -1
+   $ ls -la              # Verificar arquivos
+   
+   $ git checkout dev
+   $ git log -1
+   $ ls -la .dev/        # Verificar .dev/
+
+5. Se estiver satisfeito, faça push:
+   
+   $ git push origin main
+   $ git push origin dev
+
+
+🔄 WORKFLOW FUTURO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ DESENVOLVIMENTO                                                          │
+├──────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  $ git checkout dev                                                      │
+│  $ npm run watch                                                         │
+│  # Fazer mudanças, testar, commitar                                     │
+│  $ git commit -am "feat: new feature"                                    │
+│  $ git push origin dev                                                   │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ RELEASE                                                                  │
+├──────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  1. Preparar release (na dev):                                          │
+│     $ git checkout dev                                                   │
+│     # Atualizar package.json e CHANGELOG.md                             │
+│     $ npm run compile                                                    │
+│     $ git commit -am "chore: prepare release v1.x.x"                     │
+│                                                                          │
+│  2. Merge para main:                                                     │
+│     $ git checkout main                                                  │
+│     $ git merge dev --no-ff                                              │
+│     $ git push origin main                                               │
+│                                                                          │
+│  3. Tag e publish:                                                       │
+│     $ git tag v1.x.x                                                     │
+│     $ git push origin v1.x.x                                             │
+│     $ git checkout dev                                                   │
+│     $ cd .dev/scripts && ./publish.sh                                    │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+
+✅ BENEFÍCIOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✓ Main limpa e profissional (apenas 20 arquivos essenciais)
+✓ Separação clara entre produção e desenvolvimento
+✓ Clone mais rápido para usuários (~5MB vs ~15MB)
+✓ Estrutura comum em projetos open-source
+✓ Extensão menor no marketplace
+✓ Histórico git preservado
+✓ Documentação organizada
+✓ Fácil manutenção
+
+
+⚠️  IMPORTANTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+▸ Sempre desenvolver na branch dev
+▸ Main recebe apenas merges de release
+▸ Não deletar arquivos, apenas mover
+▸ Histórico git permanece intacto
+▸ Branch dev sempre tem TUDO
+▸ Main tem apenas produção
+
+
+📚 DOCUMENTAÇÃO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+• Plano completo: ORGANIZATION_PLAN.md
+• Script: organize_repo.sh
+• Guia de contribuição: CONTRIBUTING.md (após execução)
+• Guia dev: .dev/README.md (branch dev, após execução)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ready? Execute: ./organize_repo.sh
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```

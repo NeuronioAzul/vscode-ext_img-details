@@ -18,9 +18,9 @@ history.txt
 publish-*
 
 # ================================================================================================
-# Development files (kept only in dev branch)
+# Development files (available in git, but excluded from published extension via .vscodeignore)
 # ================================================================================================
-.dev/*
+# .dev/ is tracked in git but excluded from extension package
 docs/
 test-images/
 _ADM/

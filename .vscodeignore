@@ -23,6 +23,9 @@ I18N.md
 TODO.md
 CODE_OF_CONDUCT.md
 
+# Development files directory (scripts, docs, test images)
+.dev/**
+
 # Build and config files
 tsconfig.json
 .eslintrc.json
