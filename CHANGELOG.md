@@ -5,9 +5,15 @@ All notable changes to the "Image Details" extension will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2] - 2025-12-23
+
+### 🐛 Fixed - v1.2.2
+
+- **Image Resize Tool**: Improved error handling and user feedback
+
 ## [1.2.1] - 2025-12-22
 
-### 🐛 Fixed
+### 🐛 Fixed - v1.2.1
 
 - **Resize Modal**: Fixed input fields not accepting numeric values
 - **Resize Modal**: Width and Height fields now pre-populate with current image dimensions
@@ -18,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Resize Modal**: Close button (X), Cancel button, and overlay click now properly close the modal
 - **Resize Modal**: Input fields now accept all numeric values including zero
 
-### 🔧 Changed
+### 🔧 Changed - v1.2.1
 
 - **Keyboard Shortcuts**: Zoom shortcuts now require Ctrl modifier to prevent conflicts with input fields
   - Zoom In: `Ctrl + +` (previously `+`)
@@ -29,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.2.0] - 2025-12-22
 
-### ✨ Added
+### ✨ Added - v1.2.0
 
 - **Image Resize Tool**: New feature to resize images directly from the viewer
   - Interactive modal with width/height inputs
@@ -41,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Real-time dimension preview
   - Complete translations in 5 languages (en, pt-br, ja, es, zh-cn)
 
-### 🔧 Changed
+### 🔧 Changed - v1.2.0
 
 - Added `sharp@0.33.1` dependency for high-performance image processing
 
