@@ -5,6 +5,31 @@ All notable changes to the "Image Details" extension will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2025-12-23
+
+### 🏗️ Repository Organization v1.2.3
+
+- **Repository Structure**: Added professional repository organization system
+  - Separates production files (main branch) from development files (dev branch)
+  - Moves development files to `.dev/` directory structure in dev branch
+  - Maintains clean main branch with only essential production files
+
+### 🔧 Improvements in branch dev v1.2.3
+
+- **Publishing Script**: Enhanced `publish.sh` with better error handling
+  - Improved PAT validation with detailed error messages
+  - Added detection for TF400813 authorization errors
+  - Better guidance on required permissions (Marketplace Manage vs Publish)
+  - Automatic error detection and helpful suggestions
+  - Links to publisher management and token creation
+
+### 🐛 Fixed in branch dev v1.2.3
+
+- **Publishing Workflow**: Improved error detection and user feedback
+  - Better validation of Personal Access Token before making changes
+  - Clear instructions when authorization fails
+  - Prevents failed publishes with invalid credentials
+
 ## [1.2.2] - 2025-12-23
 
 ### 🐛 Fixed - v1.2.2
