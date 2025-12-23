@@ -112,6 +112,25 @@ export interface Translations {
     flashpixVersion: string;
     interopIndex: string;
     interopVersion: string;
+    // Image resize feature
+    resizeImage: string;
+    resizeImageTitle: string;
+    width: string;
+    height: string;
+    maintainAspectRatio: string;
+    currentSize: string;
+    newSize: string;
+    estimatedFileSize: string;
+    quality: string;
+    resizeOptions: string;
+    resizeConfirm: string;
+    resizeSuccess: string;
+    resizeError: string;
+    backupExists: string;
+    invalidDimensions: string;
+    apply: string;
+    applyResize: string;
+    cancel: string;
 }
 
 export interface ImageMetadata {

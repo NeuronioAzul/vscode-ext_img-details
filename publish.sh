@@ -518,6 +518,104 @@ create_github_release() {
 # VS Code Marketplace
 # ================================================================================================
 
+# Valida se o Personal Access Token está ativo e não expirado
+# Faz uma chamada de teste à API do marketplace antes de qualquer operação
+# Args:
+#   $1: Personal Access Token (PAT) do Azure DevOps
+# Returns:
+#   0 se PAT válido, 1 se inválido/expirado
+validate_pat_token() {
+    local pat=$1
+    
+    if [ -z "$pat" ]; then
+        return 1
+    fi
+    
+    print_step "Validating Personal Access Token..."
+    
+    if [ "$DRY_RUN" = true ]; then
+        print_info "[DRY-RUN] Skipping PAT validation"
+        return 0
+    fi
+    
+    # Faz uma chamada de teste ao marketplace para verificar se o PAT é válido
+    # Usa o publisher do package.json para fazer a verificação
+    local publisher=$(grep -o '"publisher": *"[^"]*"' "$PACKAGE_JSON" | grep -o '[^"]*"$' | tr -d '"')
+    
+    # Tenta fazer uma query simples ao marketplace
+    local response=$(curl -s -w "\n%{http_code}" \
+        -H "Accept: application/json;api-version=6.0-preview.1" \
+        -H "Authorization: Basic $(echo -n "user:$pat" | base64)" \
+        "https://marketplace.visualstudio.com/_apis/gallery/publishers/$publisher" 2>&1)
+    
+    local http_code=$(echo "$response" | tail -n1)
+    local body=$(echo "$response" | head -n-1)
+    
+    # Status codes:
+    # 200: OK - PAT válido
+    # 401: Unauthorized - PAT inválido ou expirado
+    # 403: Forbidden - PAT sem permissões
+    if [ "$http_code" = "401" ]; then
+        print_error "Personal Access Token is expired or invalid"
+        return 1
+    elif [ "$http_code" = "403" ]; then
+        print_error "Personal Access Token doesn't have required permissions"
+        print_info "Required scopes: Marketplace (Publish)"
+        return 1
+    elif [ "$http_code" != "200" ]; then
+        # Outro erro - avisa mas não bloqueia (pode ser problema de rede)
+        print_warning "Could not validate PAT (HTTP $http_code). Will attempt to continue..."
+        return 0
+    fi
+    
+    print_success "Personal Access Token is valid"
+    return 0
+}
+
+# Solicita o Personal Access Token ao usuário de forma segura
+# Valida o token antes de retornar
+# Returns:
+#   String com o PAT válido (para stdout)
+prompt_pat_token() {
+    local pat=""
+    local attempts=0
+    local max_attempts=3
+    
+    print_header "🔐 Personal Access Token Required" >&2
+    echo -e "${CYAN}A Personal Access Token (PAT) is required to publish to the marketplace.${NC}" >&2
+    echo -e "${CYAN}Get your PAT from: ${BLUE}https://dev.azure.com/[organization]/_usersSettings/tokens${NC}\n" >&2
+    echo -e "${BOLD}Required permissions:${NC}" >&2
+    echo -e "  ${GREEN}✓${NC} Marketplace: ${BOLD}Publish${NC}" >&2
+    echo -e "" >&2
+    
+    while [ $attempts -lt $max_attempts ]; do
+        # Lê PAT em modo silencioso
+        read -sp "$(echo -e ${YELLOW}🔑${NC} Enter your Personal Access Token: )" pat
+        echo "" >&2
+        
+        if [ -z "$pat" ]; then
+            print_error "PAT cannot be empty" >&2
+            attempts=$((attempts + 1))
+            continue
+        fi
+        
+        # Valida o PAT
+        if validate_pat_token "$pat"; then
+            echo "$pat"
+            return 0
+        else
+            attempts=$((attempts + 1))
+            if [ $attempts -lt $max_attempts ]; then
+                print_error "Invalid or expired PAT. Please try again ($attempts/$max_attempts attempts)" >&2
+                echo "" >&2
+            fi
+        fi
+    done
+    
+    print_error "Maximum attempts reached. Cannot proceed without valid PAT." >&2
+    return 1
+}
+
 # Verifica se vsce (VS Code Extension CLI) está instalado
 # Se não estiver, instala automaticamente via npm global
 # Returns:
@@ -552,24 +650,21 @@ publish_to_marketplace() {
         return 0
     fi
     
-    # Se PAT não foi fornecido, solicita ao usuário
+    # Se PAT não foi fornecido, solicita ao usuário (com validação)
     if [ -z "$pat" ]; then
-        print_error "Personal Access Token (PAT) is required for publishing."
-        print_info "Get your PAT from: https://dev.azure.com/"
-        # -s: modo silencioso (não mostra o que é digitado)
-        # -p: exibe prompt
-        read -sp "$(echo -e ${YELLOW}?${NC} Enter your PAT: )" pat
-        echo ""
-    fi
-    
-    # Valida que PAT não está vazio
-    if [ -z "$pat" ]; then
-        print_error "PAT cannot be empty"
-        return 1
+        pat=$(prompt_pat_token) || return 1
+    else
+        # Se foi fornecido via CLI, valida antes de prosseguir
+        if ! validate_pat_token "$pat"; then
+            print_error "The provided PAT is invalid or expired"
+            print_info "Please provide a valid Personal Access Token"
+            return 1
+        fi
     fi
     
     # Empacota e publica a extensão
     # -p: especifica o PAT para autenticação
+    print_step "Packaging and uploading to marketplace..."
     vsce publish -p "$pat"
     
     print_success "Published to VS Code Marketplace"
@@ -629,6 +724,7 @@ parse_arguments() {
 # Função principal que orquestra todo o processo de publicação
 # Executa as seguintes etapas:
 #   1. Pre-flight checks (git clean, remote configurado)
+#   1.5. Validação do PAT Token (ANTES de qualquer alteração)
 #   2. Seleção de versão (interativa ou via CLI)
 #   3. Obtenção de release message (CHANGELOG ou manual)
 #   4. Exibição de resumo e confirmação
@@ -656,6 +752,32 @@ main() {
     check_git_remote || exit 1     # Garante que remote origin existe
     print_success "Pre-flight checks passed"
     echo ""
+    
+    # ============================================================
+    # FASE 1.5: Validar PAT Token ANTES de qualquer alteração
+    # ============================================================
+    # Esta verificação é CRÍTICA: valida o PAT antes de:
+    # - Atualizar package.json
+    # - Criar git tags
+    # - Criar GitHub releases
+    # Evita ter que desfazer operações se o PAT estiver expirado
+    if [ -z "$PAT" ] && [ "$DRY_RUN" = false ]; then
+        print_step "Checking Personal Access Token..."
+        PAT=$(prompt_pat_token) || {
+            print_error "Cannot proceed without a valid Personal Access Token"
+            print_warning "No changes were made to your repository"
+            exit 1
+        }
+        echo ""
+    elif [ -n "$PAT" ] && [ "$DRY_RUN" = false ]; then
+        # Se PAT foi fornecido via CLI, valida antes de continuar
+        if ! validate_pat_token "$PAT"; then
+            print_error "The provided PAT is invalid or expired"
+            print_warning "No changes were made to your repository"
+            exit 1
+        fi
+        echo ""
+    fi
     
     # ============================================================
     # FASE 2: Obter versão

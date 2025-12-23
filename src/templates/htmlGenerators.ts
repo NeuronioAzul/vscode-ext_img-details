@@ -482,6 +482,208 @@ export function getHtmlForWebview(
             opacity: 0.5;
             cursor: not-allowed;
         }
+
+        .resize-button {
+            width: 100%;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background-color: var(--vscode-button-secondaryBackground);
+            color: var(--vscode-button-secondaryForeground);
+            border: 1px solid var(--vscode-button-border);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .resize-button:hover {
+            background-color: var(--vscode-button-hoverBackground);
+            color: var(--vscode-button-foreground);
+        }
+        .resize-button:active {
+            transform: scale(0.98);
+        }
+        .resize-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Resize Modal styles */
+        .resize-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+        
+        .resize-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+        
+        .resize-modal-content {
+            background-color: var(--vscode-editor-background);
+            border: 1px solid var(--vscode-panel-border);
+            border-radius: 6px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .resize-modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--vscode-panel-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .resize-modal-header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+        
+        .resize-modal-close {
+            background: none;
+            border: none;
+            color: var(--vscode-foreground);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .resize-modal-close:hover {
+            background-color: var(--vscode-toolbar-hoverBackground);
+        }
+        
+        .resize-modal-body {
+            padding: 20px;
+        }
+        
+        .resize-form-group {
+            margin-bottom: 20px;
+        }
+        
+        .resize-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--vscode-foreground);
+        }
+        
+        .resize-form-group input[type="number"] {
+            width: 100%;
+            padding: 8px 12px;
+            background-color: var(--vscode-input-background);
+            color: var(--vscode-input-foreground);
+            border: 1px solid var(--vscode-input-border);
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        .resize-form-group input[type="number"]:focus {
+            outline: none;
+            border-color: var(--vscode-focusBorder);
+        }
+        
+        .resize-checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .resize-checkbox-group input[type="checkbox"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        
+        .resize-checkbox-group label {
+            cursor: pointer;
+            margin: 0;
+        }
+        
+        .resize-info {
+            background-color: var(--vscode-textBlockQuote-background);
+            border-left: 3px solid var(--vscode-focusBorder);
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .resize-info p {
+            margin: 5px 0;
+            font-size: 13px;
+        }
+        
+        .resize-slider-group {
+            margin-bottom: 20px;
+        }
+        
+        .resize-slider {
+            width: 100%;
+            margin-top: 8px;
+        }
+        
+        .resize-modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--vscode-panel-border);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .resize-apply-button,
+        .resize-cancel-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        
+        .resize-apply-button {
+            background-color: var(--vscode-button-background);
+            color: var(--vscode-button-foreground);
+        }
+        
+        .resize-apply-button:hover {
+            background-color: var(--vscode-button-hoverBackground);
+        }
+        
+        .resize-apply-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .resize-cancel-button {
+            background-color: var(--vscode-button-secondaryBackground);
+            color: var(--vscode-button-secondaryForeground);
+        }
+        
+        .resize-cancel-button:hover {
+            background-color: var(--vscode-button-secondaryHoverBackground);
+        }
         
         /* View JSON button styles */
         .view-json-button {
@@ -833,6 +1035,9 @@ export function getHtmlForWebview(
                 </button>`
                     : ""
                 }
+                <button class="resize-button" onclick="openResizeModal()" id="resizeBtn">
+                    🖼️ ${t.resizeImage}
+                </button>
                 <button class="view-json-button" onclick="viewJsonMetadata()">
                     📋 ${t.viewJsonMetadata}
                 </button>
@@ -901,6 +1106,46 @@ export function getHtmlForWebview(
                 </button>
                 <button class="json-close-button" onclick="closeJsonModal()">
                     ${t.closeModal}
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Resize Modal -->
+    <div class="resize-modal" id="resizeModal">
+        <div class="resize-modal-content">
+            <div class="resize-modal-header">
+                <h2>${t.resizeImageTitle}</h2>
+                <button class="resize-modal-close" onclick="closeResizeModal()">✕</button>
+            </div>
+            <div class="resize-modal-body">
+                <div class="resize-form-group">
+                    <label for="resizeWidth">${t.width} (px)</label>
+                    <input type="number" id="resizeWidth" min="1" placeholder="800">
+                </div>
+                <div class="resize-form-group">
+                    <label for="resizeHeight">${t.height} (px)</label>
+                    <input type="number" id="resizeHeight" min="1" placeholder="600">
+                </div>
+                <div class="resize-checkbox-group">
+                    <input type="checkbox" id="maintainRatio" checked>
+                    <label for="maintainRatio">${t.maintainAspectRatio}</label>
+                </div>
+                <div class="resize-info">
+                    <p><strong>${t.currentSize}:</strong> <span id="currentDimensions"></span></p>
+                    <p><strong>${t.newSize}:</strong> <span id="newDimensions"></span></p>
+                </div>
+                <div class="resize-slider-group">
+                    <label for="qualitySlider">${t.quality}: <span id="qualityValue">80</span>%</label>
+                    <input type="range" id="qualitySlider" class="resize-slider" min="1" max="100" value="80">
+                </div>
+            </div>
+            <div class="resize-modal-footer">
+                <button class="resize-cancel-button" onclick="closeResizeModal()">
+                    ${t.cancel}
+                </button>
+                <button class="resize-apply-button" onclick="applyResize()" id="applyResizeBtn">
+                    ${t.applyResize}
                 </button>
             </div>
         </div>
@@ -1154,6 +1399,116 @@ export function getHtmlForWebview(
                 }
             }
         }
+        
+        // Resize modal functionality
+        let originalWidth = 0;
+        let originalHeight = 0;
+        
+        function openResizeModal() {
+            const modal = document.getElementById('resizeModal');
+            if (modal) {
+                modal.classList.add('show');
+            }
+            
+            // Request current dimensions from extension
+            vscode.postMessage({
+                command: 'resizeImage'
+            });
+        }
+        
+        function closeResizeModal() {
+            const modal = document.getElementById('resizeModal');
+            if (modal) {
+                modal.classList.remove('show');
+            }
+        }
+        
+        function updateDimensions() {
+            const widthInput = document.getElementById('resizeWidth');
+            const heightInput = document.getElementById('resizeHeight');
+            const newDimensionsSpan = document.getElementById('newDimensions');
+            
+            if (widthInput && heightInput && newDimensionsSpan) {
+                const width = parseInt(widthInput.value) || 0;
+                const height = parseInt(heightInput.value) || 0;
+                
+                if (width > 0 && height > 0) {
+                    newDimensionsSpan.textContent = width + ' x ' + height + ' px';
+                } else {
+                    newDimensionsSpan.textContent = '-';
+                }
+            }
+        }
+        
+        function applyResize() {
+            const widthInput = document.getElementById('resizeWidth');
+            const heightInput = document.getElementById('resizeHeight');
+            const qualitySlider = document.getElementById('qualitySlider');
+            const applyBtn = document.getElementById('applyResizeBtn');
+            
+            if (!widthInput || !heightInput || !qualitySlider || !applyBtn) {
+                return;
+            }
+            
+            const width = parseInt(widthInput.value);
+            const height = parseInt(heightInput.value);
+            const quality = parseInt(qualitySlider.value);
+            
+            if (!width || !height || width <= 0 || height <= 0) {
+                return;
+            }
+            
+            applyBtn.disabled = true;
+            applyBtn.textContent = 'Resizing...';
+            
+            vscode.postMessage({
+                command: 'applyResize',
+                width: width,
+                height: height,
+                quality: quality
+            });
+        }
+        
+        // Event listeners for resize inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            const widthInput = document.getElementById('resizeWidth');
+            const heightInput = document.getElementById('resizeHeight');
+            const maintainRatio = document.getElementById('maintainRatio');
+            const qualitySlider = document.getElementById('qualitySlider');
+            const qualityValue = document.getElementById('qualityValue');
+            
+            if (widthInput && heightInput && maintainRatio) {
+                widthInput.addEventListener('input', function() {
+                    if (maintainRatio.checked && originalWidth > 0) {
+                        const newHeight = Math.round((originalHeight / originalWidth) * parseInt(widthInput.value));
+                        heightInput.value = newHeight;
+                    }
+                    updateDimensions();
+                });
+                
+                heightInput.addEventListener('input', function() {
+                    if (maintainRatio.checked && originalHeight > 0) {
+                        const newWidth = Math.round((originalWidth / originalHeight) * parseInt(heightInput.value));
+                        widthInput.value = newWidth;
+                    }
+                    updateDimensions();
+                });
+                
+                maintainRatio.addEventListener('change', function() {
+                    if (this.checked && originalWidth > 0 && widthInput.value) {
+                        const newHeight = Math.round((originalHeight / originalWidth) * parseInt(widthInput.value));
+                        heightInput.value = newHeight;
+                        updateDimensions();
+                    }
+                });
+            }
+            
+            if (qualitySlider && qualityValue) {
+                qualitySlider.addEventListener('input', function() {
+                    qualityValue.textContent = this.value;
+                });
+            }
+        });
 
         // Make functions available globally
         window.toggleSection = toggleSection;
@@ -1162,6 +1517,9 @@ export function getHtmlForWebview(
         window.viewJsonMetadata = viewJsonMetadata;
         window.closeJsonModal = closeJsonModal;
         window.copyJsonMetadata = copyJsonMetadata;
+        window.openResizeModal = openResizeModal;
+        window.closeResizeModal = closeResizeModal;
+        window.applyResize = applyResize;
         
         // Listen for messages from the extension
         window.addEventListener('message', event => {
@@ -1181,6 +1539,35 @@ export function getHtmlForWebview(
                         jsonContent.textContent = JSON.stringify(message.metadata, null, 2);
                         modal.classList.add('show');
                     }
+                    break;
+                case 'showResizeModal':
+                    const widthInput = document.getElementById('resizeWidth');
+                    const heightInput = document.getElementById('resizeHeight');
+                    const currentDimensionsSpan = document.getElementById('currentDimensions');
+                    
+                    if (widthInput && heightInput && currentDimensionsSpan && message.width && message.height) {
+                        originalWidth = message.width;
+                        originalHeight = message.height;
+                        
+                        widthInput.value = message.width;
+                        heightInput.value = message.height;
+                        currentDimensionsSpan.textContent = message.width + ' x ' + message.height + ' px';
+                        
+                        updateDimensions();
+                        openResizeModal();
+                    }
+                    break;
+                case 'resetResizeButton':
+                    const resizeBtn = document.getElementById('resizeImageBtn');
+                    const applyBtn = document.getElementById('applyResizeBtn');
+                    if (resizeBtn) {
+                        resizeBtn.disabled = false;
+                    }
+                    if (applyBtn) {
+                        applyBtn.disabled = false;
+                        applyBtn.textContent = '${t.apply}';
+                    }
+                    closeResizeModal();
                     break;
             }
         });

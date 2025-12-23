@@ -3,7 +3,7 @@
   "icon": "icon.png",
   "displayName": "Image Details",
   "description": "View image and metadata, EXIF data, you can clean metadata for privacy. Supports zoom and copy-to-clipboard.",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "publisher": "NeuronioAzul",
   "author": {
     "name": "NeuronioAzul",
@@ -223,12 +223,12 @@
     "@fortawesome/fontawesome-free": "^7.1.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
-    "@vscode/codicons": "^0.0.43",
-    "@vscode/test-cli": "^0.0.4",
-    "@vscode/test-electron": "^2.3.8",
     "@types/vscode": "^1.94.0",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
+    "@vscode/codicons": "^0.0.43",
+    "@vscode/test-cli": "^0.0.4",
+    "@vscode/test-electron": "^2.3.8",
     "esbuild": "^0.27.0",
     "eslint": "^8.56.0",
     "npm-run-all": "^4.1.5",
@@ -236,6 +236,7 @@
   },
   "dependencies": {
     "exifreader": "^4.32.0",
-    "image-size": "^1.1.1"
+    "image-size": "^1.1.1",
+    "sharp": "^0.33.1"
   }
 }
