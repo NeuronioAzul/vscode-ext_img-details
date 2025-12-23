@@ -30,6 +30,9 @@ A powerful VS Code extension that displays comprehensive image metadata, EXIF da
 3. View comprehensive metadata in the **resizable sidebar** on the right
 4. **Click any metadata value** to instantly copy it to your clipboard
 5. **Use zoom controls** to inspect images in detail
+6. **Remove EXIF data** with one click to protect your privacy
+7. **Resize** images directly from the viewer with high-quality processing
+8. View **metadata in JSON** format for developers and advanced users
 
 ### Interacting with Images
 
