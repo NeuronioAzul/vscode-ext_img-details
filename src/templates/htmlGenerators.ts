@@ -521,6 +521,7 @@ export function getHtmlForWebview(
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.6);
+            pointer-events: none;
         }
         
         .resize-modal.show {
@@ -528,6 +529,7 @@ export function getHtmlForWebview(
             align-items: center;
             justify-content: center;
             animation: fadeIn 0.2s ease-in-out;
+            pointer-events: auto;
         }
         
         .resize-modal-content {
@@ -540,6 +542,7 @@ export function getHtmlForWebview(
             overflow-y: auto;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             animation: slideIn 0.3s ease-out;
+            pointer-events: auto;
         }
         
         .resize-modal-header {
@@ -998,10 +1001,10 @@ export function getHtmlForWebview(
                 <img src="${imageWebviewUri}" alt="Image Preview" id="imagePreview" />
             </div>
             <div class="zoom-controls">
-                <button class="zoom-button" onclick="zoomOut()" title="Zoom Out">−</button>
+                <button class="zoom-button" onclick="zoomOut()" title="Zoom Out (Ctrl + -)">−</button>
                 <div class="zoom-level" id="zoomLevel">100%</div>
-                <button class="zoom-button" onclick="zoomIn()" title="Zoom In">+</button>
-                <button class="zoom-button" onclick="resetZoom()" title="Reset Zoom">⟲</button>
+                <button class="zoom-button" onclick="zoomIn()" title="Zoom In (Ctrl + +)">+</button>
+                <button class="zoom-button" onclick="resetZoom()" title="Reset Zoom (Ctrl + 0)">⟲</button>
                 <button class="zoom-button" onclick="fitToScreen()" title="Fit to Screen">⊡</button>
             </div>
         </div>
@@ -1035,7 +1038,7 @@ export function getHtmlForWebview(
                 </button>`
                     : ""
                 }
-                <button class="resize-button" onclick="openResizeModal()" id="resizeBtn">
+                <button class="resize-button" onclick="requestResize()" id="resizeBtn">
                     🖼️ ${t.resizeImage}
                 </button>
                 <button class="view-json-button" onclick="viewJsonMetadata()">
@@ -1121,19 +1124,19 @@ export function getHtmlForWebview(
             <div class="resize-modal-body">
                 <div class="resize-form-group">
                     <label for="resizeWidth">${t.width} (px)</label>
-                    <input type="number" id="resizeWidth" min="1" placeholder="800">
+                    <input type="number" id="resizeWidth" min="1">
                 </div>
                 <div class="resize-form-group">
                     <label for="resizeHeight">${t.height} (px)</label>
-                    <input type="number" id="resizeHeight" min="1" placeholder="600">
+                    <input type="number" id="resizeHeight" min="1">
                 </div>
                 <div class="resize-checkbox-group">
                     <input type="checkbox" id="maintainRatio" checked>
                     <label for="maintainRatio">${t.maintainAspectRatio}</label>
                 </div>
                 <div class="resize-info">
-                    <p><strong>${t.currentSize}:</strong> <span id="currentDimensions"></span></p>
-                    <p><strong>${t.newSize}:</strong> <span id="newDimensions"></span></p>
+                    <p><strong>${t.currentSize}:</strong> <span id="currentDimensions">-</span></p>
+                    <p><strong>${t.newSize}:</strong> <span id="newDimensions">-</span></p>
                 </div>
                 <div class="resize-slider-group">
                     <label for="qualitySlider">${t.quality}: <span id="qualityValue">80</span>%</label>
@@ -1230,13 +1233,19 @@ export function getHtmlForWebview(
         
         // Keyboard shortcuts
         document.addEventListener('keydown', function(e) {
-            if (e.key === '+' || e.key === '=') {
+            // Don't trigger shortcuts when typing in input fields
+            const activeElement = document.activeElement;
+            if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+                return;
+            }
+            
+            if ((e.key === '+' || e.key === '=') && e.ctrlKey) {
                 e.preventDefault();
                 zoomIn();
-            } else if (e.key === '-' || e.key === '_') {
+            } else if ((e.key === '-' || e.key === '_') && e.ctrlKey) {
                 e.preventDefault();
                 zoomOut();
-            } else if (e.key === '0') {
+            } else if (e.key === '0' && e.ctrlKey) {
                 e.preventDefault();
                 resetZoom();
             }
@@ -1404,16 +1413,25 @@ export function getHtmlForWebview(
         let originalWidth = 0;
         let originalHeight = 0;
         
-        function openResizeModal() {
-            const modal = document.getElementById('resizeModal');
-            if (modal) {
-                modal.classList.add('show');
-            }
-            
+        function requestResize() {
             // Request current dimensions from extension
             vscode.postMessage({
                 command: 'resizeImage'
             });
+        }
+        
+        function openResizeModal() {
+            const modal = document.getElementById('resizeModal');
+            if (modal) {
+                modal.classList.add('show');
+                
+                // Close modal when clicking on the overlay (outside content)
+                modal.onclick = function(event) {
+                    if (event.target === modal) {
+                        closeResizeModal();
+                    }
+                };
+            }
         }
         
         function closeResizeModal() {
@@ -1437,6 +1455,51 @@ export function getHtmlForWebview(
                 } else {
                     newDimensionsSpan.textContent = '-';
                 }
+            }
+        }
+        
+        function onWidthInput(event) {
+            const widthInput = event.target;
+            const heightInput = document.getElementById('resizeHeight');
+            const maintainRatio = document.getElementById('maintainRatio');
+            
+            if (maintainRatio && maintainRatio.checked && originalWidth > 0 && heightInput) {
+                const newWidth = parseInt(widthInput.value);
+                if (!isNaN(newWidth) && newWidth > 0) {
+                    const newHeight = Math.round((originalHeight / originalWidth) * newWidth);
+                    heightInput.value = String(newHeight);
+                }
+            }
+            updateDimensions();
+        }
+        
+        function onHeightInput(event) {
+            const heightInput = event.target;
+            const widthInput = document.getElementById('resizeWidth');
+            const maintainRatio = document.getElementById('maintainRatio');
+            
+            if (maintainRatio && maintainRatio.checked && originalHeight > 0 && widthInput) {
+                const newHeight = parseInt(heightInput.value);
+                if (!isNaN(newHeight) && newHeight > 0) {
+                    const newWidth = Math.round((originalWidth / originalHeight) * newHeight);
+                    widthInput.value = String(newWidth);
+                }
+            }
+            updateDimensions();
+        }
+        
+        function onRatioChange(event) {
+            const maintainRatio = event.target;
+            const widthInput = document.getElementById('resizeWidth');
+            const heightInput = document.getElementById('resizeHeight');
+            
+            if (maintainRatio.checked && originalWidth > 0 && widthInput && heightInput) {
+                const currentWidth = parseInt(widthInput.value);
+                if (!isNaN(currentWidth) && currentWidth > 0) {
+                    const newHeight = Math.round((originalHeight / originalWidth) * currentWidth);
+                    heightInput.value = String(newHeight);
+                }
+                updateDimensions();
             }
         }
         
@@ -1469,7 +1532,7 @@ export function getHtmlForWebview(
             });
         }
         
-        // Event listeners for resize inputs
+        // Setup event listeners on DOM load
         document.addEventListener('DOMContentLoaded', function() {
             const widthInput = document.getElementById('resizeWidth');
             const heightInput = document.getElementById('resizeHeight');
@@ -1477,30 +1540,16 @@ export function getHtmlForWebview(
             const qualitySlider = document.getElementById('qualitySlider');
             const qualityValue = document.getElementById('qualityValue');
             
-            if (widthInput && heightInput && maintainRatio) {
-                widthInput.addEventListener('input', function() {
-                    if (maintainRatio.checked && originalWidth > 0) {
-                        const newHeight = Math.round((originalHeight / originalWidth) * parseInt(widthInput.value));
-                        heightInput.value = newHeight;
-                    }
-                    updateDimensions();
-                });
-                
-                heightInput.addEventListener('input', function() {
-                    if (maintainRatio.checked && originalHeight > 0) {
-                        const newWidth = Math.round((originalWidth / originalHeight) * parseInt(heightInput.value));
-                        widthInput.value = newWidth;
-                    }
-                    updateDimensions();
-                });
-                
-                maintainRatio.addEventListener('change', function() {
-                    if (this.checked && originalWidth > 0 && widthInput.value) {
-                        const newHeight = Math.round((originalHeight / originalWidth) * parseInt(widthInput.value));
-                        heightInput.value = newHeight;
-                        updateDimensions();
-                    }
-                });
+            if (widthInput) {
+                widthInput.addEventListener('input', onWidthInput);
+            }
+            
+            if (heightInput) {
+                heightInput.addEventListener('input', onHeightInput);
+            }
+            
+            if (maintainRatio) {
+                maintainRatio.addEventListener('change', onRatioChange);
             }
             
             if (qualitySlider && qualityValue) {
@@ -1517,6 +1566,7 @@ export function getHtmlForWebview(
         window.viewJsonMetadata = viewJsonMetadata;
         window.closeJsonModal = closeJsonModal;
         window.copyJsonMetadata = copyJsonMetadata;
+        window.requestResize = requestResize;
         window.openResizeModal = openResizeModal;
         window.closeResizeModal = closeResizeModal;
         window.applyResize = applyResize;
@@ -1546,14 +1596,21 @@ export function getHtmlForWebview(
                     const currentDimensionsSpan = document.getElementById('currentDimensions');
                     
                     if (widthInput && heightInput && currentDimensionsSpan && message.width && message.height) {
+                        // Store original dimensions
                         originalWidth = message.width;
                         originalHeight = message.height;
                         
-                        widthInput.value = message.width;
-                        heightInput.value = message.height;
+                        // Set input values
+                        widthInput.value = String(message.width);
+                        heightInput.value = String(message.height);
+                        
+                        // Set current dimensions text
                         currentDimensionsSpan.textContent = message.width + ' x ' + message.height + ' px';
                         
+                        // Update dimension display
                         updateDimensions();
+                        
+                        // Open the modal
                         openResizeModal();
                     }
                     break;

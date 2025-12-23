@@ -726,8 +726,8 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                             // Send current image dimensions to webview for modal
                             webviewPanel.webview.postMessage({
                                 command: 'showResizeModal',
-                                currentWidth: metadata.width || 0,
-                                currentHeight: metadata.height || 0,
+                                width: metadata.width || 0,
+                                height: metadata.height || 0,
                                 filePath: document.uri.fsPath
                             });
                             break;
