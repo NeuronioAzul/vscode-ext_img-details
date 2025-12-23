@@ -5,6 +5,24 @@ All notable changes to the "Image Details" extension will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2025-12-22
+
+### ✨ Added Image Resize Tool
+
+- **Image Resize Tool**: New feature to resize images directly from the viewer
+  - Interactive modal with width/height inputs
+  - Automatic aspect ratio calculation
+  - Quality control slider (0-100) for compressed formats
+  - Automatic backup creation with `-original` suffix
+  - Support for JPEG, PNG, and WebP formats
+  - Error handling with automatic backup restoration
+  - Real-time dimension preview
+  - Complete translations in 5 languages (en, pt-br, ja, es, zh-cn)
+
+### 🔧 Changed
+
+- Added `sharp@0.33.1` dependency for high-performance image processing
+
 ## [1.1.5] - 2025-11-25
 
 ### 🌐 Chinese Simplified (zh-cn) - 简体中文 Language Support v1.1.4

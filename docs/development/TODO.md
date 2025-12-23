@@ -174,111 +174,39 @@
   - [x] 3.6.3 Funcionalidade de copiar JSON completo
   - [x] 3.6.4 Traduções em múltiplos idiomas
   - [x] 3.6.5 Estilos responsivos para o modal
-- [ ] 3.7 Ferramenta de redimensionamento de imagens
-  - [ ] 3.7.1 Botão "Resize Image" no painel de ferramentas
-  - [ ] 3.7.2 Backup automático da imagem original com sufixo `-original`
-  - [ ] 3.7.3 Modal interativo para definir dimensões
-    - [ ] 3.7.3.1 Campos de input para largura e altura
-    - [ ] 3.7.3.2 Checkbox para manter aspect ratio (proporção)
-    - [ ] 3.7.3.3 Preview das dimensões finais
-    - [ ] 3.7.3.4 Indicador de tamanho estimado do arquivo
-  - [ ] 3.7.4 Suporte para múltiplos formatos (PNG, JPEG, WebP)
-  - [ ] 3.7.5 Opções de qualidade para formatos com compressão
-  - [ ] 3.7.6 Validação de dimensões (mínimo/máximo)
-  - [ ] 3.7.7 Restauração da original em caso de erro
-  - [ ] 3.7.8 Atualização automática da visualização após redimensionamento
-  - [ ] 3.7.9 Traduções em múltiplos idiomas (en, pt-br, ja, es, zh-cn)
+- [x] 3.7 Ferramenta de redimensionamento de imagens
+  - [x] 3.7.1 Botão "Resize Image" no painel de ferramentas
+  - [x] 3.7.2 Backup automático da imagem original com sufixo `-original`
+  - [x] 3.7.3 Modal interativo para definir dimensões
+    - [x] 3.7.3.1 Campos de input para largura e altura
+    - [x] 3.7.3.2 Checkbox para manter aspect ratio (proporção)
+    - [x] 3.7.3.3 Preview das dimensões finais
+    - [x] 3.7.3.4 Indicador de tamanho estimado do arquivo
+  - [x] 3.7.4 Suporte para múltiplos formatos (PNG, JPEG, WebP)
+  - [x] 3.7.5 Opções de qualidade para formatos com compressão
+  - [x] 3.7.6 Validação de dimensões (mínimo/máximo)
+  - [x] 3.7.7 Restauração da original em caso de erro
+  - [x] 3.7.8 Atualização automática da visualização após redimensionamento
+  - [x] 3.7.9 Traduções em múltiplos idiomas (en, pt-br, ja, es, zh-cn)
   - [ ] 3.7.10 Histórico de redimensionamentos (undo/redo)
 
-**Especificação Técnica - Resize Feature:**
+**✅ Resize Feature - IMPLEMENTADA (v1.2.0)**
 
-```typescript
-// Fluxo de implementação sugerido:
-// 1. Adicionar botão "Resize Image" no webview (similar ao "Remove EXIF")
-// 2. Ao clicar, enviar mensagem 'resizeImage' para extension
-// 3. Extension abre modal via webview.postMessage() com:
-//    - Input width (number)
-//    - Input height (number)
-//    - Checkbox "Maintain aspect ratio" (default: true)
-//    - Button "Preview" e "Apply"
-// 4. Quando aspect ratio está ativo:
-//    - Ao mudar width: height = (originalHeight / originalWidth) * newWidth
-//    - Ao mudar height: width = (originalWidth / originalHeight) * newHeight
-// 5. Ao confirmar:
-//    - Criar backup: image.jpg → image-original.jpg
-//    - Usar biblioteca 'sharp' (Node.js) para redimensionar
-//    - Opções de resize: fit, fill, inside, outside, cover
-//    - Salvar imagem redimensionada com mesmo nome
-// 6. Tratamento de erros:
-//    - Se backup existe, perguntar se substitui
-//    - Se resize falha, restaurar do backup
-//    - Mostrar mensagem de erro traduzida
-// 7. Atualizar metadados e refresh da webview
+Todos os itens da especificação técnica foram implementados:
+- ✅ Botão "Resize Image" no painel de ferramentas
+- ✅ Modal interativo com inputs de width/height
+- ✅ Checkbox "Maintain aspect ratio" com cálculo automático
+- ✅ Slider de qualidade (0-100)
+- ✅ Backup automático: `image.jpg` → `image-original.jpg`
+- ✅ Biblioteca sharp integrada para redimensionamento
+- ✅ Suporte para JPEG, PNG, WebP
+- ✅ Validação de dimensões e tratamento de erros
+- ✅ Restauração automática do backup em caso de erro
+- ✅ Atualização automática da visualização
+- ✅ Traduções completas em 5 idiomas (en, pt-br, ja, es, zh-cn)
 
-// Dependência necessária:
-// npm install sharp @types/sharp
-// sharp: Fast image processing library for Node.js
-
-// Novas chaves de tradução necessárias (adicionar em src/types/index.ts):
-// - resizeImage: 'Resize Image'
-// - resizeImageTitle: 'Resize Image'
-// - width: 'Width'
-// - height: 'Height'
-// - maintainAspectRatio: 'Maintain aspect ratio'
-// - currentSize: 'Current size'
-// - newSize: 'New size'
-// - estimatedFileSize: 'Estimated file size'
-// - quality: 'Quality'
-// - resizeOptions: 'Resize Options'
-// - resizeConfirm: 'Resize this image? The original will be backed up.'
-// - resizeSuccess: 'Image resized successfully!'
-// - resizeError: 'Error resizing image'
-// - backupExists: 'Backup file already exists. Replace it?'
-// - invalidDimensions: 'Invalid dimensions. Width and height must be positive numbers.'
-// - applyResize: 'Apply Resize'
-// - cancel: 'Cancel'
-
-// Exemplo de uso modal no webview:
-// HTML Structure:
-// <div class="resize-modal">
-//   <h2>{resizeImageTitle}</h2>
-//   <div class="form-group">
-//     <label>{width}</label>
-//     <input type="number" id="resize-width" value="800">
-//   </div>
-//   <div class="form-group">
-//     <label>{height}</label>
-//     <input type="number" id="resize-height" value="600">
-//   </div>
-//   <div class="checkbox-group">
-//     <input type="checkbox" id="maintain-ratio" checked>
-//     <label>{maintainAspectRatio}</label>
-//   </div>
-//   <div class="info">
-//     <p>{currentSize}: 1920 x 1080</p>
-//     <p>{newSize}: 800 x 600</p>
-//     <p>{estimatedFileSize}: ~120 KB</p>
-//   </div>
-//   <div class="buttons">
-//     <button class="primary" onclick="applyResize()">{applyResize}</button>
-//     <button class="secondary" onclick="closeModal()">{cancel}</button>
-//   </div>
-// </div>
-
-// Fluxo visual:
-// User clicks "Resize Image" 
-//   → Modal opens with current dimensions
-//   → User enters new width (e.g., 800px)
-//   → If "Maintain aspect ratio" checked: height auto-calculates (e.g., 600px)
-//   → User clicks "Apply Resize"
-//   → Confirmation dialog appears
-//   → If confirmed:
-//       → Create backup: image.jpg → image-original.jpg
-//       → Resize using sharp library
-//       → Save resized image
-//       → Refresh webview with new metadata
-//   → If error: Restore from backup & show error message
-```
+**Dependências instaladas:**
+- `sharp@0.33.1` - High-performance image processing
 
 ### 4. Interface e UX
 

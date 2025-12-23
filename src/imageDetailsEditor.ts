@@ -11,6 +11,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import sizeOf from 'image-size';
 import ExifReader from 'exifreader';
+import sharp from 'sharp';
 
 // Import types
 import { Translations, DisplayMode, SectionStates } from './types';
@@ -142,7 +143,25 @@ const translations: { [key: string]: Translations } = {
         exifVersion: 'EXIF Version',
         flashpixVersion: 'Flashpix Version',
         interopIndex: 'Interop Index',
-        interopVersion: 'Interop Version'
+        interopVersion: 'Interop Version',
+        resizeImage: 'Resize Image',
+        resizeImageTitle: 'Resize Image',
+        width: 'Width',
+        height: 'Height',
+        maintainAspectRatio: 'Maintain aspect ratio',
+        currentSize: 'Current size',
+        newSize: 'New size',
+        estimatedFileSize: 'Estimated file size',
+        quality: 'Quality',
+        resizeOptions: 'Resize Options',
+        resizeConfirm: 'Resize this image? The original will be backed up.',
+        resizeSuccess: 'Image resized successfully!',
+        resizeError: 'Error resizing image',
+        backupExists: 'Backup file already exists. Replace it?',
+        invalidDimensions: 'Invalid dimensions. Width and height must be positive numbers.',
+        applyResize: 'Apply Resize',
+        cancel: 'Cancel',
+        apply: 'Apply'
     },
     'pt-br': {
         imageDetails: 'Detalhes da Imagem',
@@ -253,7 +272,25 @@ const translations: { [key: string]: Translations } = {
         exifVersion: 'Versão EXIF',
         flashpixVersion: 'Versão Flashpix',
         interopIndex: 'Índice Interop',
-        interopVersion: 'Versão Interop'
+        interopVersion: 'Versão Interop',
+        resizeImage: 'Redimensionar Imagem',
+        resizeImageTitle: 'Redimensionar Imagem',
+        width: 'Largura',
+        height: 'Altura',
+        maintainAspectRatio: 'Manter proporção',
+        currentSize: 'Tamanho atual',
+        newSize: 'Novo tamanho',
+        estimatedFileSize: 'Tamanho estimado do arquivo',
+        quality: 'Qualidade',
+        resizeOptions: 'Opções de Redimensionamento',
+        resizeConfirm: 'Redimensionar esta imagem? A original será salva como backup.',
+        resizeSuccess: 'Imagem redimensionada com sucesso!',
+        resizeError: 'Erro ao redimensionar imagem',
+        backupExists: 'Arquivo de backup já existe. Substituir?',
+        invalidDimensions: 'Dimensões inválidas. Largura e altura devem ser números positivos.',
+        applyResize: 'Aplicar Redimensionamento',
+        cancel: 'Cancelar',
+        apply: 'Aplicar'
     },
     'ja': {
         imageDetails: '画像詳細',
@@ -364,7 +401,25 @@ const translations: { [key: string]: Translations } = {
         exifVersion: 'EXIFバージョン',
         flashpixVersion: 'Flashpixバージョン',
         interopIndex: '相互運用インデックス',
-        interopVersion: '相互運用バージョン'
+        interopVersion: '相互運用バージョン',
+        resizeImage: '画像のリサイズ',
+        resizeImageTitle: '画像のリサイズ',
+        width: '幅',
+        height: '高さ',
+        maintainAspectRatio: 'アスペクト比を維持',
+        currentSize: '現在のサイズ',
+        newSize: '新しいサイズ',
+        estimatedFileSize: '推定ファイルサイズ',
+        quality: '品質',
+        resizeOptions: 'リサイズオプション',
+        resizeConfirm: 'この画像をリサイズしますか？元の画像はバックアップされます。',
+        resizeSuccess: '画像のリサイズに成功しました！',
+        resizeError: '画像のリサイズエラー',
+        backupExists: 'バックアップファイルが既に存在します。置き換えますか？',
+        invalidDimensions: '無効な寸法です。幅と高さは正の数でなければなりません。',
+        applyResize: 'リサイズを適用',
+        cancel: 'キャンセル',
+        apply: '適用'
     },
     'es': {
         imageDetails: 'Detalles de la Imagen',
@@ -475,7 +530,25 @@ const translations: { [key: string]: Translations } = {
         exifVersion: 'Versión EXIF',
         flashpixVersion: 'Versión Flashpix',
         interopIndex: 'Índice Interop',
-        interopVersion: 'Versión Interop'
+        interopVersion: 'Versión Interop',
+        resizeImage: 'Redimensionar Imagen',
+        resizeImageTitle: 'Redimensionar Imagen',
+        width: 'Ancho',
+        height: 'Alto',
+        maintainAspectRatio: 'Mantener relación de aspecto',
+        currentSize: 'Tamaño actual',
+        newSize: 'Nuevo tamaño',
+        estimatedFileSize: 'Tamaño estimado del archivo',
+        quality: 'Calidad',
+        resizeOptions: 'Opciones de Redimensionamiento',
+        resizeConfirm: '¿Redimensionar esta imagen? La original será respaldada.',
+        resizeSuccess: '¡Imagen redimensionada con éxito!',
+        resizeError: 'Error al redimensionar imagen',
+        backupExists: 'El archivo de respaldo ya existe. ¿Reemplazarlo?',
+        invalidDimensions: 'Dimensiones inválidas. El ancho y alto deben ser números positivos.',
+        applyResize: 'Aplicar Redimensionamiento',
+        cancel: 'Cancelar',
+        apply: 'Aplicar'
     }
 };
 
@@ -648,6 +721,58 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                                 command: 'showJsonModal',
                                 metadata: metadata
                             });
+                            break;
+                        case 'resizeImage':
+                            // Send current image dimensions to webview for modal
+                            webviewPanel.webview.postMessage({
+                                command: 'showResizeModal',
+                                currentWidth: metadata.width || 0,
+                                currentHeight: metadata.height || 0,
+                                filePath: document.uri.fsPath
+                            });
+                            break;
+                        case 'applyResize':
+                            try {
+                                const { width, height, quality } = message;
+                                
+                                // Validate dimensions
+                                if (!width || !height || width <= 0 || height <= 0) {
+                                    vscode.window.showErrorMessage(this.getTranslations().invalidDimensions);
+                                    webviewPanel.webview.postMessage({ command: 'resetResizeButton' });
+                                    return;
+                                }
+                                
+                                // Show confirmation
+                                const confirmed = await vscode.window.showWarningMessage(
+                                    this.getTranslations().resizeConfirm,
+                                    { modal: true },
+                                    'Yes',
+                                    'No'
+                                );
+                                
+                                if (confirmed !== 'Yes') {
+                                    webviewPanel.webview.postMessage({ command: 'resetResizeButton' });
+                                    return;
+                                }
+                                
+                                await this.resizeImage(document.uri, width, height, quality || 80);
+                                vscode.window.showInformationMessage(this.getTranslations().resizeSuccess);
+                                
+                                // Reload metadata and refresh webview
+                                const newMetadata = await this.getImageMetadata(document.uri);
+                                webviewPanel.webview.html = getHtmlForWebview(
+                                    webviewPanel.webview,
+                                    document.uri,
+                                    newMetadata,
+                                    this.getTranslations(),
+                                    this.getSectionStates(),
+                                    this.getDisplayMode()
+                                );
+                            } catch (error) {
+                                const errorMsg = error instanceof Error ? error.message : String(error);
+                                vscode.window.showErrorMessage(`${this.getTranslations().resizeError}: ${errorMsg}`);
+                                webviewPanel.webview.postMessage({ command: 'resetResizeButton' });
+                            }
                             break;
                     }
                 },
@@ -879,4 +1004,72 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
         return Buffer.from(result);
     }
 
+    private async resizeImage(uri: vscode.Uri, width: number, height: number, quality: number): Promise<void> {
+        const filePath = uri.fsPath;
+        const ext = path.extname(filePath).toLowerCase();
+        const dir = path.dirname(filePath);
+        const basename = path.basename(filePath, ext);
+        
+        // Check if format is supported
+        const supportedFormats = ['.jpg', '.jpeg', '.png', '.webp'];
+        if (!supportedFormats.includes(ext)) {
+            throw new Error(`Unsupported format: ${ext}. Only JPEG, PNG, and WebP are supported.`);
+        }
+        
+        // Create backup path
+        const backupPath = path.join(dir, `${basename}-original${ext}`);
+        
+        // Check if backup already exists
+        if (fs.existsSync(backupPath)) {
+            const replace = await vscode.window.showWarningMessage(
+                this.getTranslations().backupExists,
+                { modal: true },
+                'Yes',
+                'No'
+            );
+            
+            if (replace !== 'Yes') {
+                throw new Error('Backup file already exists. Operation cancelled.');
+            }
+        }
+        
+        // Read original file
+        const originalBuffer = await fs.promises.readFile(filePath);
+        
+        try {
+            // Create backup
+            await fs.promises.writeFile(backupPath, originalBuffer);
+            
+            // Resize image using sharp
+            let resizer = sharp(originalBuffer)
+                .resize(width, height, {
+                    fit: 'fill' // Exact dimensions specified by user
+                });
+            
+            // Apply quality settings based on format
+            if (ext === '.jpg' || ext === '.jpeg') {
+                resizer = resizer.jpeg({ quality });
+            } else if (ext === '.png') {
+                // PNG quality is different (0-9 compression level)
+                const compressionLevel = Math.round((100 - quality) / 11);
+                resizer = resizer.png({ compressionLevel: Math.min(9, Math.max(0, compressionLevel)) });
+            } else if (ext === '.webp') {
+                resizer = resizer.webp({ quality });
+            }
+            
+            // Save resized image
+            const resizedBuffer = await resizer.toBuffer();
+            await fs.promises.writeFile(filePath, resizedBuffer);
+            
+            vscode.window.showInformationMessage(
+                `Backup saved as: ${path.basename(backupPath)}`
+            );
+        } catch (error) {
+            // Restore from backup if resize fails
+            if (fs.existsSync(backupPath)) {
+                await fs.promises.writeFile(filePath, originalBuffer);
+            }
+            throw error;
+        }
+    }
 }
