@@ -16,3 +16,18 @@ history.txt
 
 # Publishing script temporary files
 publish-*
+
+# ================================================================================================
+# Development files (kept only in dev branch)
+# ================================================================================================
+.dev/
+docs/
+test-images/
+_ADM/
+publish.sh
+ROADMAP.md
+MIGRATION_STATUS.md
+PHASE_*.md
+REFACTORING_SUMMARY.md
+ORGANIZATION_PLAN.md
+organize_repo.sh
