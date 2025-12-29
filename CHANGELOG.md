@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.2.5] - 2025-12-29
 
-### 🔧 Changed
+### 🔧 Changed - v1.2.5
 
 - **Image Processing**: Replaced `sharp` with `jimp` for image resizing
   - Eliminates native binary dependencies that caused installation errors
@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixes "Could not load the sharp module" error in VS Code Remote/Server environments
   - Maintains full image resize functionality without platform-specific builds
 
-### 🧹 Code Cleanup
+### 🧹 Code Cleanup - v1.2.5
 
 - **Refactoring**: Removed legacy code and unused imports
   - Removed legacy translations object (~530 lines) that was no longer used
@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Reduced `imageDetailsEditor.ts` file size by ~49% (1078 → 550 lines)
   - Code now uses only modular i18n implementation from `src/i18n/translations.ts`
 
-### 🐛 Fixed
+### 🐛 Fixed - v1.2.5
 
 - **Extension Activation**: Fixed extension activation failure in VS Code Server/Remote environments
   - Resolved sharp binary compatibility issues on linux-x64 runtime
@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.2.4] - 2025-12-28
 
-### 🔒 Security
+### 🔒 Security - v1.2.4
 
 - **Webview Security**: Added Content Security Policy (CSP) to all webviews
   - Eliminates VS Code warning about missing CSP
