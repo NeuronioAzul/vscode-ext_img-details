@@ -5,6 +5,20 @@ All notable changes to the "Image Details" extension will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.4] - 2025-12-28
+
+### 🔒 Security
+
+- **Webview Security**: Added Content Security Policy (CSP) to all webviews
+  - Eliminates VS Code warning about missing CSP
+  - Improves security by restricting resource loading
+  - Follows VS Code webview best practices
+  - CSP allows only necessary sources: webview resources, data URIs, inline styles/scripts
+
+### 🐛 Fixed
+
+- **Extension Host Warning**: Resolved "webview without content security policy" warning in Extension Host logs
+
 ## [1.2.3] - 2025-12-23
 
 ### 🏗️ Repository Organization v1.2.3
