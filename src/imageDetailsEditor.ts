@@ -11,7 +11,6 @@ import * as path from 'path';
 import * as fs from 'fs';
 import sizeOf from 'image-size';
 import ExifReader from 'exifreader';
-import sharp from 'sharp';
 
 // Import types
 import { Translations, DisplayMode, SectionStates } from './types';
@@ -21,6 +20,7 @@ import { getTranslations } from './i18n/translations';
 
 // Import utility functions
 import { formatFileSize, getColorInfo, calculateBitDepth, extractRelevantExifData } from './utils/metadata';
+import { resizeImageSafe } from './utils/imageResize';
 
 // Import HTML template generators
 import { 
@@ -1040,25 +1040,28 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
             // Create backup
             await fs.promises.writeFile(backupPath, originalBuffer);
             
-            // Resize image using sharp
-            let resizer = sharp(originalBuffer)
-                .resize(width, height, {
-                    fit: 'fill' // Exact dimensions specified by user
-                });
-            
-            // Apply quality settings based on format
+            // Determine format for resizer
+            let imageFormat: 'jpeg' | 'png' | 'webp';
             if (ext === '.jpg' || ext === '.jpeg') {
-                resizer = resizer.jpeg({ quality });
+                imageFormat = 'jpeg';
             } else if (ext === '.png') {
-                // PNG quality is different (0-9 compression level)
-                const compressionLevel = Math.round((100 - quality) / 11);
-                resizer = resizer.png({ compressionLevel: Math.min(9, Math.max(0, compressionLevel)) });
+                imageFormat = 'png';
             } else if (ext === '.webp') {
-                resizer = resizer.webp({ quality });
+                imageFormat = 'webp';
+            } else {
+                throw new Error(`Unsupported format for resizing: ${ext}`);
             }
             
+            // Resize image using native implementation
+            const resizedBuffer = await resizeImageSafe(
+                originalBuffer,
+                width,
+                height,
+                imageFormat,
+                quality
+            );
+            
             // Save resized image
-            const resizedBuffer = await resizer.toBuffer();
             await fs.promises.writeFile(filePath, resizedBuffer);
             
             vscode.window.showInformationMessage(

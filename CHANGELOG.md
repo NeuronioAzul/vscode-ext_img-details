@@ -5,6 +5,22 @@ All notable changes to the "Image Details" extension will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.5] - 2025-12-29
+
+### 🔧 Changed
+
+- **Image Processing**: Replaced `sharp` with `jimp` for image resizing
+  - Eliminates native binary dependencies that caused installation errors
+  - Pure JavaScript implementation works across all platforms
+  - Fixes "Could not load the sharp module" error in VS Code Remote/Server environments
+  - Maintains full image resize functionality without platform-specific builds
+
+### 🐛 Fixed
+
+- **Extension Activation**: Fixed extension activation failure in VS Code Server/Remote environments
+  - Resolved sharp binary compatibility issues on linux-x64 runtime
+  - Extension now works reliably in WSL, Remote SSH, and Codespaces
+
 ## [1.2.4] - 2025-12-28
 
 ### 🔒 Security
