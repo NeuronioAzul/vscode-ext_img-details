@@ -754,14 +754,105 @@ parse_arguments() {
                 ;;
             -h|--help)
                 # Exibe ajuda e sai
-                echo "Usage: $0 [options]"
-                echo ""
-                echo "Options:"
-                echo "  --version <version>   Specify version (e.g., 1.0.4)"
-                echo "  --pat <token>         Personal Access Token for marketplace"
-                echo "  --message <text>      Release message"
-                echo "  --dry-run             Test without making changes"
-                echo "  -h, --help            Show this help"
+                cat << 'EOF'
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                   🚀 Image Details - Publishing Wizard                       │
+│                     Automated Extension Release Script                       │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+USAGE:
+    ./publish.sh [OPTIONS]
+
+DESCRIPTION:
+    Automates the complete publishing workflow for VS Code extensions:
+    
+    1. ✅ Pre-flight checks (git status, remote configuration)
+    2. 🔐 PAT validation (before making any changes)
+    3. 📦 Version selection (interactive or specified)
+    4. 📝 Release notes (auto-extracted from CHANGELOG or manual)
+    5. 🏷️  Git tag creation and push
+    6. 🌐 GitHub release creation (if gh CLI available)
+    7. 📤 VS Code Marketplace publishing
+
+OPTIONS:
+    --version <version>    Specify exact version (e.g., 1.2.4 or v1.2.4)
+                          Without this, interactive version selector is shown
+                          Format: X.Y.Z (semantic versioning)
+                          
+    --pat <token>         Personal Access Token for Azure DevOps
+                          If not provided, you'll be prompted securely
+                          Token is validated before making any changes
+                          
+    --message <text>      Release message/notes
+                          If not provided, auto-extracted from CHANGELOG.md
+                          or prompted for manual entry
+                          
+    --dry-run             Test mode - shows what would happen without
+                          making actual changes (safe to run anytime)
+                          
+    -h, --help            Display this help message and exit
+
+EXAMPLES:
+    Interactive mode (recommended for first-time users):
+        ./publish.sh
+    
+    Automated mode with all options:
+        ./publish.sh --version 1.2.4 --pat "your-token-here" --message "Bug fixes"
+    
+    Dry-run to preview changes:
+        ./publish.sh --version 1.2.4 --dry-run
+    
+    Quick publish with interactive prompts:
+        ./publish.sh --version 1.2.4
+
+PERSONAL ACCESS TOKEN (PAT):
+    Required permissions: Marketplace (Manage) - NOT just "Publish"
+    
+    Create PAT:    https://dev.azure.com/[org]/_usersSettings/tokens
+    Manage access: https://marketplace.visualstudio.com/manage/publishers/
+    
+    ⚠️  IMPORTANT: Your Microsoft account must be added to the publisher!
+
+AUTOMATIC FEATURES:
+    ✓ Validates git repository state before starting
+    ✓ Checks PAT token validity before making changes
+    ✓ Auto-extracts release notes from CHANGELOG.md
+    ✓ Creates annotated git tags with release notes
+    ✓ Creates GitHub releases (if gh CLI authenticated)
+    ✓ Publishes to VS Code Marketplace
+    ✓ Colored output with progress indicators
+    ✓ Rollback protection (validates before destructive operations)
+
+FILES MODIFIED:
+    • package.json - Version field updated
+    • Git tags - New annotated tag created and pushed
+    • GitHub - New release created (if gh CLI available)
+    • Marketplace - Extension published with new version
+
+REQUIREMENTS:
+    • Node.js and npm
+    • Git repository with remote 'origin'
+    • @vscode/vsce (installed automatically if missing)
+    • gh CLI (optional, for GitHub releases)
+    • Valid Personal Access Token with Marketplace (Manage) permission
+
+EXIT CODES:
+    0 - Success
+    1 - Error or user cancelled
+
+TROUBLESHOOTING:
+    See: docs/PUBLISHING_TROUBLESHOOTING.md
+    
+    Common issues:
+    - TF400813 error → Check PAT permissions and publisher membership
+    - Git not clean → Commit or stash changes first
+    - Invalid PAT → Create new token with correct permissions
+
+MORE INFO:
+    Documentation: docs/PUBLISH_GUIDE.md
+    Repository:    https://github.com/NeuronioAzul/vscode-ext_img-details
+
+EOF
                 exit 0
                 ;;
             *)
