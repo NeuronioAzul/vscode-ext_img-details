@@ -124,26 +124,25 @@ validate_pat_token() {
     local http_code=$(echo "$response" | tail -n1)
     
     if [ "$http_code" = "401" ]; then
-        print_error "Personal Access Token is expired or invalid"
-        return 1
+        print_warning "Personal Access Token may be expired or invalid"
+        print_info "Will attempt to publish anyway - validation will happen during publish"
+        return 0
     elif [ "$http_code" = "403" ]; then
-        print_error "Personal Access Token doesn't have required permissions"
-        echo ""
+        print_warning "Personal Access Token may not have required permissions"
         print_info "Required: Marketplace (${BOLD}Manage${NC}) - NOT just 'Publish'"
-        print_info "Create new PAT at: ${BLUE}https://dev.azure.com/[org]/_usersSettings/tokens${NC}"
-        return 1
+        print_info "Will attempt to publish anyway"
+        return 0
     elif [ "$http_code" = "404" ]; then
-        print_error "Publisher not found or you don't have access to it"
-        echo ""
+        print_warning "Publisher validation returned 404"
         print_info "Publisher in package.json: ${BOLD}$publisher${NC}"
-        print_info "Add your account to publisher: ${BLUE}https://marketplace.visualstudio.com/manage/publishers/$publisher${NC}"
-        return 1
+        print_info "Will attempt to publish anyway"
+        return 0
     elif [ "$http_code" != "200" ]; then
         print_warning "Could not validate PAT (HTTP $http_code). Will attempt to continue..."
         return 0
     fi
     
-    print_success "Personal Access Token is valid"
+    print_success "Personal Access Token validated successfully"
     return 0
 }
 
@@ -428,20 +427,21 @@ main() {
     
     # Get and validate PAT
     if [ -z "$PAT" ]; then
-        PAT=$(prompt_pat_token) || {
-            print_error "Cannot proceed without a valid Personal Access Token"
-            exit 1
-        }
-    else
-        if ! validate_pat_token "$PAT"; then
-            print_error "The provided PAT is invalid or expired"
-            echo ""
-            print_info "Common issues:"
-            print_info "  1. PAT needs 'Marketplace (Manage)' permission, not just 'Publish'"
-            print_info "  2. Your Microsoft account must be added to the publisher"
-            print_info "  3. Manage at: ${BLUE}https://marketplace.visualstudio.com/manage${NC}"
+        print_step "Getting Personal Access Token..."
+        read -sp "$(echo -e ${YELLOW}🔑${NC} Enter your Personal Access Token: )" PAT
+        echo ""
+        
+        if [ -z "$PAT" ]; then
+            print_error "PAT cannot be empty"
             exit 1
         fi
+        
+        # Tenta validar, mas não bloqueia se falhar
+        validate_pat_token "$PAT"
+    else
+        # PAT fornecido via CLI - faz validação leve
+        print_step "Validating Personal Access Token..."
+        validate_pat_token "$PAT"
     fi
     echo ""
     

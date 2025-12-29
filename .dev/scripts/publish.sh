@@ -547,8 +547,8 @@ validate_pat_token() {
     # Obtém o publisher do package.json
     local publisher=$(grep -o '"publisher": *"[^"]*"' "$PACKAGE_JSON" | grep -o '[^"]*"$' | tr -d '"')
     
-    # Usa vsce verify-pat para validar o token
-    # Este é o método oficial e mais confiável
+    # Tenta validar usando vsce verify-pat, mas não bloqueia se falhar
+    # A validação real acontecerá durante o vsce publish
     local output=$(vsce verify-pat -p "$pat" "$publisher" 2>&1)
     local exit_code=$?
     
@@ -556,24 +556,21 @@ validate_pat_token() {
         print_success "Personal Access Token is valid"
         return 0
     else
-        # Analisa a mensagem de erro para dar feedback específico
+        # Validação falhou, mas vamos tentar prosseguir
+        print_warning "Could not pre-validate PAT token"
+        print_info "Will attempt to publish anyway - validation will happen during publish"
+        
+        # Se a mensagem indicar erro claro de autorização, avisa o usuário
         if echo "$output" | grep -q "401\|Unauthorized\|expired"; then
-            print_error "Personal Access Token is expired or invalid"
+            print_warning "Token appears to be expired or invalid"
+            print_info "If publish fails, create new token at: ${BLUE}https://dev.azure.com/_usersSettings/tokens${NC}" >&2
         elif echo "$output" | grep -q "403\|Forbidden\|not authorized"; then
-            print_error "Personal Access Token doesn't have required permissions"
-            echo "" >&2
+            print_warning "Token may not have required permissions"
             print_info "Required: Marketplace (${BOLD}Manage${NC}) - NOT just 'Publish'" >&2
-            print_info "Create new PAT at: ${BLUE}https://dev.azure.com/_usersSettings/tokens${NC}" >&2
-        elif echo "$output" | grep -q "404\|not found"; then
-            print_error "Publisher not found or you don't have access to it"
-            echo "" >&2
-            print_info "Publisher in package.json: ${BOLD}$publisher${NC}" >&2
-            print_info "Add your account to publisher: ${BLUE}https://marketplace.visualstudio.com/manage/publishers/$publisher${NC}" >&2
-        else
-            print_error "Failed to validate PAT"
-            print_info "Error details: $output" >&2
         fi
-        return 1
+        
+        # Retorna sucesso para não bloquear o fluxo
+        return 0
     fi
 }
 
@@ -952,28 +949,22 @@ main() {
     echo ""
     
     # ============================================================
-    # FASE 1.5: Validar PAT Token ANTES de qualquer alteração
+    # FASE 1.5: Obter PAT Token (validação leve)
     # ============================================================
-    # Esta verificação é CRÍTICA: valida o PAT antes de:
-    # - Atualizar package.json
-    # - Criar git tags
-    # - Criar GitHub releases
-    # Evita ter que desfazer operações se o PAT estiver expirado
+    # Obtém o PAT do usuário se não foi fornecido
+    # A validação completa acontecerá durante o vsce publish
     if [ -z "$PAT" ] && [ "$DRY_RUN" = false ]; then
-        print_step "Checking Personal Access Token..."
+        print_step "Getting Personal Access Token..."
         PAT=$(prompt_pat_token) || {
-            print_error "Cannot proceed without a valid Personal Access Token"
+            print_error "Cannot proceed without a Personal Access Token"
             print_warning "No changes were made to your repository"
             exit 1
         }
         echo ""
     elif [ -n "$PAT" ] && [ "$DRY_RUN" = false ]; then
-        # Se PAT foi fornecido via CLI, valida antes de continuar
-        if ! validate_pat_token "$PAT"; then
-            print_error "The provided PAT is invalid or expired"
-            print_warning "No changes were made to your repository"
-            exit 1
-        fi
+        # Se PAT foi fornecido via CLI, faz validação leve
+        print_step "Validating Personal Access Token..."
+        validate_pat_token "$PAT"
         echo ""
     fi
     
