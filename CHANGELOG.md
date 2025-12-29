@@ -5,6 +5,23 @@ All notable changes to the "Image Details" extension will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.6] - 2025-12-29
+
+### 🐛 Fixed - v1.2.6
+
+- **Image Resize Tool**: Fixed issue where resizing PNG images resulted in black backgrounds for transparent areas
+  - Ensured transparency is preserved during resize operation
+  - Tested with various PNG images to confirm fix
+  - Improved user experience for PNG image resizing
+
+### 🧹 Code Cleanup - v1.2.6
+
+- **Package Optimization**: Removed unnecessary media files from distribution
+  - README uses externally hosted images, making local copies redundant
+  - Removed `media/demo/` folder (3 GIF files, ~659KB) - only needed for GitHub documentation
+  - Removed `media/screenshots/` folder (1 PNG file, ~158KB) - only needed for GitHub documentation
+  - **Total reduction:** ~817KB from extension package size
+
 ## [1.2.5] - 2025-12-29
 
 ### 🔧 Changed - v1.2.5
