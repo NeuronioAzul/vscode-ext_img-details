@@ -696,11 +696,61 @@ publish_to_marketplace() {
     # Captura output e exit code do vsce
     if ! vsce publish -p "$pat" 2>&1 | tee /tmp/vsce_output.log; then
         local exit_code=$?
-        print_error "Failed to publish to marketplace (exit code: $exit_code)"
         echo ""
         
-        # Verifica se é erro de autorização
-        if grep -q "TF400813\|not authorized\|403" /tmp/vsce_output.log; then
+        # Verifica se é erro de autorização TF400813 (PRIORITÁRIO)
+        if grep -q "TF400813" /tmp/vsce_output.log; then
+            print_error "❌ AUTHORIZATION ERROR (TF400813)"
+            echo ""
+            echo -e "${RED}${BOLD}╔═══════════════════════════════════════════════════════════╗${NC}"
+            echo -e "${RED}${BOLD}║                                                           ║${NC}"
+            echo -e "${RED}${BOLD}║   ⚠️  YOU ARE NOT AUTHORIZED TO PUBLISH THIS EXTENSION    ║${NC}"
+            echo -e "${RED}${BOLD}║                                                           ║${NC}"
+            echo -e "${RED}${BOLD}╚═══════════════════════════════════════════════════════════╝${NC}"
+            echo ""
+            
+            # Extrai a mensagem de erro completa
+            local error_msg=$(grep -A 2 "TF400813" /tmp/vsce_output.log | head -n 1)
+            print_error "Error details:"
+            echo -e "  ${YELLOW}$error_msg${NC}"
+            echo ""
+            
+            local publisher=$(grep -o '"publisher": *"[^"]*"' "$PACKAGE_JSON" | grep -o '[^"]*"$' | tr -d '"')
+            
+            print_info "${BOLD}Why this happens:${NC}"
+            echo -e "  ${CYAN}1.${NC} Your Microsoft account is ${BOLD}NOT added to the publisher${NC}"
+            echo -e "  ${CYAN}2.${NC} Your PAT doesn't have the correct permissions"
+            echo -e "  ${CYAN}3.${NC} You're using the wrong Azure DevOps organization"
+            echo ""
+            
+            print_info "${BOLD}How to fix:${NC}"
+            echo -e "  ${GREEN}Step 1:${NC} Add your Microsoft account to the publisher"
+            echo -e "          ${BLUE}https://marketplace.visualstudio.com/manage/publishers/$publisher${NC}"
+            echo -e "          ${YELLOW}→${NC} Click 'Members' tab"
+            echo -e "          ${YELLOW}→${NC} Add your Microsoft email"
+            echo ""
+            echo -e "  ${GREEN}Step 2:${NC} Create new PAT with correct permissions"
+            echo -e "          ${BLUE}https://dev.azure.com/_usersSettings/tokens${NC}"
+            echo -e "          ${YELLOW}→${NC} Select 'Marketplace' (${BOLD}Manage${NC}) permission"
+            echo -e "          ${YELLOW}→${NC} NOT just 'Publish' - must be 'Manage'"
+            echo ""
+            echo -e "  ${GREEN}Step 3:${NC} Make sure you're in the correct Azure DevOps organization"
+            echo -e "          ${YELLOW}→${NC} PAT must be from the same org as the publisher"
+            echo ""
+            
+            print_warning "${BOLD}IMPORTANT:${NC} Ask the publisher owner to add you first!"
+            echo ""
+            print_info "See detailed guide: ${BLUE}docs/PUBLISHING_TROUBLESHOOTING.md${NC}"
+            echo ""
+            
+            rm -f /tmp/vsce_output.log
+            return 1
+        fi
+        
+        # Outros erros de autorização (403, not authorized)
+        if grep -q "not authorized\|403" /tmp/vsce_output.log; then
+            print_error "Failed to publish to marketplace (exit code: $exit_code)"
+            echo ""
             print_error "Authorization error detected!"
             echo ""
             print_info "Common causes:"
@@ -713,8 +763,16 @@ publish_to_marketplace() {
             local publisher=$(grep -o '"publisher": *"[^"]*"' "$PACKAGE_JSON" | grep -o '[^"]*"$' | tr -d '"')
             print_info "  • Add yourself: ${BLUE}https://marketplace.visualstudio.com/manage/publishers/$publisher${NC}"
             print_info "  • New PAT: ${BLUE}https://dev.azure.com/_usersSettings/tokens${NC}"
+            echo ""
+            rm -f /tmp/vsce_output.log
+            return 1
         fi
         
+        # Erro genérico
+        print_error "Failed to publish to marketplace (exit code: $exit_code)"
+        echo ""
+        print_info "Check the output above for details"
+        echo ""
         rm -f /tmp/vsce_output.log
         return 1
     fi
