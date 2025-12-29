@@ -15,6 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixes "Could not load the sharp module" error in VS Code Remote/Server environments
   - Maintains full image resize functionality without platform-specific builds
 
+### 🧹 Code Cleanup
+
+- **Refactoring**: Removed legacy code and unused imports
+  - Removed legacy translations object (~530 lines) that was no longer used
+  - Removed unused imports (`escapeHtml`, `generateBasicInfoSection`, `generateColorInfoHtml`, `generateExifHtml`)
+  - Reduced `imageDetailsEditor.ts` file size by ~49% (1078 → 550 lines)
+  - Code now uses only modular i18n implementation from `src/i18n/translations.ts`
+
 ### 🐛 Fixed
 
 - **Extension Activation**: Fixed extension activation failure in VS Code Server/Remote environments
