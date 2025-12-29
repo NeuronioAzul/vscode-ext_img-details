@@ -519,7 +519,7 @@ create_github_release() {
 # ================================================================================================
 
 # Valida se o Personal Access Token está ativo e não expirado
-# Faz uma chamada de teste à API do marketplace antes de qualquer operação
+# Usa o comando vsce verify-pat que é o método mais confiável
 # Args:
 #   $1: Personal Access Token (PAT) do Azure DevOps
 # Returns:
@@ -538,47 +538,43 @@ validate_pat_token() {
         return 0
     fi
     
-    # Faz uma chamada de teste ao marketplace para verificar se o PAT é válido
-    # Usa o publisher do package.json para fazer a verificação
-    local publisher=$(grep -o '"publisher": *"[^"]*"' "$PACKAGE_JSON" | grep -o '[^"]*"$' | tr -d '"')
-    
-    # Tenta fazer uma query simples ao marketplace
-    local response=$(curl -s -w "\n%{http_code}" \
-        -H "Accept: application/json;api-version=6.0-preview.1" \
-        -H "Authorization: Basic $(echo -n "user:$pat" | base64)" \
-        "https://marketplace.visualstudio.com/_apis/gallery/publishers/$publisher" 2>&1)
-    
-    local http_code=$(echo "$response" | tail -n1)
-    local body=$(echo "$response" | head -n-1)
-    
-    # Status codes:
-    # 200: OK - PAT válido
-    # 401: Unauthorized - PAT inválido ou expirado
-    # 403: Forbidden - PAT sem permissões
-    if [ "$http_code" = "401" ]; then
-        print_error "Personal Access Token is expired or invalid"
-        return 1
-    elif [ "$http_code" = "403" ]; then
-        print_error "Personal Access Token doesn't have required permissions"
-        echo "" >&2
-        print_info "Required: Marketplace (${BOLD}Manage${NC}) - NOT just 'Publish'" >&2
-        print_info "Create new PAT at: ${BLUE}https://dev.azure.com/[org]/_usersSettings/tokens${NC}" >&2
-        return 1
-    elif [ "$http_code" = "404" ]; then
-        print_error "Publisher not found or you don't have access to it"
-        echo "" >&2
-        local publisher=$(grep -o '"publisher": *"[^"]*"' "$PACKAGE_JSON" | grep -o '[^"]*"$' | tr -d '"')
-        print_info "Publisher in package.json: ${BOLD}$publisher${NC}" >&2
-        print_info "Add your account to publisher: ${BLUE}https://marketplace.visualstudio.com/manage/publishers/$publisher${NC}" >&2
-        return 1
-    elif [ "$http_code" != "200" ]; then
-        # Outro erro - avisa mas não bloqueia (pode ser problema de rede)
-        print_warning "Could not validate PAT (HTTP $http_code). Will attempt to continue..."
-        return 0
+    # Garante que vsce está instalado
+    if ! command -v vsce &> /dev/null; then
+        print_step "Installing vsce..."
+        npm install -g @vscode/vsce >/dev/null 2>&1
     fi
     
-    print_success "Personal Access Token is valid"
-    return 0
+    # Obtém o publisher do package.json
+    local publisher=$(grep -o '"publisher": *"[^"]*"' "$PACKAGE_JSON" | grep -o '[^"]*"$' | tr -d '"')
+    
+    # Usa vsce verify-pat para validar o token
+    # Este é o método oficial e mais confiável
+    local output=$(vsce verify-pat -p "$pat" "$publisher" 2>&1)
+    local exit_code=$?
+    
+    if [ $exit_code -eq 0 ]; then
+        print_success "Personal Access Token is valid"
+        return 0
+    else
+        # Analisa a mensagem de erro para dar feedback específico
+        if echo "$output" | grep -q "401\|Unauthorized\|expired"; then
+            print_error "Personal Access Token is expired or invalid"
+        elif echo "$output" | grep -q "403\|Forbidden\|not authorized"; then
+            print_error "Personal Access Token doesn't have required permissions"
+            echo "" >&2
+            print_info "Required: Marketplace (${BOLD}Manage${NC}) - NOT just 'Publish'" >&2
+            print_info "Create new PAT at: ${BLUE}https://dev.azure.com/_usersSettings/tokens${NC}" >&2
+        elif echo "$output" | grep -q "404\|not found"; then
+            print_error "Publisher not found or you don't have access to it"
+            echo "" >&2
+            print_info "Publisher in package.json: ${BOLD}$publisher${NC}" >&2
+            print_info "Add your account to publisher: ${BLUE}https://marketplace.visualstudio.com/manage/publishers/$publisher${NC}" >&2
+        else
+            print_error "Failed to validate PAT"
+            print_info "Error details: $output" >&2
+        fi
+        return 1
+    fi
 }
 
 # Solicita o Personal Access Token ao usuário de forma segura
