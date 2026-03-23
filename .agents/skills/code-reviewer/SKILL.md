@@ -1,177 +1,167 @@
 ---
 name: code-reviewer
-description: Code review automation for TypeScript. Analyzes PRs for complexity and risk, checks code quality for SOLID violations and code smells, generates review reports. Use when reviewing pull requests, analyzing code quality, identifying issues, generating review checklists.
+description: "Code review guidelines for the Image Details VS Code extension. TypeScript-only project using Custom Editor API, webview, and binary image processing. Use when reviewing pull requests, analyzing code quality, or generating review checklists."
 ---
 
-# Code Reviewer
+# Code Reviewer — Image Details Extension
 
-Automated code review tools for analyzing pull requests, detecting code quality issues, and generating review reports.
-
----
-
-## Table of Contents
-
-- [Tools](#tools)
-  - [PR Analyzer](#pr-analyzer)
-  - [Code Quality Checker](#code-quality-checker)
-  - [Review Report Generator](#review-report-generator)
-- [Reference Guides](#reference-guides)
-- [Languages Supported](#languages-supported)
+Guidelines for reviewing code changes in this VS Code extension project. This is a TypeScript-only codebase (~4700 lines) using the Custom Editor API with webview, EXIF processing, and image resizing.
 
 ---
 
-## Tools
+## Quick Review Workflow
 
-### PR Analyzer
+1. **Check scope** — Does the PR match its description? No unrelated changes?
+2. **Run validation** — `npm run check-types && npm run lint`
+3. **Review by priority** — Security → Correctness → Architecture → Style
+4. **Test manually** — F5 → open an image → verify the change works
 
-Analyzes git diff between branches to assess review complexity and identify risks.
+---
 
-```bash
-# Analyze current branch against main
-python scripts/pr_analyzer.py /path/to/repo
+## Project-Specific Review Checklist
 
-# Compare specific branches
-python scripts/pr_analyzer.py . --base main --head feature-branch
+### Security (Critical for this project)
 
-# JSON output for integration
-python scripts/pr_analyzer.py /path/to/repo --json
+- [ ] All metadata values passed through `escapeHtml()` before HTML insertion
+- [ ] No raw string interpolation of user/file data into webview HTML
+- [ ] No `innerHTML` or template literals with unescaped EXIF data
+- [ ] File paths sanitized — no path traversal via metadata values
+- [ ] Backup files created before any destructive operation (EXIF strip, resize)
+- [ ] No secrets/tokens in code (check for hardcoded API keys)
+
+> **Why critical**: This extension reads arbitrary image files and renders their metadata in a webview. Malicious EXIF data could inject HTML/JS if not escaped.
+
+### Binary File Operations
+
+- [ ] JPEG marker parsing validates SOI (0xFFD8) before processing
+- [ ] PNG signature validated before chunk parsing
+- [ ] Buffer bounds checked — no reads past `buffer.length`
+- [ ] Backup written BEFORE modifying the original file
+- [ ] Original restored from backup on ANY error during write
+- [ ] File format checked against supported list before processing
+
+### Webview Communication
+
+- [ ] New messages added to BOTH directions (Extension ↔ Webview) if needed
+- [ ] Button states reset on cancel/error (`resetRemoveExifButton`, `resetResizeButton`)
+- [ ] Webview refreshed after file mutations (EXIF removal, resize)
+- [ ] No `postMessage` with sensitive data that shouldn't be in webview context
+
+### Translations (i18n)
+
+- [ ] New user-facing strings use translation keys (not hardcoded English)
+- [ ] Key added to `Translations` interface in `src/types/index.ts`
+- [ ] Value added to ALL 5 locale files (`en`, `pt-br`, `ja`, `es`, `zh-cn`)
+- [ ] TypeScript compiles (missing keys cause compile errors)
+- [ ] Key follows naming convention: `camelCase`, semantically descriptive
+
+### TypeScript Quality
+
+- [ ] No new `any` types (exception: EXIF tag objects from `exifreader`)
+- [ ] Public functions have explicit return types
+- [ ] Error handling uses `instanceof Error` check before accessing `.message`
+- [ ] `undefined`/`null` checks use strict comparison (`!== undefined`)
+- [ ] No `as` type assertions unless absolutely necessary with justification
+
+### HTML Generation (`htmlGenerators.ts`)
+
+- [ ] VS Code theme variables used (`var(--vscode-*)`) — no hardcoded colors
+- [ ] All inline CSS/JS stays inline — no external resource loading
+- [ ] New sections follow collapsible section pattern (header + content + toggle)
+- [ ] Section IDs use kebab-case (`my-section`)
+- [ ] Tested in both light and dark VS Code themes
+
+### Configuration Changes
+
+- [ ] New settings added to `package.json` → `contributes.configuration`
+- [ ] Setting read via `vscode.workspace.getConfiguration('imageDetails')`
+- [ ] Default value specified in both `package.json` and reading code
+- [ ] Setting documented in `README.md`
+
+---
+
+## Code Quality Thresholds
+
+| Metric | Threshold | Current hotspots |
+|--------|-----------|------------------|
+| Function length | < 50 lines | `resolveCustomEditor` (~120 lines — switch/case justified) |
+| File size | < 600 lines | `htmlGenerators.ts` (~2715 lines — HTML generation, acceptable) |
+| Parameters | ≤ 5 per function | HTML generators take 4-6 (translations, states, mode — acceptable) |
+| Nesting depth | ≤ 4 levels | EXIF extraction has justified deep nesting |
+| Cyclomatic complexity | ≤ 10 per function | `extractRelevantExifData` is higher (70+ fields — by design) |
+
+> **Note**: `htmlGenerators.ts` is large by design — it contains all inline HTML/CSS/JS. Splitting would add complexity without benefit. `extractRelevantExifData` is a flat mapping function, not genuinely complex.
+
+---
+
+## Common Issues in This Codebase
+
+### Missing `escapeHtml()` on new metadata fields
+```typescript
+// BAD — XSS vulnerability
+html += `<span>${metadata.someField}</span>`;
+
+// GOOD
+html += `<span>${escapeHtml(metadata.someField)}</span>`;
 ```
 
-**What it detects:**
+### Forgetting to reset button state on cancel
+```typescript
+// BAD — button stays in "loading" state forever
+if (confirmed !== 'Yes') {
+    return; // User cancelled but button is stuck
+}
 
-- Hardcoded secrets (passwords, API keys, tokens)
-- SQL injection patterns (string concatenation in queries)
-- Debug statements (debugger, console.log)
-- ESLint rule disabling
-- TypeScript `any` types
-- TODO/FIXME comments
+// GOOD
+if (confirmed !== 'Yes') {
+    webviewPanel.webview.postMessage({ command: 'resetMyButton' });
+    return;
+}
+```
 
-**Output includes:**
+### Missing backup before file mutation
+```typescript
+// BAD — data loss on error
+await fs.promises.writeFile(filePath, newBuffer);
 
-- Complexity score (1-10)
-- Risk categorization (critical, high, medium, low)
-- File prioritization for review order
-- Commit message validation
+// GOOD — backup-first pattern
+const originalBuffer = await fs.promises.readFile(filePath);
+const backupPath = filePath.replace(/(\.[^.]+)$/, '_backup$1');
+await fs.promises.writeFile(backupPath, originalBuffer);
+try {
+    await fs.promises.writeFile(filePath, newBuffer);
+} catch (error) {
+    await fs.promises.writeFile(filePath, originalBuffer); // restore
+    throw error;
+}
+```
+
+### Hardcoded English string
+```typescript
+// BAD
+vscode.window.showErrorMessage('Failed to resize image');
+
+// GOOD
+vscode.window.showErrorMessage(this.getTranslations().resizeError);
+```
 
 ---
 
-### Code Quality Checker
+## Review Verdicts
 
-Analyzes source code for structural issues, code smells, and SOLID violations.
-
-```bash
-# Analyze a directory
-python scripts/code_quality_checker.py /path/to/code
-
-# Analyze specific language
-python scripts/code_quality_checker.py . --language python
-
-# JSON output
-python scripts/code_quality_checker.py /path/to/code --json
-```
-
-**What it detects:**
-
-- Long functions (>50 lines)
-- Large files (>500 lines)
-- God classes (>20 methods)
-- Deep nesting (>4 levels)
-- Too many parameters (>5)
-- High cyclomatic complexity
-- Missing error handling
-- Unused imports
-- Magic numbers
-
-**Thresholds:**
-
-| Issue           | Threshold    |
-| --------------- | ------------ |
-| Long function   | >50 lines    |
-| Large file      | >500 lines   |
-| God class       | >20 methods  |
-| Too many params | >5           |
-| Deep nesting    | >4 levels    |
-| High complexity | >10 branches |
-
----
-
-### Review Report Generator
-
-Combines PR analysis and code quality findings into structured review reports.
-
-```bash
-# Generate report for current repo
-python scripts/review_report_generator.py /path/to/repo
-
-# Markdown output
-python scripts/review_report_generator.py . --format markdown --output review.md
-
-# Use pre-computed analyses
-python scripts/review_report_generator.py . \
-  --pr-analysis pr_results.json \
-  --quality-analysis quality_results.json
-```
-
-**Report includes:**
-
-- Review verdict (approve, request changes, block)
-- Score (0-100)
-- Prioritized action items
-- Issue summary by severity
-- Suggested review order
-
-**Verdicts:**
-
-| Score                   | Verdict                  |
-| ----------------------- | ------------------------ |
-| 90+ with no high issues | Approve                  |
-| 75+ with ≤2 high issues | Approve with suggestions |
-| 50-74                   | Request changes          |
-| <50 or critical issues  | Block                    |
+| Condition | Verdict |
+|-----------|---------|
+| Clean, follows all patterns, types pass | **Approve** |
+| Minor style issues, no functional problems | **Approve with comments** |
+| Missing escapeHtml, missing translations, missing backup | **Request changes** |
+| XSS vulnerability, data loss risk, buffer overflow | **Block** |
 
 ---
 
 ## Reference Guides
 
-### Code Review Checklist
+Detailed checklists and standards in the `references/` directory:
 
-`references/code_review_checklist.md`
-
-Systematic checklists covering:
-
-- Pre-review checks (build, tests, PR hygiene)
-- Correctness (logic, data handling, error handling)
-- Security (input validation, injection prevention)
-- Performance (efficiency, caching, scalability)
-- Maintainability (code quality, naming, structure)
-- Testing (coverage, quality, mocking)
-- Language-specific checks
-
-### Coding Standards
-
-`references/coding_standards.md`
-
-Language-specific standards for:
-
-- TypeScript (type annotations, null safety, async/await)
-
-### Common Antipatterns
-
-`references/common_antipatterns.md`
-
-Antipattern catalog with examples and fixes:
-
-- Structural (god class, long method, deep nesting)
-- Logic (boolean blindness, stringly typed code)
-- Security (SQL injection, hardcoded credentials)
-- Performance (N+1 queries, unbounded collections)
-- Testing (duplication, testing implementation)
-- Async (floating promises, callback hell)
-
----
-
-## Languages Supported
-
-| Language   | Extensions    |
-| ---------- | ------------- |
-| TypeScript | `.ts`, `.tsx` |
+- `references/code_review_checklist.md` — Systematic checklists (pre-review, correctness, security, performance, maintainability)
+- `references/coding_standards.md` — TypeScript coding standards (types, null safety, async patterns)
+- `references/common_antipatterns.md` — Antipattern catalog with examples and fixes (god class, deep nesting, floating promises)
