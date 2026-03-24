@@ -5,6 +5,39 @@ All notable changes to the "Image Details" extension will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-03-24
+
+### ✨ Added - v1.3.0
+
+- **DPI/PPI Resolution Details**: Enhanced resolution display in Color Information section
+  - Shows `PPI (DPI)` label with numeric value (e.g. `300`)
+  - When X and Y resolutions differ, displays `x: 72 y: 96` on a single line
+  - New **Resolution Unit** field showing `DPI` or `pixels/cm` based on EXIF metadata
+  - Fixed value comparison for equal X/Y resolutions (array-to-string coercion)
+
+### 🐛 Fixed - v1.3.0
+
+- **DPI/PPI Label**: Updated from `DPI/PPI` to `PPI (DPI)` for consistency across all 5 languages
+
+### 🎨 Changed - v1.3.0
+
+- **Image Display**: Removed border-radius from main image preview and thumbnail for sharper, unaltered rendering
+
+### 📝 Documentation - v1.3.0
+
+- Migrated all documentation to `.dev/` folder structure
+- Updated all internal file references and cross-links
+- Improved README with development setup and release instructions
+- Added conventional commit and GitHub issue management guidelines
+- Updated `DOCUMENTATION_STRUCTURE.md` to reflect `.dev/` organization
+
+### 🧹 Internal - v1.3.0
+
+- Updated agent skills: code-reviewer, vscode-extension, localization
+- Added TypeScript and GitHub issue management skill docs
+- Removed legacy PR Analyzer and Review Report Generator scripts
+- Enhanced PAT validation for publishing workflow
+
 ## [1.2.6] - 2025-12-29
 
 ### 🐛 Fixed - v1.2.6
