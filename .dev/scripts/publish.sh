@@ -900,7 +900,7 @@ TROUBLESHOOTING:
     - Invalid PAT → Create new token with correct permissions
 
 MORE INFO:
-    Documentation: docs/PUBLISH_GUIDE.md
+    Documentation: .dev/docs/PUBLISH_GUIDE.md
     Repository:    https://github.com/NeuronioAzul/vscode-ext_img-details
 
 EOF

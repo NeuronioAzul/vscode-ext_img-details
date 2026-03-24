@@ -225,14 +225,14 @@ webviewPanel.webview.onDidReceiveMessage(async (message) => {
 
 ## Publishing
 
-- **Version**: Increment in `package.json` + `CHANGELOG.md`
+- **Version**: Increment in `CHANGELOG.md`, when executing `.dev/scripts/publish.sh` will update the version in `package.json` automatically based on the type of changes (feat → minor, fix → patch, breaking change → major)
 - **Package**: `npm run package` → generates `.vsix` in root
-- **Publish**: Use `publish.sh` script or `vsce publish`
-- See `docs/PUBLISH_GUIDE.md` for detailed steps
+- **Publish**: Use `.dev/scripts/publish.sh` script or `vsce publish`
+- See `.dev/docs/PUBLISH_GUIDE.md` for detailed steps
 
 ## Key Files to Reference
 
-- **Architecture decisions**: `REFACTORING_SUMMARY.md`
-- **Contribution guide**: `docs/contributing/CONTRIBUTING.md`
-- **i18n guide**: `docs/contributing/I18N.md`
-- **Publishing**: `docs/PUBLISH_GUIDE.md`
+- **Architecture decisions**: `.dev/docs/REFACTORING_SUMMARY.md`
+- **Contribution guide**: `.dev/docs/contributing/CONTRIBUTING.md`
+- **i18n guide**: `.dev/docs/contributing/I18N.md`
+- **Publishing**: `.dev/docs/PUBLISH_GUIDE.md`

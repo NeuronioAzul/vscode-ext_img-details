@@ -2,8 +2,6 @@
 
 A powerful VS Code extension that displays comprehensive image metadata, EXIF data, and provides tools to clean metadata from images for privacy.
 
-<div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
-
 [![Version](https://vsmarketplacebadges.dev/version-short/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
 [![Installs](https://vsmarketplacebadges.dev/installs/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
 [![Downloads](https://vsmarketplacebadges.dev/downloads/NeuronioAzul.image-details.svg)](https://marketplace.visualstudio.com/items?itemName=NeuronioAzul.image-details)
@@ -14,8 +12,6 @@ A powerful VS Code extension that displays comprehensive image metadata, EXIF da
 [![PayPal](https://img.shields.io/badge/PayPal-Donate-blue?logo=paypal)](https://www.paypal.com/donate/?hosted_button_id=QNEHQ5LAF64G2)
 [![GitHub Sponsors](https://img.shields.io/badge/GitHub-Sponsor-EA4AAA?logo=github)](https://github.com/sponsors/NeuronioAzul)
 [![Follow on X](https://img.shields.io/twitter/follow/NeuronioAzul?style=social)](https://x.com/NeuronioAzul)
-
-</div>
 
 ## Screenshot
 
@@ -164,7 +160,7 @@ Works with all common image formats:
 
 - English, Portuguese (Brasil), Japanese (日本語), Spanish (Español), and Chinese Simplified (简体中文)
 - Auto-detects VS Code language
-- Extensible ([I18N Guide](docs/contributing/I18N.md))
+- Extensible ([I18N Guide](.dev/docs/contributing/I18N.md))
 
 ## Installation
 

@@ -361,7 +361,7 @@ All destructive operations follow the **backup-first** pattern:
 |------|---------|
 | Type check + minified bundle | `npm run package` |
 | Generate .vsix | `vsce package` |
-| Publish to marketplace | `vsce publish` or use `publish.sh` |
+| Publish to marketplace | `vsce publish` or use `.dev/scripts/publish.sh` |
 
 Before publishing:
 - Increment version in `package.json`

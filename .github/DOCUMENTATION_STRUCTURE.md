@@ -3,22 +3,24 @@
 ## Structure Rule
 
 **Root level:** Only `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`  
-**All other docs:** Create in `docs/` subfolders
+**All other docs:** Create in `.dev/` subfolders
 
 ## Where to Create Files
 
 | Type | Location |
-|------|----------|
-| User guides | `docs/` |
-| Contributing guides | `docs/contributing/` |
-| Development docs | `docs/development/` |
+| ------ | ---------- |
+| User guides | `.dev/docs/` |
+| Contributing guides | `.dev/docs/contributing/` |
+| Development guides | `.dev/docs/development/` |
+| Publishing guides | `.dev/docs/` |
+| Scripts | `.dev/scripts/` |
+| Planning | `.dev/planning/` |
 
 ## Checklist
 
 When adding documentation:
 
-- [ ] File created in appropriate `docs/` subfolder
-- [ ] Link added to `docs/README.md`
+- [ ] File created in appropriate `.dev/` subfolder
 - [ ] Cross-references updated
 - [ ] CHANGELOG updated if significant
 
@@ -35,8 +37,9 @@ project-root/
 ```
 project-root/
 ├── README.md
-└── docs/
-    └── NEW_DOC.md  # Create in docs/
+└── .dev/
+    └── docs/
+        └── NEW_DOC.md  # Create in .dev/docs/
 ```
 
 ## **REMEMBER: Organized documentation = Professional project! 🚀**
