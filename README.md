@@ -212,6 +212,29 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for:
 - Translation contributions
 - Pull requests
 
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START -->
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/NeuronioAzul">
+        <img src="https://avatars.githubusercontent.com/u/126111579?v=4" width="80" alt="NeuronioAzul"/>
+        <br />
+        <sub><b>NeuronioAzul</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/uicssmaker">
+        <img src="https://avatars.githubusercontent.com/u/93056265?v=4" width="80" alt="uicssmaker"/>
+        <br />
+        <sub><b>uicssmaker</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
 ## Links
 
 - [Changelog](CHANGELOG.md)
