@@ -34,7 +34,7 @@ export const es: Translations = {
     colorInformation: 'Información de Color',
     supportsTransparency: 'Soporte de Transparencia',
     colorDepth: 'Profundidad de Color',
-    dpi: 'DPI/PPP',
+    dpi: 'PPI (DPI)',
     thumbnail: 'Miniatura',
     basicInfo: 'Información Básica',
     collapse: 'Contraer',

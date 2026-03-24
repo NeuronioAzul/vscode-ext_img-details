@@ -34,7 +34,7 @@ export const ptBr: Translations = {
     colorInformation: 'Informações de Cor',
     supportsTransparency: 'Suporte a Transparência',
     colorDepth: 'Profundidade de Cor',
-    dpi: 'DPI/PPI',
+    dpi: 'PPI (DPI)',
     thumbnail: 'Miniatura',
     basicInfo: 'Informações Básicas',
     collapse: 'Recolher',

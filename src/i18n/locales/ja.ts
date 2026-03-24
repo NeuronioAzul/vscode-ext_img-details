@@ -34,7 +34,7 @@ export const ja: Translations = {
     colorInformation: '色情報',
     supportsTransparency: '透明度サポート',
     colorDepth: '色深度',
-    dpi: 'DPI/PPI',
+    dpi: 'PPI (DPI)',
     thumbnail: 'サムネイル',
     basicInfo: '基本情報',
     collapse: '折りたたむ',

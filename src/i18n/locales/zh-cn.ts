@@ -34,7 +34,7 @@ export const zhCn: Translations = {
     colorInformation: '色彩信息',
     supportsTransparency: '透明度支持',
     colorDepth: '色彩深度',
-    dpi: 'DPI/PPI',
+    dpi: 'PPI (DPI)',
     thumbnail: '缩略图',
     basicInfo: '基本信息',
     collapse: '收起',
