@@ -15,6 +15,7 @@ This directory contains files used during development that are not needed in pro
 ### Getting Started
 
 1. **Clone the dev branch:**
+
    ```bash
    git clone -b dev https://github.com/NeuronioAzul/vscode-ext_img-details.git
    cd vscode-ext_img-details
@@ -22,6 +23,7 @@ This directory contains files used during development that are not needed in pro
    ```
 
 2. **Run in development:**
+
    ```bash
    npm run watch  # Start watch mode
    # Press F5 to launch Extension Development Host
@@ -46,6 +48,7 @@ This directory contains files used during development that are not needed in pro
 ### Release Process
 
 1. **Prepare release in dev:**
+
    ```bash
    git checkout dev
    # Update version in package.json
@@ -55,6 +58,7 @@ This directory contains files used during development that are not needed in pro
    ```
 
 2. **Merge to main:**
+
    ```bash
    git checkout main
    git merge dev --no-ff -m "release: v1.x.x"
@@ -62,12 +66,14 @@ This directory contains files used during development that are not needed in pro
    ```
 
 3. **Create tag:**
+
    ```bash
    git tag v1.x.x
    git push origin v1.x.x
    ```
 
 4. **Publish:**
+
    ```bash
    cd .dev/scripts
    ./publish.sh
@@ -83,6 +89,7 @@ This directory contains files used during development that are not needed in pro
 ## 🧪 Testing
 
 Test images are available in `.dev/test-images/` for manual testing of:
+
 - Different image formats (PNG, JPEG, GIF, WebP)
 - Various EXIF data scenarios
 - Edge cases (corrupted, large files, etc.)
@@ -90,11 +97,13 @@ Test images are available in `.dev/test-images/` for manual testing of:
 ## 🛠️ Scripts
 
 Available in `.dev/scripts/`:
+
 - `publish.sh` - Automated publishing to VS Code Marketplace
 
 ## 📋 Planning Documents
 
 Available in `.dev/planning/`:
+
 - Roadmap and feature planning
 - Migration status and refactoring summaries
 - Phase completion documents
@@ -102,5 +111,6 @@ Available in `.dev/planning/`:
 ---
 
 **Note**: Files in `.dev/` are NOT included in:
+
 - The published extension package (via `.vscodeignore`)
 - The main production branch (kept only in dev)
