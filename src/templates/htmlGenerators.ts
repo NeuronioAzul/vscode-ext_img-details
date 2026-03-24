@@ -186,15 +186,30 @@ export function generateColorInfoHtml(
   }
 
   if (colorInfo.dpi) {
+    const dpiValue = colorInfo.dpiX && colorInfo.dpiY && colorInfo.dpiX !== colorInfo.dpiY
+      ? `x: ${escapeHtml(colorInfo.dpiX)} y: ${escapeHtml(colorInfo.dpiY)}`
+      : escapeHtml(colorInfo.dpi);
+    const dpiCopy = colorInfo.dpiX && colorInfo.dpiY && colorInfo.dpiX !== colorInfo.dpiY
+      ? `x: ${escapeHtml(colorInfo.dpiX)} y: ${escapeHtml(colorInfo.dpiY)}`
+      : escapeHtml(colorInfo.dpi);
     html += `
                 <div class="metadata-item">
                     <div class="metadata-label">📐 ${t.dpi}</div>
                     <div class="metadata-value" title="${
                       t.clickToCopy
-                    }" onclick="copyToClipboard('${escapeHtml(
-      colorInfo.dpi
-    )}')">${escapeHtml(colorInfo.dpi)}</div>
+                    }" onclick="copyToClipboard('${dpiCopy}')">${dpiValue}</div>
                 </div>`;
+    if (colorInfo.dpiUnit) {
+      html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📏 ${t.dpiResolutionUnit}</div>
+                    <div class="metadata-value" title="${
+                      t.clickToCopy
+                    }" onclick="copyToClipboard('${escapeHtml(
+        colorInfo.dpiUnit
+      )}')">${escapeHtml(colorInfo.dpiUnit)}</div>
+                </div>`;
+    }
   }
 
   html += `

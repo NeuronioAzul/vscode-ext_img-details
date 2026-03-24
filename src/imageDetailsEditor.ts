@@ -293,6 +293,9 @@ export class ImageDetailsEditorProvider implements vscode.CustomReadonlyEditorPr
                 // Add DPI from EXIF to colorInfo if available
                 if (exifData && exifData.dpi) {
                     colorInfo.dpi = exifData.dpi;
+                    colorInfo.dpiX = exifData.xResolution;
+                    colorInfo.dpiY = exifData.yResolution;
+                    colorInfo.dpiUnit = exifData.dpiUnit;
                 }
                 
                 // Enhance color depth with EXIF data

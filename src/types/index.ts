@@ -37,6 +37,7 @@ export interface Translations {
     supportsTransparency: string;
     colorDepth: string;
     dpi: string;
+    dpiResolutionUnit: string;
     thumbnail: string;
     basicInfo: string;
     collapse: string;
@@ -146,7 +147,10 @@ export interface ImageMetadata {
 export interface ColorInfo {
     supportsTransparency: boolean;
     colorDepth?: number;
-    dpi?: number;
+    dpi?: string;
+    dpiX?: string;
+    dpiY?: string;
+    dpiUnit?: string;
     [key: string]: any;
 }
 
