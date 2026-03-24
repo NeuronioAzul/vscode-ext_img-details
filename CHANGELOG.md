@@ -5,6 +5,13 @@ All notable changes to the "Image Details" extension will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-03-24
+
+### 📝 Documentation - v1.3.1
+
+- **Contributors Section**: Added contributors section to README with GitHub avatars and profile links
+- Added **uicssmaker** as project contributor
+
 ## [1.3.0] - 2026-03-24
 
 ### ✨ Added - v1.3.0
