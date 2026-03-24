@@ -276,7 +276,6 @@ export function getHtmlForWebview(
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            border-radius: 4px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s ease;
             cursor: zoom-in;
@@ -464,7 +463,6 @@ export function getHtmlForWebview(
             max-width: 120px;
             max-height: 120px;
             object-fit: contain;
-            border-radius: 2px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             transition: transform 0.2s ease;
