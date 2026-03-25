@@ -78,7 +78,7 @@ npx @vscode/vsce publish --no-git-tag-version
 
 Before publishing, verify:
 
-- [x] Version updated in `package.json` (currently **1.0.2**)
+- [x] Version updated in `package.json`
 - [x] `CHANGELOG.md` updated with new version changes
 - [x] `README.md` has screenshots and complete documentation
 - [x] All dependencies listed in `package.json`
@@ -313,5 +313,5 @@ View download statistics and ratings at the [Publisher Dashboard](https://market
 
 ---
 
-**Current Project Version**: 1.0.2  
-**Last Updated**: November 20, 2025
+**Current Project Version**: 1.3.1  
+**Last Updated**: March 2026

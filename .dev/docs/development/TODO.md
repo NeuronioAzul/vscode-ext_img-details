@@ -108,23 +108,19 @@
   - [x] 1.1.4 Move `extractRelevantExifData()` function (complete implementation)
   - [ ] 1.1.5 Add unit tests for utility functions
 
-- [x] 1.2 Move HTML generators to `src/templates/htmlGenerators.ts` ✅ PHASE 4A COMPLETE
+- [x] 1.2 Move HTML generators to `src/templates/htmlGenerators.ts` ✅ COMPLETE
   - [x] 1.2.0 Create htmlGenerators module structure
-  - [x] 1.2.1 Move `escapeHtml()` helper function (18 lines)
-  - [x] 1.2.2 Move `getErrorHtml()` function (86 lines)
-  - [ ] 1.2.3 Move `generateColorInfoHtml()` function (~50 lines) - Phase 4B
-  - [ ] 1.2.4 Move `generateExifHtml()` function (~600 lines) - Phase 4B
-  - [ ] 1.2.5 Move `getHtmlForWebview()` function (~950 lines) - Phase 4B
-  - [ ] 1.2.1 Move `generateBasicInfoSection()` function
-  - [ ] 1.2.2 Move `generateColorInfoHtml()` function
-  - [ ] 1.2.3 Move `generateExifHtml()` function
-  - [ ] 1.2.4 Move `getHtmlForWebview()` function
-  - [ ] 1.2.5 Move `getErrorHtml()` function
+  - [x] 1.2.1 Move `escapeHtml()` helper function
+  - [x] 1.2.2 Move `getErrorHtml()` function
+  - [x] 1.2.3 Move `generateBasicInfoSection()` function
+  - [x] 1.2.4 Move `generateColorInfoHtml()` function
+  - [x] 1.2.5 Move `generateExifHtml()` function
+  - [x] 1.2.6 Move `getHtmlForWebview()` function
 
-- [ ] 1.3 Clean up legacy code
-  - [ ] 1.3.1 Remove duplicate `translations` object from `imageDetailsEditor.ts`
-  - [ ] 1.3.2 Remove unused imports
-  - [ ] 1.3.3 Optimize code structure
+- [x] 1.3 Clean up legacy code
+  - [x] 1.3.1 Remove duplicate `translations` object from `imageDetailsEditor.ts`
+  - [x] 1.3.2 Remove unused imports
+  - [x] 1.3.3 Optimize code structure
 
 - [ ] 1.4 Testing
   - [ ] 1.4.1 Unit tests for `src/i18n/translations.ts`
@@ -198,7 +194,7 @@ Todos os itens da especificação técnica foram implementados:
 - ✅ Checkbox "Maintain aspect ratio" com cálculo automático
 - ✅ Slider de qualidade (0-100)
 - ✅ Backup automático: `image.jpg` → `image-original.jpg`
-- ✅ Biblioteca sharp integrada para redimensionamento
+- ✅ Biblioteca Jimp integrada para redimensionamento (pure JavaScript, cross-platform)
 - ✅ Suporte para JPEG, PNG, WebP
 - ✅ Validação de dimensões e tratamento de erros
 - ✅ Restauração automática do backup em caso de erro
@@ -214,8 +210,8 @@ Todos os itens da especificação técnica foram implementados:
 - ✅ Atalhos de zoom: `Ctrl + +`, `Ctrl + -`, `Ctrl + 0`
 - ✅ Atalhos desabilitados quando digitando em campos de input
 
-**Dependências instaladas:**
-- `sharp@0.33.1` - High-performance image processing
+**Dependências:**
+- `jimp@0.22.12` - Pure JavaScript image processing (cross-platform, no native binaries)
 
 ### 4. Interface e UX
 
@@ -304,21 +300,18 @@ Todos os itens da especificação técnica foram implementados:
 - [ ] 11.3 Compatibilidade com extensions populares
 - [ ] 11.4 Suporte a imagens em repositórios remotos
 
-## 🎯 Prioridades v1.2.0
+## 🎯 Prioridades v1.4.0
 
 ### High Priority
 
-- [ ] Complete Phase 3: Move utility functions to utils/metadata.ts
-- [ ] Complete Phase 4: Move HTML generators to templates/
 - [ ] Add unit tests for refactored modules
 - [ ] Performance optimizations (lazy loading, cache)
-- [ ] **Image Resize Tool**: Add image resizing functionality with aspect ratio control
+- [ ] CI/CD setup (GitHub Actions)
 
 ### Medium Priority
 
-- [ ] Advanced configuration options
-- [ ] CI/CD setup
 - [ ] Additional image format support (TIFF, RAW)
+- [ ] Advanced configuration options (metadata visibility, date format, units)
 - [ ] Image batch operations (resize multiple images)
 
 ### Low Priority
@@ -326,22 +319,17 @@ Todos os itens da especificação técnica foram implementados:
 - [ ] API documentation
 - [ ] Examples and samples
 - [ ] Troubleshooting guide
+- [ ] Additional languages (French, German)
 
 ## 📝 Notas
 
 - ✅ v1.1.5: Modular architecture Phases 1-4A successfully implemented
-  - Phase 1: Module structure creation ✅
-  - Phase 2: Core migration (types, i18n) ✅
-  - Phase 3: Utility functions extraction ✅
-  - Phase 4A: HTML helpers extraction ✅ (2/5 functions, 104 lines)
-- 🎯 Next: Phase 4B (remaining HTML generators ~1600 lines) + Phase 5 (cleanup & testing)
-- 📊 Code quality improved: 18.4% reduction, better maintainability and testability
-- 🌐 5 languages supported: English, Portuguese, Japanese, Spanish, Chinese Simplified
-- 📐 Progress: ~60% complete overall, Phase 4: 40% complete
-- 🖼️ **Image Resize Feature**: New feature planned for v1.2.0
-  - Will use canvas-based resizing or sharp library for Node.js
-  - Backup naming convention: `image.jpg` → `image-original.jpg`
-  - Modal UI similar to EXIF removal with confirmation dialog
+- ✅ v1.2.0-v1.2.6: Image resize feature, sharp→jimp migration, bug fixes
+- ✅ v1.3.0: DPI/PPI resolution display, border-radius removal, docs migration to .dev/
+- ✅ v1.3.1: Contributors section in README
+- 🎯 Next: Unit tests, CI/CD, additional i18n languages
+- 📊 Code quality improved: modular architecture, 5 languages supported
+- 📐 Progress: ~75% complete overall
   - Aspect ratio calculation: `newHeight = (originalHeight / originalWidth) * newWidth`
   - Supported formats: PNG, JPEG, WebP (same as EXIF removal)
 

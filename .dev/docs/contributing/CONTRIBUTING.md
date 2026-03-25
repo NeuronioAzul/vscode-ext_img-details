@@ -15,7 +15,7 @@ Thank you for your interest in contributing to the Image Details extension! This
 ### Prerequisites
 
 - Node.js (v18 or higher)
-- VS Code (v1.85.0 or higher)
+- VS Code (v1.94.0 or higher)
 - Git
 
 ### Setup Development Environment
@@ -95,31 +95,25 @@ Before submitting a PR:
    - No runtime errors in Developer Tools console
    - Extension activates correctly
 
-3. **Test in Both Languages**
+3. **Test in Multiple Languages**
    - Test in English (`en`)
-   - Test in Portuguese (`pt-br`)
+   - Test in at least one other language (pt-br, ja, es, zh-cn)
 
 ## 🌐 Adding Translations
 
+The extension uses a modular i18n system with separate files per locale.
+
 To add support for a new language:
 
-1. **Edit** `src/imageDetailsEditor.ts`
-2. **Find** the `translations` object
-3. **Add** your language following the existing pattern:
+1. **Create** a new locale file `src/i18n/locales/<lang-code>.ts` by copying `en.ts`
+2. **Translate** all keys (TypeScript enforces completeness via `Translations` interface)
+3. **Register** in `src/i18n/translations.ts` — import and add to the translations map
+4. **Add fallback** in `getTranslations()` if needed for locale variants
+5. **Update** `I18N.md` with the new language
+6. **Test** by changing VS Code language setting
+7. **Submit** a PR with your translation
 
-   ```typescript
-   'your-lang-code': {
-      imageDetails: 'Your Translation',
-      fileName: 'Your Translation',
-      // ... all other keys
-   }
-   ```
-
-4. **Update** `I18N.md` with the new language
-5. **Test** by changing VS Code language setting
-6. **Submit** a PR with your translation
-
-See [I18N.md](I18N.md) for the complete list of translation keys.
+See [I18N.md](I18N.md) for the complete guide.
 
 ## 🐛 Reporting Bugs
 
@@ -241,18 +235,33 @@ When suggesting a feature:
 ```text
 vscode-ext_img-details/
 ├── src/
-│   ├── extension.ts          # Extension entry point
-│   └── imageDetailsEditor.ts # Main editor implementation
-├── test-images/               # Test images
-├── out/                       # Compiled JavaScript (generated)
-├── package.json              # Extension manifest
-├── tsconfig.json             # TypeScript configuration
-├── README.md                 # Main documentation
-├── CHANGELOG.md              # Version history
-├── LICENSE                   # MIT License
-└── docs/                     # All documentation
-    ├── contributing/
-    └── development/
+│   ├── extension.ts              # Extension entry point
+│   ├── imageDetailsEditor.ts     # Main editor orchestrator
+│   ├── i18n/
+│   │   ├── translations.ts       # Locale detection + fallback
+│   │   └── locales/              # Per-language translation files
+│   │       ├── en.ts
+│   │       ├── pt-br.ts
+│   │       ├── ja.ts
+│   │       ├── es.ts
+│   │       └── zh-cn.ts
+│   ├── templates/
+│   │   └── htmlGenerators.ts     # Webview HTML generation
+│   ├── types/
+│   │   └── index.ts              # TypeScript interfaces
+│   └── utils/
+│       ├── metadata.ts           # EXIF extraction, formatting
+│       └── imageResize.ts        # Image resize via Jimp
+├── dist/                          # Bundled output (esbuild)
+├── .dev/                          # Development docs & scripts
+├── media/                         # Extension icons
+├── package.json                   # Extension manifest
+├── tsconfig.json                  # TypeScript configuration
+├── esbuild.js                     # Build configuration
+├── README.md                      # Main documentation
+├── CHANGELOG.md                   # Version history
+├── CONTRIBUTING.md                # Contribution guide
+└── LICENSE                        # MIT License
 ```
 
 ## ❓ Questions?

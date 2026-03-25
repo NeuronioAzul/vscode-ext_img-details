@@ -7,25 +7,48 @@ vscode-ext_img-details/
 ├── README.md
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
-├── ROADMAP.md
 ├── package.json
+├── esbuild.js
+├── tsconfig.json
 ├── src/
-├── dist/           # Bundled output
-└── docs/
-    ├── contributing/
-    │   └── I18N.md
-    └── development/
-        └── TODO.md
+│   ├── extension.ts
+│   ├── imageDetailsEditor.ts
+│   ├── i18n/
+│   │   ├── translations.ts
+│   │   └── locales/
+│   ├── templates/
+│   │   └── htmlGenerators.ts
+│   ├── types/
+│   │   └── index.ts
+│   └── utils/
+│       ├── metadata.ts
+│       └── imageResize.ts
+├── dist/               # Bundled output (esbuild)
+├── media/              # Extension icons
+└── .dev/               # Development docs & scripts
+    ├── docs/
+    │   ├── contributing/
+    │   │   ├── CONTRIBUTING.md
+    │   │   └── I18N.md
+    │   ├── development/
+    │   │   ├── TODO.md
+    │   │   └── REFACTORING.md
+    │   └── publishing/
+    │       └── PUBLISH_GUIDE.md
+    ├── planning/
+    │   └── ROADMAP.md
+    ├── scripts/
+    └── admin/
 ```
 
 ## Rule
 
-New documentation goes in `docs/` subfolders.
+New documentation goes in `.dev/docs/` subfolders.
 
 **Navigation:** [Documentation Index](README.md)
 
-- [ ] File created in `docs/` (appropriate subfolder)
-- [ ] Link added to `docs/README.md`
+- [ ] File created in `.dev/docs/` (appropriate subfolder)
+- [ ] Link added to `.dev/docs/README.md`
 - [ ] Correct relative links
 - [ ] Cross-references updated
 - [ ] Examples included
@@ -33,15 +56,5 @@ New documentation goes in `docs/` subfolders.
 
 ---
 
-## 🎉 Result
-
-✅ **More organized project**
-✅ **Intuitive navigation**
-✅ **Easy maintenance**
-✅ **Professional standard**
-✅ **Scalable**
-
----
-
-**Date:** October 2025
+**Last Updated:** March 2026
 **Status:** ✅ Complete

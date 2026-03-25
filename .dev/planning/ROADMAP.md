@@ -1,203 +1,126 @@
 # Roadmap
 
-**Version:** 1.0.0 | **Updated:** November 2025
+**Version:** 1.3.1 | **Updated:** March 2026
 
 ## 📊 Project Status
 
 | Category | Total | Completed | Pending | % Complete |
 |----------|-------|-----------|---------|------------|
 | **Code Cleanup** | 5 | 5 | 0 | 100% |
-| **Extended Metadata** | 5 | 4 | 1 | 80% |
+| **Extended Metadata** | 7 | 6 | 1 | 86% |
 | **Interface & UX** | 12 | 12 | 0 | 100% |
-| **Settings** | 4 | 0 | 4 | 0% |
-| **Performance** | 1 | 0 | 1 | 0% |
-| **Publishing** | 12 | 9 | 3 | 75% |
-| **Testing** | 5 | 0 | 5 | 0% |
-| **Documentation** | 5 | 2 | 3 | 40% |
+| **Image Resize** | 1 | 1 | 0 | 100% |
+| **i18n** | 5 | 5 | 0 | 100% |
+| **Settings** | 4 | 1 | 3 | 25% |
+| **Performance** | 3 | 0 | 3 | 0% |
+| **Publishing** | 13 | 12 | 1 | 92% |
+| **Testing** | 8 | 0 | 8 | 0% |
+| **Documentation** | 6 | 4 | 2 | 67% |
 | **Compatibility** | 4 | 0 | 4 | 0% |
 
 ---
 
-## 🚀 v1.1.0 - Next Release (Q1 2026)
+## ✅ Completed Milestones
+
+### v1.0.0 – v1.1.5 (2025)
+- Custom editor for image files with comprehensive metadata display
+- EXIF data extraction (70+ fields) with camera, lens, GPS, and technical info
+- DPI/PPI resolution display with separate X/Y and unit
+- Accordion/list display modes with persistent section states
+- Zoom controls (mouse wheel, keyboard shortcuts, click toggle)
+- Copy-to-clipboard for all metadata values
+- EXIF removal with backup and restore-on-error
+- View all metadata as formatted JSON modal
+- Modular architecture (types, i18n, utils, templates)
+- 5 languages: English, Portuguese, Japanese, Spanish, Chinese Simplified
+
+### v1.2.0 – v1.2.6 (2025-2026)
+- Image resize feature via Jimp (pure JS, cross-platform)
+- Backup-first pattern for resize (`image-original.ext`)
+- Quality slider, aspect ratio lock, dimension validation
+- sharp → jimp migration (no native binaries)
+- Bug fixes: resize modal, keyboard shortcuts, input fields
+
+### v1.3.0 – v1.3.1 (March 2026)
+- DPI/PPI display improvements (PPI (DPI) label, X/Y on single line)
+- Border-radius removal from image/thumbnail
+- Documentation migration to `.dev/` folder
+- Contributors section in README
+
+---
+
+## 🚀 v1.4.0 – Next Release
 
 ### 🎯 High Priority
 
-#### 1. Complete Extended Metadata
+#### 1. Testing System
 
-**Complexity:** Medium | **Estimated Time:** 2-3 weeks
+- [ ] Unit tests for `src/utils/metadata.ts`
+- [ ] Unit tests for `src/i18n/translations.ts`
+- [ ] Unit tests for `src/templates/htmlGenerators.ts`
+- [ ] Integration tests for editor provider
+- [ ] Format-specific tests (PNG, JPEG, GIF, WebP)
 
-- [ ] **Add detailed PNG metadata**
-  - Compression type/quality
-  - Filter and Interlace information
-  
-- [ ] **Implement IPTC metadata**
-  - Keywords, Caption, Copyright
-  - Author, Location information
-  - Categories and ratings
-  
-- [ ] **Add XMP metadata**
-  - Panorama information
-  - Creator and Rights
-  - Advanced photo metadata
+#### 2. CI/CD
 
-**Benefit:** More complete data for professional photographers and designers
+- [ ] GitHub Actions workflow (build, type-check, test on push)
+- [ ] Automated release pipeline
 
----
+#### 3. Performance
 
-#### 2. User Settings
-
-**Complexity:** Low-Medium | **Estimated Time:** 1-2 weeks
-
-- [ ] **Visible metadata selection**
-  - Checkboxes to choose which sections to display
-  - Save preferences per workspace
-  
-- [ ] **Customizable date/time format**
-  - Automatic locale detection
-  - Format options (ISO, Local, Custom)
-  
-- [ ] **Measurement units**
-  - Toggle bytes vs KB/MB/GB
-  - Unit options for dimensions
-
-**Benefit:** Personalized experience for different user types
+- [ ] Lazy loading for large images
+- [ ] Metadata caching
+- [ ] Virtual scrolling for long metadata lists
 
 ---
+
+## 🔮 v1.5.0 – Mid-term
 
 ### 🎯 Medium Priority
 
-#### 3. Testing System
+#### 4. User Settings
 
-**Complexity:** High | **Estimated Time:** 2-3 weeks
+- [ ] Metadata visibility selection (choose which sections to display)
+- [ ] Customizable date/time format
+- [ ] Measurement unit options (bytes vs KB/MB)
 
-- [ ] **Unit tests**
-  - Metadata extraction
-  - Value formatting
-  - Type validation
-  
-- [ ] **Integration tests**
-  - VS Code API
-  - File system operations
-  - Webview communication
-  
-- [ ] **Compatibility tests**
-  - Different image formats
-  - Various file sizes
-  - Edge cases
+#### 5. Extended Metadata
 
-**Benefit:** Greater stability and confidence in releases
+- [ ] IPTC metadata (keywords, caption, copyright)
+- [ ] XMP metadata (panorama, creator, rights)
+- [ ] PNG compression type/quality
+
+#### 6. Additional Languages
+
+- [ ] French (fr)
+- [ ] German (de)
+- [ ] Russian (ru)
+- [ ] Korean (ko)
 
 ---
 
-#### 4. CI/CD and Automation
-
-**Complexity:** Medium | **Estimated Time:** 1 week
-
-- [ ] **GitHub Actions workflow**
-  - Automatic build on commits
-  - Automated tests
-  - Release automation
-  
-- [ ] **Quality gates**
-  - Minimum code coverage
-  - Mandatory linting
-  - Type checking
-
-**Benefit:** More professional and reliable development process
-
----
-
-## 🔮 v1.2.0 - Future Release (Q2 2026)
-
-### 🎯 Medium-Low Priority
-
-#### 5. Performance and Optimization
-
-**Complexity:** Medium-High | **Estimated Time:** 2 weeks
-
-- [ ] **Lazy loading for large images**
-  - Load metadata first
-  - Low-resolution preview
-  - Full load on-demand
-  
-- [ ] **Metadata caching**
-  - Avoid EXIF re-parsing
-  - Smart invalidation
-  
-- [ ] **Virtual scrolling**
-  - For long metadata lists
-  - Better performance with many fields
-
-**Benefit:** Smooth experience even with very large files
-
----
-
-#### 6. Advanced Documentation
-
-**Complexity:** Low-Medium | **Estimated Time:** 1-2 weeks
-
-- [ ] **Documented internal API**
-  - Complete JSDoc
-  - Architecture diagrams
-  - Extension points
-  
-- [ ] **Examples and samples**
-  - Common use cases
-  - Code snippets
-  - Best practices
-  
-- [ ] **Troubleshooting guide**
-  - FAQ
-  - Common issues
-  - Debug tips
-
-**Benefit:** Facilitates contributions and user support
-
----
-
-## 🌟 v2.0.0 - Long-term Vision (Q3-Q4 2026)
+## 🌟 v2.0.0 – Long-term Vision
 
 ### 🎯 Advanced Features
 
-#### 7. Support for New Formats
+#### 7. New Format Support
 
-**Complexity:** High | **Estimated Time:** 3-4 weeks
+- [ ] RAW formats (CR2, NEF, ARW, DNG)
+- [ ] TIFF (multi-page, GeoTIFF)
+- [ ] HEIC/HEIF
+- [ ] Vector formats (SVG metadata)
 
-- [ ] **RAW formats**
-  - CR2, NEF, ARW, DNG
-  - Camera-specific metadata
-  
-- [ ] **Advanced TIFF**
-  - Multi-page support
-  - GeoTIFF information
-  
-- [ ] **Vector formats**
-  - SVG metadata
-  - AI/EPS information (if possible)
+#### 8. Advanced Features
 
-**Benefit:** Make the extension useful for professional photographers
+- [ ] Remote URL image support
+- [ ] Batch image operations
+- [ ] Resize history (undo/redo)
 
----
+#### 9. Documentation
 
-#### 8. Remote Resources
-
-**Complexity:** High | **Estimated Time:** 2-3 weeks
-
-- [ ] **Remote URL support**
-  - Fetch online images
-  - Local cache
-  
-- [ ] **Git repository images**
-  - Image preview in PRs
-  - History visualization
-  
-- [ ] **Cloud storage integration**
-  - AWS S3, Google Cloud Storage
-  - Metadata directly from cloud
-
-**Benefit:** Flexibility to work with diverse resources
-
----
+- [ ] Internal API documentation (JSDoc)
+- [ ] Troubleshooting guide
+- [ ] Examples and samples
 
 #### 9. Extended Compatibility
 

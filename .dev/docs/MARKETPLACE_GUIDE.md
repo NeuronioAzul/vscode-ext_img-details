@@ -22,7 +22,7 @@ When users view your extension in the VS Code Marketplace, they see the followin
 
 - **Source**: `CHANGELOG.md` (root)
 - **Content**: Version history and release notes
-- **Status**: ✅ Created with v0.2.0 and v0.1.0 releases
+- **Status**: ✅ Created with releases up to v1.3.1
 
 ### 4. **Dependencies** Tab
 
@@ -31,6 +31,7 @@ When users view your extension in the VS Code Marketplace, they see the followin
 - **Status**: ✅ Configured with:
   - `exifreader`: ^4.32.0
   - `image-size`: ^1.1.1
+  - `jimp`: ^0.22.12
 
 ## 🔗 Resources Section
 
@@ -110,7 +111,7 @@ The following badges are configured to appear in the marketplace:
 
 ### Description
 
-"View comprehensive image metadata with EXIF data, and clean metadata from images. Supports zoom, copy-to-clipboard, and multi-language interface."
+"View comprehensive image metadata with EXIF data, privacy-focused metadata removal, and image resizing. Supports zoom, copy-to-clipboard, and multi-language interface (EN, PT-BR, JA, ES, ZH-CN)."
 
 ### Categories
 
@@ -133,10 +134,8 @@ The extension package includes:
 - `LICENSE` - License information
 - `package.json` - Extension manifest
 - `icon.png` - Extension icon (128x128px)
-- `out/` - Compiled JavaScript
+- `dist/` - Bundled output (esbuild)
 - `node_modules/` - Runtime dependencies
-- `docs/` - Extended documentation
-- `scripts/` - Helper scripts
 - `media/` - Media assets
 
 ## ✅ Checklist for Publication
@@ -186,4 +185,4 @@ vsce publish major
 
 ---
 
-**Last Updated**: November 13, 2025
+**Last Updated**: March 2026
