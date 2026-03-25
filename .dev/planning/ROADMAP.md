@@ -5,7 +5,7 @@
 ## 📊 Project Status
 
 | Category | Total | Completed | Pending | % Complete |
-|----------|-------|-----------|---------|------------|
+| ---------- | ------- | ----------- | --------- | ------------ |
 | **Code Cleanup** | 5 | 5 | 0 | 100% |
 | **Extended Metadata** | 7 | 6 | 1 | 86% |
 | **Interface & UX** | 12 | 12 | 0 | 100% |
@@ -23,6 +23,7 @@
 ## ✅ Completed Milestones
 
 ### v1.0.0 – v1.1.5 (2025)
+
 - Custom editor for image files with comprehensive metadata display
 - EXIF data extraction (70+ fields) with camera, lens, GPS, and technical info
 - DPI/PPI resolution display with separate X/Y and unit
@@ -35,6 +36,7 @@
 - 5 languages: English, Portuguese, Japanese, Spanish, Chinese Simplified
 
 ### v1.2.0 – v1.2.6 (2025-2026)
+
 - Image resize feature via Jimp (pure JS, cross-platform)
 - Backup-first pattern for resize (`image-original.ext`)
 - Quality slider, aspect ratio lock, dimension validation
@@ -42,6 +44,7 @@
 - Bug fixes: resize modal, keyboard shortcuts, input fields
 
 ### v1.3.0 – v1.3.1 (March 2026)
+
 - DPI/PPI display improvements (PPI (DPI) label, X/Y on single line)
 - Border-radius removal from image/thumbnail
 - Documentation migration to `.dev/` folder

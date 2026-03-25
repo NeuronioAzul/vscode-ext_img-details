@@ -186,9 +186,10 @@
   - [x] 3.7.9 Traduções em múltiplos idiomas (en, pt-br, ja, es, zh-cn)
   - [ ] 3.7.10 Histórico de redimensionamentos (undo/redo)
 
-**✅ Resize Feature - IMPLEMENTADA (v1.2.0 - v1.2.1)**
+#### **✅ Resize Feature - IMPLEMENTADA (v1.2.0 - v1.2.1)**
 
 Todos os itens da especificação técnica foram implementados:
+
 - ✅ Botão "Resize Image" no painel de ferramentas
 - ✅ Modal interativo com inputs de width/height
 - ✅ Checkbox "Maintain aspect ratio" com cálculo automático
@@ -201,7 +202,8 @@ Todos os itens da especificação técnica foram implementados:
 - ✅ Atualização automática da visualização
 - ✅ Traduções completas em 5 idiomas (en, pt-br, ja, es, zh-cn)
 
-**Bug Fixes (v1.2.1):**
+#### **Bug Fixes (v1.2.1):**
+
 - ✅ Corrigido loop infinito na abertura da modal
 - ✅ Corrigido pointer-events bloqueando interação
 - ✅ Campos de input agora aceitam valores numéricos corretamente
@@ -210,7 +212,8 @@ Todos os itens da especificação técnica foram implementados:
 - ✅ Atalhos de zoom: `Ctrl + +`, `Ctrl + -`, `Ctrl + 0`
 - ✅ Atalhos desabilitados quando digitando em campos de input
 
-**Dependências:**
+#### **Dependências:**
+
 - `jimp@0.22.12` - Pure JavaScript image processing (cross-platform, no native binaries)
 
 ### 4. Interface e UX
@@ -281,8 +284,6 @@ Todos os itens da especificação técnica foram implementados:
 - [ ] 9.6 Unit tests for i18n module
 - [ ] 9.7 Unit tests for utils module
 - [ ] 9.8 Unit tests for templates module
-
-### 10. Documentação
 
 ### 10. Documentação
 

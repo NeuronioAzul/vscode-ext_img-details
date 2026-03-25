@@ -27,6 +27,7 @@ When adding documentation:
 ## Examples
 
 ❌ **Wrong:**
+
 ```
 project-root/
 ├── README.md
@@ -34,6 +35,7 @@ project-root/
 ```
 
 ✅ **Correct:**
+
 ```
 project-root/
 ├── README.md
