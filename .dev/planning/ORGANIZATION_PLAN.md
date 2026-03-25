@@ -9,9 +9,11 @@ Organizar a extensão profissionalmente, mantendo apenas arquivos essenciais na 
 ## 📁 Estrutura de Branches
 
 ### Branch `main` (Produção)
+
 Contém apenas arquivos necessários para funcionamento da extensão:
 
 #### ✅ Arquivos Essenciais (Manter)
+
 ```
 vscode-ext_img-details/
 ├── .github/                    # CI/CD workflows
@@ -33,6 +35,7 @@ vscode-ext_img-details/
 ```
 
 #### ❌ Arquivos a Mover para `.dev/` (Remover da main)
+
 ```
 ├── _ADM/                      # Arquivos administrativos
 ├── docs/                      # Documentação técnica/desenvolvimento
@@ -45,6 +48,7 @@ vscode-ext_img-details/
 ```
 
 ### Branch `dev` (Desenvolvimento)
+
 Contém **TODOS** os arquivos (produção + desenvolvimento):
 
 ```
@@ -139,6 +143,7 @@ git push origin main
 ## 📝 Arquivos a Criar
 
 ### 1. `.dev/README.md` (Branch dev)
+
 ```markdown
 # Development Files
 
@@ -160,6 +165,7 @@ This directory contains files used during development that are not needed in pro
 ```
 
 ### 2. `CONTRIBUTING.md` (Branch main)
+
 ```markdown
 # Contributing
 
@@ -180,6 +186,7 @@ Please submit pull requests to the `dev` branch.
 ```
 
 ### 3. Atualizar `.gitignore` (Branch main)
+
 ```gitignore
 # Add at the end:
 
@@ -209,7 +216,8 @@ REFACTORING_SUMMARY.md
 
 ## 🔄 Workflow Futuro
 
-### Para Desenvolver:
+### Para Desenvolver
+
 ```bash
 git checkout dev
 # Fazer mudanças
@@ -217,7 +225,8 @@ git commit -am "feat: new feature"
 git push origin dev
 ```
 
-### Para Release:
+### Para Release
+
 ```bash
 git checkout main
 git merge dev --no-ff
@@ -233,11 +242,13 @@ git push origin v1.x.x
 ## 📊 Comparação de Tamanho
 
 ### Antes (main atual)
+
 - ~50 arquivos
 - ~15 MB (com node_modules)
 - Inclui: docs, test-images, _ADM, scripts
 
 ### Depois (main otimizada)
+
 - ~20 arquivos essenciais
 - ~5 MB (com node_modules)
 - Apenas: src, dist, README, CHANGELOG, LICENSE
