@@ -41,6 +41,7 @@ export function getErrorHtml(error: any): string {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline';">
     <title>Error Loading Image</title>
     <style>
         body {
@@ -185,15 +186,30 @@ export function generateColorInfoHtml(
   }
 
   if (colorInfo.dpi) {
+    const dpiValue = colorInfo.dpiX && colorInfo.dpiY && colorInfo.dpiX !== colorInfo.dpiY
+      ? `x: ${escapeHtml(colorInfo.dpiX)} y: ${escapeHtml(colorInfo.dpiY)}`
+      : escapeHtml(colorInfo.dpi);
+    const dpiCopy = colorInfo.dpiX && colorInfo.dpiY && colorInfo.dpiX !== colorInfo.dpiY
+      ? `x: ${escapeHtml(colorInfo.dpiX)} y: ${escapeHtml(colorInfo.dpiY)}`
+      : escapeHtml(colorInfo.dpi);
     html += `
                 <div class="metadata-item">
                     <div class="metadata-label">📐 ${t.dpi}</div>
                     <div class="metadata-value" title="${
                       t.clickToCopy
-                    }" onclick="copyToClipboard('${escapeHtml(
-      colorInfo.dpi
-    )}')">${escapeHtml(colorInfo.dpi)}</div>
+                    }" onclick="copyToClipboard('${dpiCopy}')">${dpiValue}</div>
                 </div>`;
+    if (colorInfo.dpiUnit) {
+      html += `
+                <div class="metadata-item">
+                    <div class="metadata-label">📏 ${t.dpiResolutionUnit}</div>
+                    <div class="metadata-value" title="${
+                      t.clickToCopy
+                    }" onclick="copyToClipboard('${escapeHtml(
+        colorInfo.dpiUnit
+      )}')">${escapeHtml(colorInfo.dpiUnit)}</div>
+                </div>`;
+    }
   }
 
   html += `
@@ -222,6 +238,7 @@ export function getHtmlForWebview(
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webview.cspSource} data: https:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; font-src data:;">
     <title>Image Details</title>
     <style>
         body {
@@ -259,7 +276,6 @@ export function getHtmlForWebview(
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            border-radius: 4px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s ease;
             cursor: zoom-in;
@@ -447,7 +463,6 @@ export function getHtmlForWebview(
             max-width: 120px;
             max-height: 120px;
             object-fit: contain;
-            border-radius: 2px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             transition: transform 0.2s ease;

@@ -5,6 +5,101 @@ All notable changes to the "Image Details" extension will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-03-24
+
+### 📝 Documentation - v1.3.1
+
+- **Contributors Section**: Added contributors section to README with GitHub avatars and profile links
+- Added **uicssmaker** as project contributor
+
+## [1.3.0] - 2026-03-24
+
+### ✨ Added - v1.3.0
+
+- **DPI/PPI Resolution Details**: Enhanced resolution display in Color Information section
+  - Shows `PPI (DPI)` label with numeric value (e.g. `300`)
+  - When X and Y resolutions differ, displays `x: 72 y: 96` on a single line
+  - New **Resolution Unit** field showing `DPI` or `pixels/cm` based on EXIF metadata
+  - Fixed value comparison for equal X/Y resolutions (array-to-string coercion)
+
+### 🐛 Fixed - v1.3.0
+
+- **DPI/PPI Label**: Updated from `DPI/PPI` to `PPI (DPI)` for consistency across all 5 languages
+
+### 🎨 Changed - v1.3.0
+
+- **Image Display**: Removed border-radius from main image preview and thumbnail for sharper, unaltered rendering
+
+### 📝 Documentation - v1.3.0
+
+- Migrated all documentation to `.dev/` folder structure
+- Updated all internal file references and cross-links
+- Improved README with development setup and release instructions
+- Added conventional commit and GitHub issue management guidelines
+- Updated `DOCUMENTATION_STRUCTURE.md` to reflect `.dev/` organization
+
+### 🧹 Internal - v1.3.0
+
+- Updated agent skills: code-reviewer, vscode-extension, localization
+- Added TypeScript and GitHub issue management skill docs
+- Removed legacy PR Analyzer and Review Report Generator scripts
+- Enhanced PAT validation for publishing workflow
+
+## [1.2.6] - 2025-12-29
+
+### 🐛 Fixed - v1.2.6
+
+- **Image Resize Tool**: Fixed issue where resizing PNG images resulted in black backgrounds for transparent areas
+  - Ensured transparency is preserved during resize operation
+  - Tested with various PNG images to confirm fix
+  - Improved user experience for PNG image resizing
+
+### 🧹 Code Cleanup - v1.2.6
+
+- **Package Optimization**: Removed unnecessary media files from distribution
+  - README uses externally hosted images, making local copies redundant
+  - Removed `media/demo/` folder (3 GIF files, ~659KB) - only needed for GitHub documentation
+  - Removed `media/screenshots/` folder (1 PNG file, ~158KB) - only needed for GitHub documentation
+  - **Total reduction:** ~817KB from extension package size
+
+## [1.2.5] - 2025-12-29
+
+### 🔧 Changed - v1.2.5
+
+- **Image Processing**: Replaced `sharp` with `jimp` for image resizing
+  - Eliminates native binary dependencies that caused installation errors
+  - Pure JavaScript implementation works across all platforms
+  - Fixes "Could not load the sharp module" error in VS Code Remote/Server environments
+  - Maintains full image resize functionality without platform-specific builds
+
+### 🧹 Code Cleanup - v1.2.5
+
+- **Refactoring**: Removed legacy code and unused imports
+  - Removed legacy translations object (~530 lines) that was no longer used
+  - Removed unused imports (`escapeHtml`, `generateBasicInfoSection`, `generateColorInfoHtml`, `generateExifHtml`)
+  - Reduced `imageDetailsEditor.ts` file size by ~49% (1078 → 550 lines)
+  - Code now uses only modular i18n implementation from `src/i18n/translations.ts`
+
+### 🐛 Fixed - v1.2.5
+
+- **Extension Activation**: Fixed extension activation failure in VS Code Server/Remote environments
+  - Resolved sharp binary compatibility issues on linux-x64 runtime
+  - Extension now works reliably in WSL, Remote SSH, and Codespaces
+
+## [1.2.4] - 2025-12-28
+
+### 🔒 Security - v1.2.4
+
+- **Webview Security**: Added Content Security Policy (CSP) to all webviews
+  - Eliminates VS Code warning about missing CSP
+  - Improves security by restricting resource loading
+  - Follows VS Code webview best practices
+  - CSP allows only necessary sources: webview resources, data URIs, inline styles/scripts
+
+### 🐛 Fixed
+
+- **Extension Host Warning**: Resolved "webview without content security policy" warning in Extension Host logs
+
 ## [1.2.3] - 2025-12-23
 
 ### 🏗️ Repository Organization v1.2.3

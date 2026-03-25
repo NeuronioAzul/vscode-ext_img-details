@@ -491,16 +491,15 @@ export function extractRelevantExifData(tags: any): any {
     const resolutionUnit = tags.ResolutionUnit?.description || tags.ResolutionUnit?.value;
     
     if (xResolution && yResolution) {
-        exif.xResolution = xResolution;
-        exif.yResolution = yResolution;
+        const xStr = String(xResolution);
+        const yStr = String(yResolution);
+        exif.xResolution = xStr;
+        exif.yResolution = yStr;
         exif.resolutionUnit = resolutionUnit || 'inches';
         
         const unit = resolutionUnit === '3' || resolutionUnit === 'cm' ? 'pixels/cm' : 'DPI';
-        if (xResolution === yResolution) {
-            exif.dpi = `${xResolution} ${unit}`;
-        } else {
-            exif.dpi = `${xResolution} x ${yResolution} ${unit}`;
-        }
+        exif.dpi = xStr === yStr ? xStr : `${xStr} x ${yStr}`;
+        exif.dpiUnit = unit;
     }
 
     return Object.keys(exif).length > 0 ? exif : null;

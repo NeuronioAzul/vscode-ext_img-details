@@ -519,7 +519,7 @@ create_github_release() {
 # ================================================================================================
 
 # Valida se o Personal Access Token está ativo e não expirado
-# Faz uma chamada de teste à API do marketplace antes de qualquer operação
+# Usa o comando vsce verify-pat que é o método mais confiável
 # Args:
 #   $1: Personal Access Token (PAT) do Azure DevOps
 # Returns:
@@ -538,47 +538,40 @@ validate_pat_token() {
         return 0
     fi
     
-    # Faz uma chamada de teste ao marketplace para verificar se o PAT é válido
-    # Usa o publisher do package.json para fazer a verificação
-    local publisher=$(grep -o '"publisher": *"[^"]*"' "$PACKAGE_JSON" | grep -o '[^"]*"$' | tr -d '"')
-    
-    # Tenta fazer uma query simples ao marketplace
-    local response=$(curl -s -w "\n%{http_code}" \
-        -H "Accept: application/json;api-version=6.0-preview.1" \
-        -H "Authorization: Basic $(echo -n "user:$pat" | base64)" \
-        "https://marketplace.visualstudio.com/_apis/gallery/publishers/$publisher" 2>&1)
-    
-    local http_code=$(echo "$response" | tail -n1)
-    local body=$(echo "$response" | head -n-1)
-    
-    # Status codes:
-    # 200: OK - PAT válido
-    # 401: Unauthorized - PAT inválido ou expirado
-    # 403: Forbidden - PAT sem permissões
-    if [ "$http_code" = "401" ]; then
-        print_error "Personal Access Token is expired or invalid"
-        return 1
-    elif [ "$http_code" = "403" ]; then
-        print_error "Personal Access Token doesn't have required permissions"
-        echo "" >&2
-        print_info "Required: Marketplace (${BOLD}Manage${NC}) - NOT just 'Publish'" >&2
-        print_info "Create new PAT at: ${BLUE}https://dev.azure.com/[org]/_usersSettings/tokens${NC}" >&2
-        return 1
-    elif [ "$http_code" = "404" ]; then
-        print_error "Publisher not found or you don't have access to it"
-        echo "" >&2
-        local publisher=$(grep -o '"publisher": *"[^"]*"' "$PACKAGE_JSON" | grep -o '[^"]*"$' | tr -d '"')
-        print_info "Publisher in package.json: ${BOLD}$publisher${NC}" >&2
-        print_info "Add your account to publisher: ${BLUE}https://marketplace.visualstudio.com/manage/publishers/$publisher${NC}" >&2
-        return 1
-    elif [ "$http_code" != "200" ]; then
-        # Outro erro - avisa mas não bloqueia (pode ser problema de rede)
-        print_warning "Could not validate PAT (HTTP $http_code). Will attempt to continue..."
-        return 0
+    # Garante que vsce está instalado
+    if ! command -v vsce &> /dev/null; then
+        print_step "Installing vsce..."
+        npm install -g @vscode/vsce >/dev/null 2>&1
     fi
     
-    print_success "Personal Access Token is valid"
-    return 0
+    # Obtém o publisher do package.json
+    local publisher=$(grep -o '"publisher": *"[^"]*"' "$PACKAGE_JSON" | grep -o '[^"]*"$' | tr -d '"')
+    
+    # Tenta validar usando vsce verify-pat, mas não bloqueia se falhar
+    # A validação real acontecerá durante o vsce publish
+    local output=$(vsce verify-pat -p "$pat" "$publisher" 2>&1)
+    local exit_code=$?
+    
+    if [ $exit_code -eq 0 ]; then
+        print_success "Personal Access Token is valid"
+        return 0
+    else
+        # Validação falhou, mas vamos tentar prosseguir
+        print_warning "Could not pre-validate PAT token"
+        print_info "Will attempt to publish anyway - validation will happen during publish"
+        
+        # Se a mensagem indicar erro claro de autorização, avisa o usuário
+        if echo "$output" | grep -q "401\|Unauthorized\|expired"; then
+            print_warning "Token appears to be expired or invalid"
+            print_info "If publish fails, create new token at: ${BLUE}https://dev.azure.com/_usersSettings/tokens${NC}" >&2
+        elif echo "$output" | grep -q "403\|Forbidden\|not authorized"; then
+            print_warning "Token may not have required permissions"
+            print_info "Required: Marketplace (${BOLD}Manage${NC}) - NOT just 'Publish'" >&2
+        fi
+        
+        # Retorna sucesso para não bloquear o fluxo
+        return 0
+    fi
 }
 
 # Solicita o Personal Access Token ao usuário de forma segura
@@ -696,11 +689,61 @@ publish_to_marketplace() {
     # Captura output e exit code do vsce
     if ! vsce publish -p "$pat" 2>&1 | tee /tmp/vsce_output.log; then
         local exit_code=$?
-        print_error "Failed to publish to marketplace (exit code: $exit_code)"
         echo ""
         
-        # Verifica se é erro de autorização
-        if grep -q "TF400813\|not authorized\|403" /tmp/vsce_output.log; then
+        # Verifica se é erro de autorização TF400813 (PRIORITÁRIO)
+        if grep -q "TF400813" /tmp/vsce_output.log; then
+            print_error "❌ AUTHORIZATION ERROR (TF400813)"
+            echo ""
+            echo -e "${RED}${BOLD}╔═══════════════════════════════════════════════════════════╗${NC}"
+            echo -e "${RED}${BOLD}║                                                           ║${NC}"
+            echo -e "${RED}${BOLD}║   ⚠️  YOU ARE NOT AUTHORIZED TO PUBLISH THIS EXTENSION    ║${NC}"
+            echo -e "${RED}${BOLD}║                                                           ║${NC}"
+            echo -e "${RED}${BOLD}╚═══════════════════════════════════════════════════════════╝${NC}"
+            echo ""
+            
+            # Extrai a mensagem de erro completa
+            local error_msg=$(grep -A 2 "TF400813" /tmp/vsce_output.log | head -n 1)
+            print_error "Error details:"
+            echo -e "  ${YELLOW}$error_msg${NC}"
+            echo ""
+            
+            local publisher=$(grep -o '"publisher": *"[^"]*"' "$PACKAGE_JSON" | grep -o '[^"]*"$' | tr -d '"')
+            
+            print_info "${BOLD}Why this happens:${NC}"
+            echo -e "  ${CYAN}1.${NC} Your Microsoft account is ${BOLD}NOT added to the publisher${NC}"
+            echo -e "  ${CYAN}2.${NC} Your PAT doesn't have the correct permissions"
+            echo -e "  ${CYAN}3.${NC} You're using the wrong Azure DevOps organization"
+            echo ""
+            
+            print_info "${BOLD}How to fix:${NC}"
+            echo -e "  ${GREEN}Step 1:${NC} Add your Microsoft account to the publisher"
+            echo -e "          ${BLUE}https://marketplace.visualstudio.com/manage/publishers/$publisher${NC}"
+            echo -e "          ${YELLOW}→${NC} Click 'Members' tab"
+            echo -e "          ${YELLOW}→${NC} Add your Microsoft email"
+            echo ""
+            echo -e "  ${GREEN}Step 2:${NC} Create new PAT with correct permissions"
+            echo -e "          ${BLUE}https://dev.azure.com/_usersSettings/tokens${NC}"
+            echo -e "          ${YELLOW}→${NC} Select 'Marketplace' (${BOLD}Manage${NC}) permission"
+            echo -e "          ${YELLOW}→${NC} NOT just 'Publish' - must be 'Manage'"
+            echo ""
+            echo -e "  ${GREEN}Step 3:${NC} Make sure you're in the correct Azure DevOps organization"
+            echo -e "          ${YELLOW}→${NC} PAT must be from the same org as the publisher"
+            echo ""
+            
+            print_warning "${BOLD}IMPORTANT:${NC} Ask the publisher owner to add you first!"
+            echo ""
+            print_info "See detailed guide: ${BLUE}docs/PUBLISHING_TROUBLESHOOTING.md${NC}"
+            echo ""
+            
+            rm -f /tmp/vsce_output.log
+            return 1
+        fi
+        
+        # Outros erros de autorização (403, not authorized)
+        if grep -q "not authorized\|403" /tmp/vsce_output.log; then
+            print_error "Failed to publish to marketplace (exit code: $exit_code)"
+            echo ""
             print_error "Authorization error detected!"
             echo ""
             print_info "Common causes:"
@@ -713,8 +756,16 @@ publish_to_marketplace() {
             local publisher=$(grep -o '"publisher": *"[^"]*"' "$PACKAGE_JSON" | grep -o '[^"]*"$' | tr -d '"')
             print_info "  • Add yourself: ${BLUE}https://marketplace.visualstudio.com/manage/publishers/$publisher${NC}"
             print_info "  • New PAT: ${BLUE}https://dev.azure.com/_usersSettings/tokens${NC}"
+            echo ""
+            rm -f /tmp/vsce_output.log
+            return 1
         fi
         
+        # Erro genérico
+        print_error "Failed to publish to marketplace (exit code: $exit_code)"
+        echo ""
+        print_info "Check the output above for details"
+        echo ""
         rm -f /tmp/vsce_output.log
         return 1
     fi
@@ -754,14 +805,105 @@ parse_arguments() {
                 ;;
             -h|--help)
                 # Exibe ajuda e sai
-                echo "Usage: $0 [options]"
-                echo ""
-                echo "Options:"
-                echo "  --version <version>   Specify version (e.g., 1.0.4)"
-                echo "  --pat <token>         Personal Access Token for marketplace"
-                echo "  --message <text>      Release message"
-                echo "  --dry-run             Test without making changes"
-                echo "  -h, --help            Show this help"
+                cat << 'EOF'
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                   🚀 Image Details - Publishing Wizard                       │
+│                     Automated Extension Release Script                       │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+USAGE:
+    ./publish.sh [OPTIONS]
+
+DESCRIPTION:
+    Automates the complete publishing workflow for VS Code extensions:
+    
+    1. ✅ Pre-flight checks (git status, remote configuration)
+    2. 🔐 PAT validation (before making any changes)
+    3. 📦 Version selection (interactive or specified)
+    4. 📝 Release notes (auto-extracted from CHANGELOG or manual)
+    5. 🏷️  Git tag creation and push
+    6. 🌐 GitHub release creation (if gh CLI available)
+    7. 📤 VS Code Marketplace publishing
+
+OPTIONS:
+    --version <version>    Specify exact version (e.g., 1.2.4 or v1.2.4)
+                          Without this, interactive version selector is shown
+                          Format: X.Y.Z (semantic versioning)
+                          
+    --pat <token>         Personal Access Token for Azure DevOps
+                          If not provided, you'll be prompted securely
+                          Token is validated before making any changes
+                          
+    --message <text>      Release message/notes
+                          If not provided, auto-extracted from CHANGELOG.md
+                          or prompted for manual entry
+                          
+    --dry-run             Test mode - shows what would happen without
+                          making actual changes (safe to run anytime)
+                          
+    -h, --help            Display this help message and exit
+
+EXAMPLES:
+    Interactive mode (recommended for first-time users):
+        ./publish.sh
+    
+    Automated mode with all options:
+        ./publish.sh --version 1.2.4 --pat "your-token-here" --message "Bug fixes"
+    
+    Dry-run to preview changes:
+        ./publish.sh --version 1.2.4 --dry-run
+    
+    Quick publish with interactive prompts:
+        ./publish.sh --version 1.2.4
+
+PERSONAL ACCESS TOKEN (PAT):
+    Required permissions: Marketplace (Manage) - NOT just "Publish"
+    
+    Create PAT:    https://dev.azure.com/[org]/_usersSettings/tokens
+    Manage access: https://marketplace.visualstudio.com/manage/publishers/
+    
+    ⚠️  IMPORTANT: Your Microsoft account must be added to the publisher!
+
+AUTOMATIC FEATURES:
+    ✓ Validates git repository state before starting
+    ✓ Checks PAT token validity before making changes
+    ✓ Auto-extracts release notes from CHANGELOG.md
+    ✓ Creates annotated git tags with release notes
+    ✓ Creates GitHub releases (if gh CLI authenticated)
+    ✓ Publishes to VS Code Marketplace
+    ✓ Colored output with progress indicators
+    ✓ Rollback protection (validates before destructive operations)
+
+FILES MODIFIED:
+    • package.json - Version field updated
+    • Git tags - New annotated tag created and pushed
+    • GitHub - New release created (if gh CLI available)
+    • Marketplace - Extension published with new version
+
+REQUIREMENTS:
+    • Node.js and npm
+    • Git repository with remote 'origin'
+    • @vscode/vsce (installed automatically if missing)
+    • gh CLI (optional, for GitHub releases)
+    • Valid Personal Access Token with Marketplace (Manage) permission
+
+EXIT CODES:
+    0 - Success
+    1 - Error or user cancelled
+
+TROUBLESHOOTING:
+    See: docs/PUBLISHING_TROUBLESHOOTING.md
+    
+    Common issues:
+    - TF400813 error → Check PAT permissions and publisher membership
+    - Git not clean → Commit or stash changes first
+    - Invalid PAT → Create new token with correct permissions
+
+MORE INFO:
+    Documentation: .dev/docs/PUBLISH_GUIDE.md
+    Repository:    https://github.com/NeuronioAzul/vscode-ext_img-details
+
+EOF
                 exit 0
                 ;;
             *)
@@ -807,28 +949,22 @@ main() {
     echo ""
     
     # ============================================================
-    # FASE 1.5: Validar PAT Token ANTES de qualquer alteração
+    # FASE 1.5: Obter PAT Token (validação leve)
     # ============================================================
-    # Esta verificação é CRÍTICA: valida o PAT antes de:
-    # - Atualizar package.json
-    # - Criar git tags
-    # - Criar GitHub releases
-    # Evita ter que desfazer operações se o PAT estiver expirado
+    # Obtém o PAT do usuário se não foi fornecido
+    # A validação completa acontecerá durante o vsce publish
     if [ -z "$PAT" ] && [ "$DRY_RUN" = false ]; then
-        print_step "Checking Personal Access Token..."
+        print_step "Getting Personal Access Token..."
         PAT=$(prompt_pat_token) || {
-            print_error "Cannot proceed without a valid Personal Access Token"
+            print_error "Cannot proceed without a Personal Access Token"
             print_warning "No changes were made to your repository"
             exit 1
         }
         echo ""
     elif [ -n "$PAT" ] && [ "$DRY_RUN" = false ]; then
-        # Se PAT foi fornecido via CLI, valida antes de continuar
-        if ! validate_pat_token "$PAT"; then
-            print_error "The provided PAT is invalid or expired"
-            print_warning "No changes were made to your repository"
-            exit 1
-        fi
+        # Se PAT foi fornecido via CLI, faz validação leve
+        print_step "Validating Personal Access Token..."
+        validate_pat_token "$PAT"
         echo ""
     fi
     

@@ -2,47 +2,55 @@
 
 ## Project Overview
 
-This is a VS Code extension that provides a custom webview editor for viewing comprehensive image metadata, EXIF data, and privacy-focused metadata removal. It uses a **Custom Editor API** pattern with TypeScript and modular architecture.
+This is a VS Code extension that provides a custom webview editor for viewing comprehensive image metadata, EXIF data, privacy-focused metadata removal, and image resizing. It uses a **Custom Editor API** pattern with TypeScript and modular architecture.
 
 ## Architecture
 
 ### Core Components
 
-1. **`src/extension.ts`** - Extension activation point
+1. **`src/extension.ts`** - Extension activation point (~28 lines)
    - Registers `ImageDetailsEditorProvider` as custom editor for image files
    - Registers `imageDetails.openWith` command
    - Entry point: `activate()` and `deactivate()` functions
 
-2. **`src/imageDetailsEditor.ts`** - Main editor orchestrator (~1500 lines)
+2. **`src/imageDetailsEditor.ts`** - Main editor orchestrator (~550 lines)
    - Implements `vscode.CustomReadonlyEditorProvider`
    - Manages webview lifecycle and state
    - Coordinates metadata extraction, HTML generation, and user interactions
-   - **Legacy translations object** exists here for backward compatibility during modular migration
+   - Binary manipulation methods: `stripJpegExif()`, `stripPngMetadata()`
+   - Image resizing via `resizeImageSafe()` with backup-first pattern
 
-3. **`src/templates/htmlGenerators.ts`** - Webview HTML generation (~800 lines)
+3. **`src/templates/htmlGenerators.ts`** - Webview HTML generation (~2715 lines)
    - `getHtmlForWebview()` - Complete webview HTML with inline CSS/JS
+   - `getErrorHtml()` - Error state fallback HTML
    - `generateBasicInfoSection()`, `generateColorInfoHtml()`, `generateExifHtml()` - Section generators
    - `escapeHtml()` - Security: XSS prevention for user-facing strings
    - All HTML/CSS/JavaScript is **inline** in the webview (no separate files)
 
-4. **`src/utils/metadata.ts`** - Image metadata utilities (~200 lines)
+4. **`src/utils/metadata.ts`** - Image metadata utilities (~508 lines)
    - `formatFileSize()` - Bytes to KB/MB/GB conversion
    - `getColorInfo()` - Extract transparency support, color depth by format
    - `calculateBitDepth()` - Compute bit depth from EXIF BitsPerSample/SamplesPerPixel
    - `extractRelevantExifData()` - Parse 70+ EXIF fields from raw tags
 
-5. **`src/i18n/`** - Internationalization (modular, ~50 lines core)
+5. **`src/utils/imageResize.ts`** - Image resizing utility (~65 lines)
+   - `resizeImage()` - Resize via Jimp (pure JavaScript, cross-platform)
+   - `resizeImageSafe()` - Safe wrapper for resize operations
+   - Supports JPEG, PNG formats (WebP falls back to JPEG)
+
+6. **`src/i18n/`** - Internationalization (modular, ~47 lines core)
    - `translations.ts` - `getTranslations(locale)` with fallback logic
-   - `locales/en.ts`, `pt-br.ts`, `ja.ts`, `es.ts`, `zh-cn.ts` - Language files (~115 lines each)
+   - `locales/en.ts`, `pt-br.ts`, `ja.ts`, `es.ts`, `zh-cn.ts` - Language files (~132 lines each)
    - Auto-detects VS Code locale (`vscode.env.language`)
 
-6. **`src/types/index.ts`** - TypeScript interfaces (~150 lines)
-   - `Translations`, `ImageMetadata`, `ColorInfo`, `SectionStates`, `DisplayMode`
+7. **`src/types/index.ts`** - TypeScript interfaces (~158 lines)
+   - `Translations` (129 string keys), `ImageMetadata`, `ColorInfo`, `SectionStates`, `DisplayMode`
 
 ### Key External Dependencies
 
 - **`exifreader`** (v4.32.0) - EXIF tag extraction from image buffers
 - **`image-size`** (v1.1.1) - Fast dimension/format detection
+- **`jimp`** (v0.22.12) - Pure-JS image resizing (no native binaries)
 - **`@vscode/codicons`** & **`@fortawesome/fontawesome-free`** - Icons in webview
 
 ### Build System
@@ -69,12 +77,10 @@ This is a VS Code extension that provides a custom webview editor for viewing co
 
 **Modular approach (current):**
 1. Create `src/i18n/locales/<lang-code>.ts` by copying `en.ts`
-2. Translate all 114 string keys
+2. Translate all 129 string keys (TypeScript enforces completeness via `Translations` interface)
 3. Import in `src/i18n/translations.ts`: `import { de } from './locales/de';`
 4. Add to exports: `'de': de,`
 5. Add fallback logic if needed in `getTranslations()` function
-
-**Why modular?** See `REFACTORING_SUMMARY.md` - reduces maintenance burden from 3250-line monolith to 115-line files per language.
 
 **Supported languages (5):**
 - English (en)
@@ -97,7 +103,11 @@ This is a VS Code extension that provides a custom webview editor for viewing co
 
 **Extension → Webview:**
 - Initial data: HTML includes serialized metadata in `<script>` tags
-- Messages: `webviewPanel.webview.postMessage({ command: 'showJsonModal', metadata })`
+- Messages: `webviewPanel.webview.postMessage({ command, ...data })`
+  - `showJsonModal` - Send metadata as JSON for modal display
+  - `showResizeModal` - Send current dimensions for resize dialog
+  - `resetRemoveExifButton` - Reset button state after cancel/error
+  - `resetResizeButton` - Reset button state after cancel/error
 
 **Webview → Extension:**
 ```typescript
@@ -108,6 +118,8 @@ webviewPanel.webview.onDidReceiveMessage(async (message) => {
     case 'setDisplayMode': // Switch accordion/list
     case 'removeExif': // Strip metadata
     case 'viewJsonMetadata': // Show JSON modal
+    case 'resizeImage': // Open resize modal
+    case 'applyResize': // Execute image resize with { width, height, quality }
   }
 })
 ```
@@ -125,6 +137,22 @@ webviewPanel.webview.onDidReceiveMessage(async (message) => {
    - Refreshes webview with new metadata
 
 **Supported formats:** JPEG/JPG, PNG only (others show error)
+
+### Image Resize Feature
+
+**Workflow:**
+1. User clicks "Resize Image" → webview sends `resizeImage` message
+2. Extension sends `showResizeModal` back to webview with current dimensions
+3. User sets width, height, quality → webview sends `applyResize`
+4. Extension shows **modal confirmation** (`vscode.window.showWarningMessage`)
+5. If cancelled, extension sends `resetResizeButton` message to webview
+6. If confirmed:
+   - Creates backup file (`<basename>-original.ext`)
+   - Resizes via `resizeImageSafe()` (Jimp, pure JavaScript)
+   - On error, restores from backup
+   - Refreshes webview with new metadata
+
+**Supported formats:** JPEG/JPG, PNG, WebP (WebP falls back to JPEG output)
 
 ## Code Conventions
 
@@ -160,8 +188,8 @@ webviewPanel.webview.onDidReceiveMessage(async (message) => {
 
 1. Add EXIF field to `src/utils/metadata.ts` → `extractRelevantExifData()`
 2. Update HTML generator in `src/templates/htmlGenerators.ts` → `generateExifHtml()`
-3. Add translation keys to all language files in `src/i18n/locales/*.ts`
-4. Update `src/types/index.ts` → `Translations` interface
+3. Add translation keys to `src/types/index.ts` → `Translations` interface
+4. Add translated values to all language files in `src/i18n/locales/*.ts`
 
 ### Change Webview Styling
 
@@ -177,18 +205,14 @@ webviewPanel.webview.onDidReceiveMessage(async (message) => {
 
 ## Migration Notes
 
-**Current state (Phase 3/4 complete):**
+**Migration complete:**
 - ✅ Types extracted to `src/types/`
 - ✅ i18n modularized to `src/i18n/locales/`
 - ✅ Utilities extracted to `src/utils/metadata.ts`
+- ✅ Image resize utility in `src/utils/imageResize.ts`
 - ✅ HTML generators in `src/templates/htmlGenerators.ts`
-- ⚠️ **`imageDetailsEditor.ts` still contains legacy translations object** for backward compatibility
-- 🎯 Next: Complete migration (remove legacy code after validation)
-
-**When refactoring:**
-- Prefer `getTranslations()` from `src/i18n/translations.ts` over direct access
-- Keep backward compatibility until migration validated
-- See `REFACTORING_SUMMARY.md` for full plan
+- ✅ Legacy translations object removed from `imageDetailsEditor.ts`
+- ✅ All translation access uses `getTranslations()` from `src/i18n/translations.ts`
 
 ## Testing
 
@@ -201,14 +225,14 @@ webviewPanel.webview.onDidReceiveMessage(async (message) => {
 
 ## Publishing
 
-- **Version**: Increment in `package.json` + `CHANGELOG.md`
+- **Version**: Increment in `CHANGELOG.md`, when executing `.dev/scripts/publish.sh` will update the version in `package.json` automatically based on the type of changes (feat → minor, fix → patch, breaking change → major)
 - **Package**: `npm run package` → generates `.vsix` in root
-- **Publish**: Use `publish.sh` script or `vsce publish`
-- See `docs/PUBLISH_GUIDE.md` for detailed steps
+- **Publish**: Use `.dev/scripts/publish.sh` script or `vsce publish`
+- See `.dev/docs/PUBLISH_GUIDE.md` for detailed steps
 
 ## Key Files to Reference
 
-- **Architecture decisions**: `REFACTORING_SUMMARY.md`
-- **Contribution guide**: `docs/contributing/CONTRIBUTING.md`
-- **i18n guide**: `docs/contributing/I18N.md`
-- **Publishing**: `docs/PUBLISH_GUIDE.md`
+- **Architecture decisions**: `.dev/docs/REFACTORING_SUMMARY.md`
+- **Contribution guide**: `.dev/docs/contributing/CONTRIBUTING.md`
+- **i18n guide**: `.dev/docs/contributing/I18N.md`
+- **Publishing**: `.dev/docs/PUBLISH_GUIDE.md`
