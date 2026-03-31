@@ -239,6 +239,7 @@ Todos os itens da especificação técnica foram implementados:
   - [x] 4.12.2 Zoom com mouse wheel (Ctrl+Scroll)
   - [x] 4.12.3 Click para alternar zoom
   - [x] 4.12.4 Atalhos de teclado (+, -, 0)
+- [x] 4.13 Remover border-radius na visualização e no preview da imagem
 
 ### 5. Suporte a Mais Formatos
 
